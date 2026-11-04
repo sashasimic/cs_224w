@@ -1,4 +1,4 @@
-# Weather, Interconnection, and Prices
+# Weather, Interconnections, and Energy Prices
 
 A spatio-temporal graph model of European day-ahead electricity markets. Stanford CS224W, Fall 2026, Project 1.
 
