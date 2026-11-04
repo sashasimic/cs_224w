@@ -1,0 +1,21 @@
+# Data (large parquet files, pulled from GCS via scripts/datasets.py)
+/datasets/
+
+# Course lecture notes (course material, not for redistribution)
+/lectures/
+
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Experiment outputs
+runs/
+checkpoints/
+*.ckpt
+*.pt
