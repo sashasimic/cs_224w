@@ -84,9 +84,9 @@ JAO flow-based constraint data is documented in [docs/datasets/jao-dataset-guide
 
 ```bash
 scripts/datasets.py pull                  # every dataset at the version the manifest pins
-scripts/datasets.py pull weather          # one dataset
-scripts/datasets.py pull weather@v1.0     # a specific version; manifest untouched
-scripts/datasets.py pull --latest         # newest version in the bucket, for every dataset
+scripts/datasets.py pull weather          # one dataset, pinned version
+scripts/datasets.py pull weather@v1.0     # one dataset, exact version; manifest untouched
+scripts/datasets.py pull --latest         # newest version in the bucket (may be newer than pinned)
 scripts/datasets.py pull --latest --pin   # ...and write those versions into the manifest
 scripts/datasets.py pull --prune          # also delete local copies of other versions
 scripts/datasets.py status                # local vs manifest vs bucket
