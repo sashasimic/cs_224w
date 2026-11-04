@@ -20,6 +20,10 @@ Usage:
 
 A file already on disk with the expected size is not downloaded again.
 
+`push` refuses unless docs/datasets/<dataset>.md has a version-history row for the new
+version (the human-written "what changed"). It then rewrites the mechanical header lines
+(pinned version, bucket path, local filenames) itself.
+
 Auth: `gcloud auth application-default login` once per machine.
 """
 import argparse
@@ -35,6 +39,7 @@ from google.cloud import storage
 ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "configs" / "datasets.json"
 LOCAL = ROOT / "datasets"
+DOCS = ROOT / "docs" / "datasets"
 
 
 # ---------------------------------------------------------------- helpers
@@ -121,6 +126,62 @@ def prune(name, keep_version, files):
                 print(f"  pruned  {other.name}")
 
 
+DOC_TEMPLATE = """# <title>
+
+| | |
+|---|---|
+| Dataset id | `{name}` |
+| Pinned version | **{version}** (see `configs/datasets.json`) |
+| Bucket | `gs://<bucket>/{name}/{version}/` |
+| Local file(s) | `datasets/<file>_{version}.parquet` |
+| Source | <where the data comes from, period covered> |
+
+```python
+from epgnn.paths import dataset_path
+df = pd.read_parquet(dataset_path("{name}", "<file>.parquet"))
+```
+
+Version history:
+
+| Version | What |
+|---|---|
+| {version} | <what changed> |
+
+---
+
+<schema, quality findings, caveats>
+"""
+
+
+def check_doc(name, version):
+    """Refuse the push unless the dataset doc has a history row for this version."""
+    doc = DOCS / f"{name}.md"
+    if not doc.exists():
+        sys.exit(f"no doc for dataset {name!r}. Create {doc.relative_to(ROOT)} first; template:\n\n"
+                 + DOC_TEMPLATE.format(name=name, version=version))
+    text = doc.read_text()
+    if not re.search(rf"^\|\s*{re.escape(version)}\s*\|", text, re.M):
+        sys.exit(f"{doc.relative_to(ROOT)} has no version-history row for {version}.\n"
+                 f"Add a line like   | {version} | <what changed> |   under 'Version history', then push again.")
+    return doc
+
+
+def update_doc_header(doc, name, version, files, bucket_name):
+    """Rewrite the mechanical header lines so they match the manifest."""
+    text = doc.read_text()
+    local = ", ".join(f"`datasets/{Path(f).stem}_{version}{Path(f).suffix}`" for f in files)
+    subs = {
+        r"^\| Pinned version \|.*$": f"| Pinned version | **{version}** (see `configs/datasets.json`) |",
+        r"^\| Bucket \|.*$":         f"| Bucket | `gs://{bucket_name}/{name}/{version}/` |",
+        r"^\| Local file\(s\) \|.*$": f"| Local file(s) | {local} |",
+    }
+    for pattern, line in subs.items():
+        text, n = re.subn(pattern, line, text, count=1, flags=re.M)
+        if n == 0:
+            print(f"  warn    {doc.name}: header line not found for {pattern!r}; add it by hand")
+    doc.write_text(text)
+
+
 # ---------------------------------------------------------------- commands
 
 def cmd_pull(args):
@@ -165,6 +226,7 @@ def cmd_pull(args):
 
 def cmd_push(args):
     m = load_manifest()
+    doc = check_doc(args.dataset, args.version)
     b = bucket(m)
     files = {}
     for p in args.files:
@@ -181,7 +243,9 @@ def cmd_push(args):
         print(" done")
     m["datasets"][args.dataset] = {"version": args.version, "files": files}
     save_manifest(m)
-    print(f"manifest updated: {args.dataset} -> {args.version}")
+    update_doc_header(doc, args.dataset, args.version, files, m["bucket"])
+    print(f"manifest and {doc.relative_to(ROOT)} updated: {args.dataset} -> {args.version}")
+    print(f"next: git add configs/datasets.json {doc.relative_to(ROOT)} && git commit")
 
 
 def cmd_status():

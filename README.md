@@ -99,23 +99,29 @@ Only one version of each dataset is pulled at a time. Pulling a different versio
 When you have a new build of a dataset, for example weather at per-bidding-zone resolution:
 
 ```bash
+# 1. say what changed: add a row to the version-history table in docs/datasets/weather.md
+#      | v1.1 | per-bidding-zone resolution for DK, IT, NO, SE |
+# 2. push
 scripts/datasets.py push weather v1.1 path/to/weather_hourly.parquet path/to/weather_daily.parquet
-git add configs/datasets.json
+# 3. commit the manifest and the doc together
+git add configs/datasets.json docs/datasets/weather.md
 git commit -m "weather v1.1: per-bidding-zone resolution"
 git push
 ```
 
-What happens:
+What `push` does:
 
-1. Files upload to `weather/v1.1/`. The script refuses to overwrite a version that already exists (`--force` to override; object versioning on the bucket means even that is recoverable).
-2. `configs/datasets.json` is updated with the new version and checksums.
-3. Teammates get the new data on their next `git pull && scripts/datasets.py pull`.
+1. **Refuses unless the doc has a history row for the new version.** This is the only thing you write by hand: one line saying what changed. Without it the push stops before uploading anything. For a brand-new dataset with no doc yet, it prints a template to start from.
+2. Uploads to `weather/v1.1/`. It won't overwrite a version that already exists (`--force` to override; object versioning on the bucket means even that is recoverable).
+3. Updates `configs/datasets.json` with the new version, checksums and sizes.
+4. Rewrites the mechanical header lines of the doc (pinned version, bucket path, local filenames) so they can't go stale.
+5. Teammates get the new data on their next `git pull && scripts/datasets.py pull`.
 
 Conventions:
 
 - Filenames in the bucket and manifest carry no version (`weather_hourly.parquet`); `pull` appends it locally (`weather_hourly_v1.0.parquet`). Code goes through `dataset_path`, so bumping a version never changes a line of code.
 - Version strings are `vMAJOR.MINOR`. Bump MINOR for fixes to the same source (masking, patching); bump MAJOR for a change in scope or schema (new zones, new columns, different time range).
-- Each dataset has a doc at `docs/datasets/<dataset id>.md` whose header states the pinned version, bucket path and local filename, followed by a version history. Update the header and add a history row in the same commit as the manifest bump.
+- Each dataset has a doc at `docs/datasets/<dataset id>.md`: a header (maintained by `push`), a version-history table (maintained by you), then schema, quality findings and caveats.
 - Pushing needs `roles/storage.objectAdmin` on the bucket; pulling needs `roles/storage.objectViewer`.
 
 ### Giving someone access
