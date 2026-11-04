@@ -86,6 +86,7 @@ What happens:
 
 Conventions:
 
+- Filenames carry no version (`weather_hourly.parquet`, not `weather_hourly_v1.1.parquet`). The version lives in the bucket path and the manifest, so bumping a version never changes a path the code reads.
 - Version strings are `vMAJOR.MINOR`. Bump MINOR for fixes to the same source (masking, patching); bump MAJOR for a change in scope or schema (new zones, new columns, different time range).
 - Write down what changed in the dataset's doc under `docs/datasets/` in the same commit.
 - Pushing needs `roles/storage.objectAdmin` on the bucket; pulling needs `roles/storage.objectViewer`.

@@ -5,19 +5,19 @@
     "entsoe_prices": {
       "version": "v1.1",
       "files": {
-        "electricity_prices_hourly_v1.1.parquet": "3jcE9TQ/sN2KacRTBT5VPw=="
+        "electricity_prices_hourly.parquet": "3jcE9TQ/sN2KacRTBT5VPw=="
       }
     },
     "entsoe_load_forecast": {
       "version": "v1.1",
       "files": {
-        "electricity_load_forecasts_hourly_v1.1.parquet": "XSA/BKMbk9nAe4L6cOerCA=="
+        "electricity_load_forecasts_hourly.parquet": "XSA/BKMbk9nAe4L6cOerCA=="
       }
     },
     "entsoe_physical_flows": {
       "version": "v1.1",
       "files": {
-        "electricity_physical_flows_hourly_v1.1.parquet": "36wVTQLCscnLbk2r1+Y3NA=="
+        "electricity_physical_flows_hourly.parquet": "36wVTQLCscnLbk2r1+Y3NA=="
       }
     },
     "weather": {
