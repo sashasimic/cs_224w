@@ -2,8 +2,6 @@
 
 A spatio-temporal graph model of European day-ahead electricity markets. Stanford CS224W, Fall 2026, Project 1.
 
-Sophie-An Kingsbury Lee · Sasha Simic · Arsen Shebzukhov
-
 **Task.** Predict the next day's 24 hourly day-ahead prices for ~38 European bidding zones using only information available at noon the day before. Zones are nodes in a graph connected by interconnectors (and, later, by flow-based transmission constraints). See [docs/milestone-plan.md](docs/milestone-plan.md) for the current plan.
 
 ## Repository layout
