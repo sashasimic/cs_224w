@@ -1,8 +1,8 @@
 # Milestone plan: simplest end-to-end version
 
-Written 2026-11-01, revised the same day after an independent review (section 9). Milestone due **Tuesday 2026-11-10**.
+Written 2026-11-01, revised the same day after an independent review (section 8). Milestone due **Tuesday 2026-11-10**.
 
-Goal: by the milestone, have one pipeline that goes from the parquet files to a trained graph model, a set of baselines, and an evaluation table, all runnable with one command. Everything not required for that is deferred. The deferrals are listed in section 7 so nothing is lost.
+Goal: by the milestone, have one pipeline that goes from the parquet files to a trained graph model, a set of baselines, and an evaluation table, all runnable with one command. Everything not required for that is deferred. The deferrals are listed in section 6 so nothing is lost.
 
 ## 1. Scope
 
@@ -166,25 +166,7 @@ cs_224w/
 
 `build_table.py` reads the flows parquet with pyarrow filter pushdown on the 142 directed `(OutAreaCode, InAreaCode)` pairs, not a full 36M-row load into pandas.
 
-## 6. Work plan
-
-Nine days, three people. Owners are suggestions. Colab 3 (due Thu 11/05) is budgeted as half a day per person on days 3–4.
-
-| Day | Date | Task | Owner | Done when |
-|---|---|---|---|---|
-| 1 | Sat 11/01 | `zones.csv` (incl. weather country), `edges.csv`; agree on this plan | all | files committed |
-| 1–2 | 11/01–02 | `build_table.py`: all features and masks from §2, weather join included | Sasha | `samples.parquet` written; the NaN and cutoff assertions pass; one example inspected by hand |
-| 2–3 | 11/02–03 | `metrics.py`, `naive_d1`, `naive_d7`; `models.py` written against a **stub `Data` object** so it doesn't wait on the table | Arsen | naive MAE on val and test printed; models import and forward on the stub |
-| 3–4 | 11/03–04 | `dataset.py`, `train.py`, `local_gru` | Sasha | trains, loss decreases, no NaNs, beats `naive_d1` on test or on a 2021 holdout |
-| 4–5 | 11/04–05 | wire `flat_neighbours`, `gnn_interconnector` to real data | Arsen | results table has 5 rows |
-| 2–5 | 11/02–05 | heatwave slice, per-zone table, coupled-border edge list for F1 | Sophie-An | slice in `evaluate.py` |
-| 6 | 11/06 | `run_all.sh` with 3 seeds; λ = 1 spread-loss run; z-score ablation | Sasha | one command reproduces the table |
-| 6–7 | 11/06–07 | Milestone write-up: data, model, results, next steps | Sophie-An (lead), all | draft |
-| 8 | 11/08 | Review pass; fix what the results expose | all | |
-| 9 | 11/09 | Buffer | | |
-| | Tue 11/10 | **Submit** | | |
-
-## 7. Data adjustments needed
+## 6. Data adjustments needed
 
 None requires new downloads; the five parquets in `datasets/` are sufficient.
 
@@ -198,14 +180,14 @@ None requires new downloads; the five parquets in `datasets/` are sufficient.
 8. **JAO.** Not needed. Before adding constraint nodes: resolve the publication-time question (the final domain is published ~10:30 on D, after the cutoff), obtain shadow prices separately, download Jan–Sep 2025.
 9. **Availability caveat.** `IsAvailabilityVerified` is false for load and flows. The write-up states that inputs are archived historical versions, which may include later revisions.
 
-## 8. What the milestone write-up can claim
+## 7. What the milestone write-up can claim
 
 - A working spatio-temporal graph pipeline over 38 European bidding zones and 71 interconnectors, 2019–2025, with the information cutoff enforced in one file and checked by assertions.
 - First results on H1 (graph vs flat neighbour features) on 2022 validation and 2023–2025 test, with seed variance.
 - A spread-aware loss and the separation-event metric, with first numbers.
 - The constraint-node extension (H2) and per-zone weather (H3) as next steps, with the data issues already diagnosed.
 
-## 9. Check log
+## 8. Check log
 
 **Verified against the v1.1 parquets, 2026-11-01:**
 
@@ -222,12 +204,12 @@ None requires new downloads; the five parquets in `datasets/` are sufficient.
 
 1. UTC-day targets included 1–2 hours cleared by the auction on D, leaking the load forecast for those hours and making `naive_d1` use unpublished prices. → Targets moved to the CET market day; DST days dropped. (§2.3, §2.4, §3)
 2. Net import over the static edge set zeroed the flow feature for six zones before their cables existed. → Active edges only. (§2.4)
-3. No rule for null load forecasts. → `load_avail` + zero-fill + NaN assertion. (§2.4, §7)
+3. No rule for null load forecasts. → `load_avail` + zero-fill + NaN assertion. (§2.4, §6)
 4. `flat_neighbours` as a mean over GRU embeddings was a 1-hop GNN, not a flat baseline. → Raw neighbour-mean channels; embedding-mean kept as optional 3b. (§3)
 5. Flows publish up to 1 h after the hour. → Flow history ends at D-1 08:00 UTC. (§2.4)
 6. Reviewer thought ALEGrO and GR–IT-South were missing from the edge list. Checked: both are in the 68. DE-LU degree corrected to 11 (with NordLink). (§2.2)
 7. Spread metrics on inactive edges and non-coupled borders; spread loss in z-space. → Active edges; CH/RS excluded from F1; spread loss in EUR. (§3, §4)
-8. Train-fitted z-score puts 2022 at z ≈ 8–25. → `asinh(y/50)` default, z-score as ablation; day-4 gate loosened. (§2.5, §6)
-9. Column names not in the dataset docs. Partly moot (names come from the parquets, which are in `datasets/`); ERA5-latency caveat added. (§2.4, §7)
-10. Weather join was scheduled after the table that needs it. → Moved to day 1–2. (§6)
-11. Serial critical path, 36M-row flows read, single seed. → Stub `Data` for parallel model work; pyarrow pushdown; 3 seeds. (§3, §5, §6)
+8. Train-fitted z-score puts 2022 at z ≈ 8–25. → `asinh(y/50)` default, z-score as ablation. (§2.5)
+9. Column names not in the dataset docs. Partly moot (names come from the parquets, which are in `datasets/`); ERA5-latency caveat added. (§2.4, §6)
+10. Weather join was scheduled after the table that needs it. → Build it together with the training table.
+11. Serial critical path, 36M-row flows read, single seed. → Stub `Data` for parallel model work; pyarrow pushdown; 3 seeds. (§3, §5)
