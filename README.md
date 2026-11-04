@@ -15,9 +15,8 @@ cs_224w/
 ├── scripts/
 │   └── datasets.py          # pull / push / status for versioned datasets
 ├── epgnn/
-│   └── paths.py             # dataset_path(name, file): resolves datasets/<name>/<version>/<file>
-├── datasets/                # parquet files, pulled from GCS (gitignored)
-│   └── <dataset>/<version>/<file>      e.g. datasets/weather/v1.0/weather_hourly.parquet
+│   └── paths.py             # dataset_path(name, file): resolves datasets/<stem>_<version>.parquet
+├── datasets/                # parquet files, pulled from GCS (gitignored), e.g. weather_hourly_v1.0.parquet
 ├── docs/
 │   ├── milestone-plan.md    # what we build for the 11/10 milestone, and why
 │   └── datasets/            # one doc per dataset: schema, quality findings, caveats
@@ -51,22 +50,23 @@ gs://cs224w-epgnn-datasets/<dataset>/<version>/<file>
 
 The repo never commits the files. It commits [configs/datasets.json](configs/datasets.json), which says which version of each dataset the code expects and the checksum of each file. **A commit pins a manifest; the manifest pins the data.** Old versions are never deleted, so checking out any commit and running `pull` reproduces the data that commit was built on.
 
-Locally the layout mirrors the bucket, so `ls datasets/*` shows which versions you have:
+Locally the files are flat with the version appended, so `ls datasets/` shows which versions you have:
 
 ```
 datasets/
-├── entsoe_prices/v1.1/electricity_prices_hourly.parquet
-├── entsoe_load_forecast/v1.1/electricity_load_forecasts_hourly.parquet
-├── entsoe_physical_flows/v1.1/electricity_physical_flows_hourly.parquet
-└── weather/v1.0/weather_hourly.parquet
-                 weather_daily.parquet
+├── electricity_prices_hourly_v1.1.parquet
+├── electricity_load_forecasts_hourly_v1.1.parquet
+├── electricity_physical_flows_hourly_v1.1.parquet
+├── weather_hourly_v1.0.parquet
+└── weather_daily_v1.0.parquet
 ```
 
-Code never hardcodes these paths. It asks the manifest:
+Code never hardcodes these paths. It asks the manifest, using the version-free name:
 
 ```python
 from epgnn.paths import dataset_path
 prices = pd.read_parquet(dataset_path("entsoe_prices", "electricity_prices_hourly.parquet"))
+# -> datasets/electricity_prices_hourly_v1.1.parquet
 ```
 
 so bumping a version in the manifest is the only change needed. `dataset_path` raises if the file isn't pulled or isn't part of that dataset.
@@ -109,7 +109,7 @@ What happens:
 
 Conventions:
 
-- Filenames carry no version (`weather_hourly.parquet`, not `weather_hourly_v1.1.parquet`). The version lives in the bucket path and the manifest, so bumping a version never changes a path the code reads.
+- Filenames in the bucket and manifest carry no version (`weather_hourly.parquet`); `pull` appends it locally (`weather_hourly_v1.0.parquet`). Code goes through `dataset_path`, so bumping a version never changes a line of code.
 - Version strings are `vMAJOR.MINOR`. Bump MINOR for fixes to the same source (masking, patching); bump MAJOR for a change in scope or schema (new zones, new columns, different time range).
 - Write down what changed in the dataset's doc under `docs/datasets/` in the same commit.
 - Pushing needs `roles/storage.objectAdmin` on the bucket; pulling needs `roles/storage.objectViewer`.

@@ -2,7 +2,7 @@
 """Pull and push versioned datasets from the team GCS bucket.
 
 Layout in the bucket:   gs://<bucket>/<dataset>/<version>/<file>
-Layout on disk:         datasets/<dataset>/<version>/<file>   (mirrors the bucket)
+Layout on disk:         datasets/<stem>_<version>.<ext>       (flat, e.g. weather_hourly_v1.0.parquet)
 Manifest (tracked):     configs/datasets.json                 (which version of each dataset the code expects)
 
 Code resolves paths with `epgnn.paths.dataset_path(name, filename)`, never by hand.
@@ -55,7 +55,8 @@ def blob_path(name, version, filename):
 
 
 def local_path(name, version, filename):
-    return LOCAL / name / version / filename
+    p = Path(filename)
+    return LOCAL / f"{p.stem}_{version}{p.suffix}"
 
 
 def cmd_pull(args):
@@ -69,7 +70,7 @@ def cmd_pull(args):
             if dest.exists() and md5_b64(dest) == md5:
                 print(f"  ok      {name}/{ds['version']}/{filename}")
                 continue
-            dest.parent.mkdir(parents=True, exist_ok=True)
+            LOCAL.mkdir(exist_ok=True)
             blob = b.blob(blob_path(name, ds["version"], filename))
             print(f"  fetch   {name}/{ds['version']}/{filename} ...", end="", flush=True)
             blob.download_to_filename(dest)
@@ -110,12 +111,11 @@ def cmd_status(args):
             local = "missing" if not dest.exists() else ("ok" if md5_b64(dest) == md5 else "STALE")
             remote = "ok" if b.blob(blob_path(name, ds["version"], filename)).exists() else "MISSING"
             print(f"  {name:28s} {ds['version']:6s} {filename:50s} local={local:8s} bucket={remote}")
-    print("\nversions on disk (datasets/):")
-    for p in sorted(LOCAL.glob("*/v*")):
-        if p.is_dir():
-            cur = m["datasets"].get(p.parent.name, {}).get("version")
-            tag = "  <- manifest" if cur == p.name else "  (other version)"
-            print(f"  {p.parent.name}/{p.name}{tag}")
+    print("\nfiles on disk (datasets/):")
+    current = {local_path(n, ds["version"], f).name for n, ds in m["datasets"].items() for f in ds["files"]}
+    for p in sorted(LOCAL.glob("*.parquet")):
+        tag = "  <- manifest" if p.name in current else "  (other version)"
+        print(f"  {p.name}{tag}")
     print("\nversions in bucket:")
     seen = set()
     for blob in b.list_blobs():

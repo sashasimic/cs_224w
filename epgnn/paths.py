@@ -2,7 +2,9 @@
 
     from epgnn.paths import dataset_path
     prices = pd.read_parquet(dataset_path("entsoe_prices", "electricity_prices_hourly.parquet"))
-    weather_dir = dataset_path("weather")          # datasets/weather/v1.0
+    # -> datasets/electricity_prices_hourly_v1.1.parquet
+
+Filenames in the manifest are version-free; on disk the version is appended to the stem.
 """
 import json
 from functools import lru_cache
@@ -22,16 +24,14 @@ def dataset_version(name: str) -> str:
     return manifest()["datasets"][name]["version"]
 
 
-def dataset_path(name: str, filename: str | None = None) -> Path:
-    """Local path of a dataset directory, or of one file in it, at the manifest's version."""
+def dataset_path(name: str, filename: str) -> Path:
+    """Local path of one file of a dataset, at the manifest's version."""
     ds = manifest()["datasets"][name]
-    d = DATASETS / name / ds["version"]
-    if filename is None:
-        return d
     if filename not in ds["files"]:
         raise KeyError(f"{filename!r} is not a file of dataset {name!r} {ds['version']}; "
                        f"known: {sorted(ds['files'])}")
-    p = d / filename
+    f = Path(filename)
+    p = DATASETS / f"{f.stem}_{ds['version']}{f.suffix}"
     if not p.exists():
         raise FileNotFoundError(f"{p} missing; run scripts/datasets.py pull {name}")
     return p
