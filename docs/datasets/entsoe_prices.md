@@ -1,4 +1,26 @@
-# V1.x Data — Energy Prices
+# ENTSO-E day-ahead prices
+
+| | |
+|---|---|
+| Dataset id | `entsoe_prices` |
+| Pinned version | **v1.1** (see `configs/datasets.json`) |
+| Bucket | `gs://cs224w-epgnn-datasets/entsoe_prices/v1.1/` |
+| Local file(s) | `datasets/electricity_prices_hourly_v1.1.parquet` |
+| Source | ENTSO-E Transparency Platform, day-ahead prices, Jan 2016 – Sep 2025 |
+
+```python
+from epgnn.paths import dataset_path
+df = pd.read_parquet(dataset_path("entsoe_prices", "electricity_prices_hourly.parquet"))
+```
+
+Version history:
+
+| Version | What |
+|---|---|
+| v1.0 | first clean build: auction selection, currency conversion, hourly grid, gaps flagged (sections 1–5 below) |
+| v1.1 | 74 conflicts resolved, 4,115 placeholder prices masked, short gaps patched for inputs, `row_status`/`fix_*` columns (see *What changed in v1.1*) |
+
+---
 
 Source: ENTSO-E Transparency Platform, day-ahead prices. Archive: January 2016 – September 2025.
 

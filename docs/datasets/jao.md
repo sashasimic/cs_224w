@@ -1,4 +1,6 @@
-# JAO Dataset Guide
+# JAO flow-based constraints
+
+**Not yet in the bucket.** No `jao` dataset exists in `configs/datasets.json`; this guide describes the raw acquisition and what a future version must resolve (publication timing, shadow prices, 2025 coverage).
 
 Flow-based constraint data from the Joint Allocation Office (JAO), CWE and CORE regimes.
 

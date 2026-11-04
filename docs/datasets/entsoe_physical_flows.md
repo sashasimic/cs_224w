@@ -1,4 +1,26 @@
-# V1.0 Data — Physical Flows
+# ENTSO-E physical cross-border flows
+
+| | |
+|---|---|
+| Dataset id | `entsoe_physical_flows` |
+| Pinned version | **v1.1** (see `configs/datasets.json`) |
+| Bucket | `gs://cs224w-epgnn-datasets/entsoe_physical_flows/v1.1/` |
+| Local file(s) | `datasets/electricity_physical_flows_hourly_v1.1.parquet` |
+| Source | ENTSO-E Transparency Platform, `PhysicalFlows`, Jan 2016 – Sep 2025 |
+
+```python
+from epgnn.paths import dataset_path
+df = pd.read_parquet(dataset_path("entsoe_physical_flows", "electricity_physical_flows_hourly.parquet"))
+```
+
+Version history:
+
+| Version | What |
+|---|---|
+| v1.0 | first clean build: hourly averaging, both directions kept, zeros kept |
+| v1.1 | short gaps patched for inputs, `FlowMW_input` and `row_status`/`fix_*` columns |
+
+---
 
 Source: ENTSO-E Transparency Platform, `PhysicalFlows`. Archive: January 2016 – September 2025.
 

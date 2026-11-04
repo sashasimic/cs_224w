@@ -71,12 +71,12 @@ so bumping a version in the manifest is the only change needed. `dataset_path` r
 
 | Dataset | Version | Contents | Doc |
 |---|---|---|---|
-| `entsoe_prices` | v1.1 | hourly day-ahead prices, 61 areas, Jan 2016 – Sep 2025 | [docs/datasets/data-energy-prices.md](docs/datasets/data-energy-prices.md) |
-| `entsoe_load_forecast` | v1.1 | hourly day-ahead load forecast, 68 areas | [docs/datasets/data-load-forecast.md](docs/datasets/data-load-forecast.md) |
-| `entsoe_physical_flows` | v1.1 | hourly cross-border flows, 426 directed pairs | [docs/datasets/data-physical-flows.md](docs/datasets/data-physical-flows.md) |
-| `weather` | v1.0 | PECD/ERA5 hourly and daily weather, 38 country codes, 1991 – 2026 | [docs/datasets/data-weather-hazards.md](docs/datasets/data-weather-hazards.md) |
+| `entsoe_prices` | v1.1 | hourly day-ahead prices, 61 areas, Jan 2016 – Sep 2025 | [docs/datasets/entsoe_prices.md](docs/datasets/entsoe_prices.md) |
+| `entsoe_load_forecast` | v1.1 | hourly day-ahead load forecast, 68 areas | [docs/datasets/entsoe_load_forecast.md](docs/datasets/entsoe_load_forecast.md) |
+| `entsoe_physical_flows` | v1.1 | hourly cross-border flows, 426 directed pairs | [docs/datasets/entsoe_physical_flows.md](docs/datasets/entsoe_physical_flows.md) |
+| `weather` | v1.0 | PECD/ERA5 hourly and daily weather, 38 country codes, 1991 – 2026 | [docs/datasets/weather.md](docs/datasets/weather.md) |
 
-JAO flow-based constraint data is documented in [docs/datasets/jao-dataset-guide.md](docs/datasets/jao-dataset-guide.md) but not yet in the bucket.
+JAO flow-based constraint data is documented in [docs/datasets/jao.md](docs/datasets/jao.md) but not yet in the bucket.
 
 ### Pulling data
 
@@ -115,7 +115,7 @@ Conventions:
 
 - Filenames in the bucket and manifest carry no version (`weather_hourly.parquet`); `pull` appends it locally (`weather_hourly_v1.0.parquet`). Code goes through `dataset_path`, so bumping a version never changes a line of code.
 - Version strings are `vMAJOR.MINOR`. Bump MINOR for fixes to the same source (masking, patching); bump MAJOR for a change in scope or schema (new zones, new columns, different time range).
-- Write down what changed in the dataset's doc under `docs/datasets/` in the same commit.
+- Each dataset has a doc at `docs/datasets/<dataset id>.md` whose header states the pinned version, bucket path and local filename, followed by a version history. Update the header and add a history row in the same commit as the manifest bump.
 - Pushing needs `roles/storage.objectAdmin` on the bucket; pulling needs `roles/storage.objectViewer`.
 
 ### Giving someone access

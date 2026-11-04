@@ -172,7 +172,7 @@ None requires new downloads; the five parquets in `datasets/` are sufficient.
 
 1. **Zone mapping file.** The three ENTSO-E tables use identical `AreaCode`s for all 38 zones (verified). `build_table.py` filters on `AreaCode`, so the load table's country and control-area rows are ignored automatically.
 2. **Weather country mapping.** `weather_hourly.zone` is a country code: NO1–5 → `NO`, SE1–4 → `SE`, DK1/DK2 → `DK`, IT-* → `IT`, DE-LU → `DE` (the weather doc says DE and LU were merged), everything else → its own code. All 38 map to a code present in the file (verified). Nordic and Italian zones share weather for now; fix later by removing the country-merge step in the weather pipeline and re-running per bidding zone.
-3. **Weather columns.** The delivered `weather_hourly.parquet` has a single `wind_cf` and `solar_cf` (the doc describes rooftop/utility and onshore/offshore variants that were combined). Column names in this plan come from the parquets, not the docs; `docs/datasets/data-weather-hazards.md` should get the delivered schema added.
+3. **Weather columns.** The delivered `weather_hourly.parquet` has a single `wind_cf` and `solar_cf` (the doc describes rooftop/utility and onshore/offshore variants that were combined). Column names in this plan come from the parquets, not the docs; `docs/datasets/weather.md` should get the delivered schema added.
 4. **Weather daily 2026-10-01 row.** Outside the study period; filter by date.
 5. **Use `_input` columns for history**, `PriceEUR` + `IsValidTarget` for targets. Never let a filled value become a target.
 6. **Load-forecast gaps > 48 h** are null in `LoadForecastMW_input` (EE 2022 ≈ 290 h; DE-LU 2022 = 48 h). Handled by `load_avail` + zero-fill in `build_table.py`.
