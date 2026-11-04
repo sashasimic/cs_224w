@@ -10,6 +10,7 @@
 # Python
 __pycache__/
 *.py[cod]
+.mypy_cache/
 .venv/
 venv/
 .ipynb_checkpoints/

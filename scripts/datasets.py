@@ -54,7 +54,7 @@ def blob_path(name, version, filename):
     return f"{name}/{version}/{filename}"
 
 
-def local_path(name, version, filename):
+def local_path(version, filename):
     p = Path(filename)
     return LOCAL / f"{p.stem}_{version}{p.suffix}"
 
@@ -66,7 +66,7 @@ def cmd_pull(args):
     for name in names:
         ds = m["datasets"][name]
         for filename, md5 in ds["files"].items():
-            dest = local_path(name, ds["version"], filename)
+            dest = local_path(ds["version"], filename)
             if dest.exists() and md5_b64(dest) == md5:
                 print(f"  ok      {name}/{ds['version']}/{filename}")
                 continue
@@ -102,17 +102,17 @@ def cmd_push(args):
     print(f"manifest updated: {args.dataset} -> {args.version}")
 
 
-def cmd_status(args):
+def cmd_status():
     m = load_manifest()
     b = bucket(m)
     for name, ds in m["datasets"].items():
         for filename, md5 in ds["files"].items():
-            dest = local_path(name, ds["version"], filename)
+            dest = local_path(ds["version"], filename)
             local = "missing" if not dest.exists() else ("ok" if md5_b64(dest) == md5 else "STALE")
             remote = "ok" if b.blob(blob_path(name, ds["version"], filename)).exists() else "MISSING"
             print(f"  {name:28s} {ds['version']:6s} {filename:50s} local={local:8s} bucket={remote}")
     print("\nfiles on disk (datasets/):")
-    current = {local_path(n, ds["version"], f).name for n, ds in m["datasets"].items() for f in ds["files"]}
+    current = {local_path(ds["version"], f).name for ds in m["datasets"].values() for f in ds["files"]}
     for p in sorted(LOCAL.glob("*.parquet")):
         tag = "  <- manifest" if p.name in current else "  (other version)"
         print(f"  {p.name}{tag}")
@@ -131,7 +131,7 @@ def main():
     p = sub.add_parser("pull"); p.add_argument("dataset", nargs="?"); p.set_defaults(fn=cmd_pull)
     p = sub.add_parser("push"); p.add_argument("dataset"); p.add_argument("version"); p.add_argument("files", nargs="+")
     p.add_argument("--force", action="store_true"); p.set_defaults(fn=cmd_push)
-    p = sub.add_parser("status"); p.set_defaults(fn=cmd_status)
+    p = sub.add_parser("status"); p.set_defaults(fn=lambda _: cmd_status())
     args = ap.parse_args()
     args.fn(args)
 

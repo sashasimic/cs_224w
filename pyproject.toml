@@ -1,0 +1,19 @@
+[project]
+name = "epgnn"
+version = "0.0.1"
+description = "Spatio-temporal GNN for European day-ahead electricity prices (CS224W)"
+requires-python = ">=3.10"
+dependencies = [
+  "pandas",
+  "pyarrow",
+  "google-cloud-storage",
+]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["epgnn", "scripts"]
+
+# google-cloud-storage ships neither stubs nor a py.typed marker.
+[[tool.mypy.overrides]]
+module = "google.cloud.*"
+ignore_missing_imports = true
