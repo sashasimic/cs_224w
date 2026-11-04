@@ -5,26 +5,41 @@
     "entsoe_prices": {
       "version": "v1.1",
       "files": {
-        "electricity_prices_hourly.parquet": "3jcE9TQ/sN2KacRTBT5VPw=="
+        "electricity_prices_hourly.parquet": {
+          "md5": "3jcE9TQ/sN2KacRTBT5VPw==",
+          "size": 43266254
+        }
       }
     },
     "entsoe_load_forecast": {
       "version": "v1.1",
       "files": {
-        "electricity_load_forecasts_hourly.parquet": "XSA/BKMbk9nAe4L6cOerCA=="
+        "electricity_load_forecasts_hourly.parquet": {
+          "md5": "XSA/BKMbk9nAe4L6cOerCA==",
+          "size": 58910488
+        }
       }
     },
     "entsoe_physical_flows": {
       "version": "v1.1",
       "files": {
-        "electricity_physical_flows_hourly.parquet": "36wVTQLCscnLbk2r1+Y3NA=="
+        "electricity_physical_flows_hourly.parquet": {
+          "md5": "36wVTQLCscnLbk2r1+Y3NA==",
+          "size": 324817826
+        }
       }
     },
     "weather": {
       "version": "v1.0",
       "files": {
-        "weather_hourly.parquet": "SR0EP0VBV4mx5Yg8XftPbg==",
-        "weather_daily.parquet": "xzuSGOa/OPNxDf4WOAoOHQ=="
+        "weather_hourly.parquet": {
+          "md5": "SR0EP0VBV4mx5Yg8XftPbg==",
+          "size": 170883241
+        },
+        "weather_daily.parquet": {
+          "md5": "xzuSGOa/OPNxDf4WOAoOHQ==",
+          "size": 24187915
+        }
       }
     }
   }

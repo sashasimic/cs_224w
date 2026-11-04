@@ -83,12 +83,18 @@ JAO flow-based constraint data is documented in [docs/datasets/jao-dataset-guide
 ### Pulling data
 
 ```bash
-scripts/datasets.py pull              # everything in the manifest → datasets/
-scripts/datasets.py pull weather      # one dataset
-scripts/datasets.py status            # local vs manifest vs bucket; lists every version in the bucket
+scripts/datasets.py pull                  # every dataset at the version the manifest pins
+scripts/datasets.py pull weather          # one dataset
+scripts/datasets.py pull weather@v1.0     # a specific version; manifest untouched
+scripts/datasets.py pull --latest         # newest version in the bucket, for every dataset
+scripts/datasets.py pull --latest --pin   # ...and write those versions into the manifest
+scripts/datasets.py pull --prune          # also delete local copies of other versions
+scripts/datasets.py status                # local vs manifest vs bucket
 ```
 
-`pull` skips files already present with the right checksum, so run it after every `git pull`; if someone bumped a version in the manifest, you get the new file, otherwise it's a no-op.
+`pull` never re-downloads a file that is already on disk with the expected size, so it costs nothing to run after every `git pull`: if someone bumped a version in the manifest you get the new file, otherwise it's a no-op. Pass `--verify` to MD5-check local files too (slow, reads every file). Downloads are always MD5-checked.
+
+Only one version of each dataset is pulled at a time. Pulling a different version adds a second local file (`weather_hourly_v1.1.parquet` next to `_v1.0`); `--prune` removes the one the command didn't ask for.
 
 ### Pushing a new version
 
