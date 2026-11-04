@@ -2,8 +2,10 @@
 """Pull and push versioned datasets from the team GCS bucket.
 
 Layout in the bucket:   gs://<bucket>/<dataset>/<version>/<file>
-Layout on disk:         datasets/<file>            (flat, what the code reads)
-Manifest (tracked):     configs/datasets.json      (which version of each dataset the code expects)
+Layout on disk:         datasets/<dataset>/<version>/<file>   (mirrors the bucket)
+Manifest (tracked):     configs/datasets.json                 (which version of each dataset the code expects)
+
+Code resolves paths with `epgnn.paths.dataset_path(name, filename)`, never by hand.
 
 Usage:
     scripts/datasets.py pull                       # download everything in the manifest
@@ -52,18 +54,22 @@ def blob_path(name, version, filename):
     return f"{name}/{version}/{filename}"
 
 
+def local_path(name, version, filename):
+    return LOCAL / name / version / filename
+
+
 def cmd_pull(args):
     m = load_manifest()
     b = bucket(m)
-    LOCAL.mkdir(exist_ok=True)
     names = [args.dataset] if args.dataset else list(m["datasets"])
     for name in names:
         ds = m["datasets"][name]
         for filename, md5 in ds["files"].items():
-            dest = LOCAL / filename
+            dest = local_path(name, ds["version"], filename)
             if dest.exists() and md5_b64(dest) == md5:
                 print(f"  ok      {name}/{ds['version']}/{filename}")
                 continue
+            dest.parent.mkdir(parents=True, exist_ok=True)
             blob = b.blob(blob_path(name, ds["version"], filename))
             print(f"  fetch   {name}/{ds['version']}/{filename} ...", end="", flush=True)
             blob.download_to_filename(dest)
@@ -100,10 +106,16 @@ def cmd_status(args):
     b = bucket(m)
     for name, ds in m["datasets"].items():
         for filename, md5 in ds["files"].items():
-            dest = LOCAL / filename
+            dest = local_path(name, ds["version"], filename)
             local = "missing" if not dest.exists() else ("ok" if md5_b64(dest) == md5 else "STALE")
             remote = "ok" if b.blob(blob_path(name, ds["version"], filename)).exists() else "MISSING"
             print(f"  {name:28s} {ds['version']:6s} {filename:50s} local={local:8s} bucket={remote}")
+    print("\nversions on disk (datasets/):")
+    for p in sorted(LOCAL.glob("*/v*")):
+        if p.is_dir():
+            cur = m["datasets"].get(p.parent.name, {}).get("version")
+            tag = "  <- manifest" if cur == p.name else "  (other version)"
+            print(f"  {p.parent.name}/{p.name}{tag}")
     print("\nversions in bucket:")
     seen = set()
     for blob in b.list_blobs():

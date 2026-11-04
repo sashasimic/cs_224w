@@ -14,7 +14,10 @@ cs_224w/
 │   └── datasets.json        # which dataset versions the code expects (tracked)
 ├── scripts/
 │   └── datasets.py          # pull / push / status for versioned datasets
+├── epgnn/
+│   └── paths.py             # dataset_path(name, file): resolves datasets/<name>/<version>/<file>
 ├── datasets/                # parquet files, pulled from GCS (gitignored)
+│   └── <dataset>/<version>/<file>      e.g. datasets/weather/v1.0/weather_hourly.parquet
 ├── docs/
 │   ├── milestone-plan.md    # what we build for the 11/10 milestone, and why
 │   └── datasets/            # one doc per dataset: schema, quality findings, caveats
@@ -47,6 +50,26 @@ gs://cs224w-epgnn-datasets/<dataset>/<version>/<file>
 ```
 
 The repo never commits the files. It commits [configs/datasets.json](configs/datasets.json), which says which version of each dataset the code expects and the checksum of each file. **A commit pins a manifest; the manifest pins the data.** Old versions are never deleted, so checking out any commit and running `pull` reproduces the data that commit was built on.
+
+Locally the layout mirrors the bucket, so `ls datasets/*` shows which versions you have:
+
+```
+datasets/
+├── entsoe_prices/v1.1/electricity_prices_hourly.parquet
+├── entsoe_load_forecast/v1.1/electricity_load_forecasts_hourly.parquet
+├── entsoe_physical_flows/v1.1/electricity_physical_flows_hourly.parquet
+└── weather/v1.0/weather_hourly.parquet
+                 weather_daily.parquet
+```
+
+Code never hardcodes these paths. It asks the manifest:
+
+```python
+from epgnn.paths import dataset_path
+prices = pd.read_parquet(dataset_path("entsoe_prices", "electricity_prices_hourly.parquet"))
+```
+
+so bumping a version in the manifest is the only change needed. `dataset_path` raises if the file isn't pulled or isn't part of that dataset.
 
 | Dataset | Version | Contents | Doc |
 |---|---|---|---|
