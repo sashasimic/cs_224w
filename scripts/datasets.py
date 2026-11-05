@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Pull and push versioned datasets from the team GCS bucket.
 
-Layout in the bucket:   gs://<bucket>/<dataset>/<version>/<file>
-Layout on disk:         datasets/<stem>_<version>.<ext>       (flat, e.g. weather_hourly_v1.0.parquet)
-Manifest (tracked):     configs/datasets.json                 (which version of each dataset the code expects)
+A dataset version is its data file(s) plus its doc, <dataset>.md, stored and pulled together.
+
+Layout in the bucket:   gs://<bucket>/<dataset>/<version>/<file>      data files and <dataset>.md
+Layout on disk:         datasets/<stem>_<version>.<ext>              e.g. weather_hourly_v1.0.parquet, weather_v1.0.md
+Staging for push:       staging/<dataset>/<file>                     data files and <dataset>.md, unversioned names
+Manifest (tracked):     configs/datasets.json                        which version of each dataset the code expects
 
 Code resolves paths with `epgnn.paths.dataset_path(name, filename)`, never by hand.
 
@@ -15,14 +18,15 @@ Usage:
     scripts/datasets.py pull --latest --pin      # ...and write those versions into the manifest
     scripts/datasets.py pull --prune             # also delete local copies of other versions
     scripts/datasets.py pull --verify            # md5-check local files instead of trusting size
-    scripts/datasets.py push weather v1.1 path/to/weather_hourly.parquet path/to/weather_daily.parquet
+    scripts/datasets.py push weather v1.1        # upload everything in staging/weather/ as weather/v1.1
     scripts/datasets.py status                   # local vs manifest vs bucket
 
 A file already on disk with the expected size is not downloaded again.
 
-`push` refuses unless docs/datasets/<dataset>.md has a version-history row for the new
-version (the human-written "what changed"). It then rewrites the mechanical header lines
-(pinned version, bucket path, local filenames) itself.
+`push` refuses unless staging/<dataset>/<dataset>.md exists and has a version-history row
+for the new version (the human-written "what changed"). It rewrites the mechanical header
+lines (version, bucket path, local filenames), uploads, updates the manifest, and copies the
+staged files into datasets/ under their versioned names.
 
 Auth: `gcloud auth application-default login` once per machine.
 """
@@ -31,6 +35,7 @@ import base64
 import hashlib
 import json
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -39,7 +44,7 @@ from google.cloud import storage
 ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "configs" / "datasets.json"
 LOCAL = ROOT / "datasets"
-DOCS = ROOT / "docs" / "datasets"
+STAGING = ROOT / "staging"
 
 
 # ---------------------------------------------------------------- helpers
@@ -131,9 +136,9 @@ DOC_TEMPLATE = """# <title>
 | | |
 |---|---|
 | Dataset id | `{name}` |
-| Pinned version | **{version}** (see `configs/datasets.json`) |
+| Version | **{version}** |
 | Bucket | `gs://<bucket>/{name}/{version}/` |
-| Local file(s) | `datasets/<file>_{version}.parquet` |
+| Local file(s) | `datasets/<file>_{version}.parquet`, `datasets/{name}_{version}.md` |
 | Source | <where the data comes from, period covered> |
 
 ```python
@@ -153,27 +158,34 @@ Version history:
 """
 
 
-def check_doc(name, version):
-    """Refuse the push unless the dataset doc has a history row for this version."""
-    doc = DOCS / f"{name}.md"
-    if not doc.exists():
-        sys.exit(f"no doc for dataset {name!r}. Create {doc.relative_to(ROOT)} first; template:\n\n"
+def staged_files(name, version):
+    """Files in staging/<name>/: the doc must be present; returns {filename: path}."""
+    d = STAGING / name
+    files = {p.name: p for p in sorted(d.iterdir()) if p.is_file() and not p.name.startswith(".")} if d.exists() else {}
+    doc_name = f"{name}.md"
+    if doc_name not in files:
+        sys.exit(f"staging/{name}/{doc_name} is missing. Put the data file(s) and the doc there; doc template:\n\n"
                  + DOC_TEMPLATE.format(name=name, version=version))
-    text = doc.read_text()
-    if not re.search(rf"^\|\s*{re.escape(version)}\s*\|", text, re.M):
+    if len(files) == 1:
+        sys.exit(f"staging/{name}/ has only the doc; add the data file(s).")
+    return files
+
+
+def check_doc(doc, version):
+    """Refuse the push unless the doc has a history row for this version."""
+    if not re.search(rf"^\|\s*{re.escape(version)}\s*\|", doc.read_text(), re.M):
         sys.exit(f"{doc.relative_to(ROOT)} has no version-history row for {version}.\n"
                  f"Add a line like   | {version} | <what changed> |   under 'Version history', then push again.")
-    return doc
 
 
 def update_doc_header(doc, name, version, files, bucket_name):
-    """Rewrite the mechanical header lines so they match the manifest."""
+    """Rewrite the mechanical header lines so they match what is being pushed."""
     text = doc.read_text()
     local = ", ".join(f"`datasets/{Path(f).stem}_{version}{Path(f).suffix}`" for f in files)
     subs = {
-        r"^\| Pinned version \|.*$": f"| Pinned version | **{version}** (see `configs/datasets.json`) |",
-        r"^\| Bucket \|.*$":         f"| Bucket | `gs://{bucket_name}/{name}/{version}/` |",
-        r"^\| Local file\(s\) \|.*$": f"| Local file(s) | {local} |",
+        r"^\| (?:Pinned v|V)ersion \|.*$": f"| Version | **{version}** |",
+        r"^\| Bucket \|.*$":              f"| Bucket | `gs://{bucket_name}/{name}/{version}/` |",
+        r"^\| Local file\(s\) \|.*$":     f"| Local file(s) | {local} |",
     }
     for pattern, line in subs.items():
         text, n = re.subn(pattern, line, text, count=1, flags=re.M)
@@ -225,27 +237,36 @@ def cmd_pull(args):
 
 
 def cmd_push(args):
+    name, version = args.dataset, args.version
     m = load_manifest()
-    doc = check_doc(args.dataset, args.version)
+    staged = staged_files(name, version)
+    doc = staged[f"{name}.md"]
+    check_doc(doc, version)
     b = bucket(m)
+    if not args.force:
+        for filename in staged:
+            if b.blob(blob_path(name, version, filename)).exists():
+                sys.exit(f"already in bucket: {name}/{version}/{filename} (use --force to overwrite)")
+    update_doc_header(doc, name, version, list(staged), m["bucket"])
+
     files = {}
-    for p in args.files:
-        p = Path(p)
-        if not p.exists():
-            sys.exit(f"missing: {p}")
-        blob = b.blob(blob_path(args.dataset, args.version, p.name))
-        if blob.exists() and not args.force:
-            sys.exit(f"already in bucket: {blob.name} (use --force to overwrite)")
+    for filename, p in staged.items():
+        blob = b.blob(blob_path(name, version, filename))
         print(f"  upload  {blob.name} ...", end="", flush=True)
         blob.upload_from_filename(str(p))
         blob.reload()
-        files[p.name] = {"md5": blob.md5_hash, "size": blob.size}
+        files[filename] = {"md5": blob.md5_hash, "size": blob.size}
         print(" done")
-    m["datasets"][args.dataset] = {"version": args.version, "files": files}
+    m["datasets"][name] = {"version": version, "files": files}
     save_manifest(m)
-    update_doc_header(doc, args.dataset, args.version, files, m["bucket"])
-    print(f"manifest and {doc.relative_to(ROOT)} updated: {args.dataset} -> {args.version}")
-    print(f"next: git add configs/datasets.json {doc.relative_to(ROOT)} && git commit")
+
+    LOCAL.mkdir(exist_ok=True)
+    for filename, p in staged.items():
+        dest = local_path(version, filename)
+        shutil.copyfile(p, dest)
+        print(f"  local   {dest.relative_to(ROOT)}")
+    print(f"manifest updated: {name} -> {version}")
+    print(f"next: git add configs/datasets.json && git commit    (staging/{name}/ can be deleted)")
 
 
 def cmd_status():
@@ -266,7 +287,7 @@ def cmd_status():
 
     print("\non disk (datasets/):")
     current = {local_path(ds["version"], f).name for ds in m["datasets"].values() for f in ds["files"]}
-    for p in sorted(LOCAL.glob("*.parquet")) if LOCAL.exists() else []:
+    for p in sorted(LOCAL.glob("*_v*.*")) if LOCAL.exists() else []:
         tag = "<- manifest" if p.name in current else "(other version; pull --prune removes)"
         print(f"  {p.name:52s} {tag}")
 
@@ -290,9 +311,9 @@ def main():
     p.add_argument("--verify", action="store_true", help="md5-check files already on disk")
     p.set_defaults(fn=cmd_pull)
 
-    p = sub.add_parser("push", help="upload a new dataset version")
-    p.add_argument("dataset"); p.add_argument("version"); p.add_argument("files", nargs="+")
-    p.add_argument("--force", action="store_true")
+    p = sub.add_parser("push", help="upload staging/<dataset>/ as a new dataset version")
+    p.add_argument("dataset"); p.add_argument("version")
+    p.add_argument("--force", action="store_true", help="overwrite a version that already exists in the bucket")
     p.set_defaults(fn=cmd_push)
 
     p = sub.add_parser("status", help="local vs manifest vs bucket")

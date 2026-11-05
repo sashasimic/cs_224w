@@ -1,5 +1,7 @@
-# Data (large parquet files, pulled from GCS via scripts/datasets.py)
+# Data and its docs, pulled from GCS via scripts/datasets.py
 /datasets/
+# Files waiting to be pushed with scripts/datasets.py push
+/staging/
 
 # Course lecture notes (course material, not for redistribution)
 /lectures/

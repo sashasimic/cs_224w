@@ -8,6 +8,10 @@
         "electricity_prices_hourly.parquet": {
           "md5": "3jcE9TQ/sN2KacRTBT5VPw==",
           "size": 43266254
+        },
+        "entsoe_prices.md": {
+          "md5": "TVn0CGwkSWjfQZb+vZhpvg==",
+          "size": 25860
         }
       }
     },
@@ -17,6 +21,10 @@
         "electricity_load_forecasts_hourly.parquet": {
           "md5": "XSA/BKMbk9nAe4L6cOerCA==",
           "size": 58910488
+        },
+        "entsoe_load_forecast.md": {
+          "md5": "hRmHzE5QA6u5mFe1hRd1kg==",
+          "size": 17909
         }
       }
     },
@@ -26,6 +34,10 @@
         "electricity_physical_flows_hourly.parquet": {
           "md5": "36wVTQLCscnLbk2r1+Y3NA==",
           "size": 324817826
+        },
+        "entsoe_physical_flows.md": {
+          "md5": "wkBwuIDSM/aW3PSr7kR/Qg==",
+          "size": 18304
         }
       }
     },
@@ -39,6 +51,10 @@
         "weather_daily.parquet": {
           "md5": "xzuSGOa/OPNxDf4WOAoOHQ==",
           "size": 24187915
+        },
+        "weather.md": {
+          "md5": "b+xhQQnXXr46SzYID4bP5w==",
+          "size": 5701
         }
       }
     }

@@ -13,11 +13,13 @@ cs_224w/
 ├── scripts/
 │   └── datasets.py          # pull / push / status for versioned datasets
 ├── epgnn/
-│   └── paths.py             # dataset_path(name, file): resolves datasets/<stem>_<version>.parquet
-├── datasets/                # parquet files, pulled from GCS (gitignored), e.g. weather_hourly_v1.0.parquet
+│   └── paths.py             # dataset_path(name, file): resolves datasets/<stem>_<version>.<ext>
+├── datasets/                # pulled from GCS (gitignored): data files AND their docs,
+│                            #   e.g. weather_hourly_v1.0.parquet, weather_v1.0.md
+├── staging/                 # drop files here to push a new dataset version (gitignored)
 ├── docs/
 │   ├── milestone-plan.md    # what we build for the 11/10 milestone, and why
-│   └── datasets/            # one doc per dataset: schema, quality findings, caveats
+│   └── jao.md               # guide to the JAO constraint data (not yet a dataset)
 └── lectures/                # course notes and the proposal (gitignored, course material)
 ```
 
@@ -46,16 +48,18 @@ The parquet files live in `gs://cs224w-epgnn-datasets` (GCP project `cs224w-epgn
 gs://cs224w-epgnn-datasets/<dataset>/<version>/<file>
 ```
 
+A dataset version is its data file(s) **plus its doc**, `<dataset>.md`: schema, quality findings, caveats, version history. They are stored together and pulled together, so the doc you read always describes the data you have.
+
 The repo never commits the files. It commits [configs/datasets.json](configs/datasets.json), which says which version of each dataset the code expects and the checksum of each file. **A commit pins a manifest; the manifest pins the data.** Old versions are never deleted, so checking out any commit and running `pull` reproduces the data that commit was built on.
 
 Locally the files are flat with the version appended, so `ls datasets/` shows which versions you have:
 
 ```
 datasets/
-├── electricity_prices_hourly_v1.1.parquet
-├── electricity_load_forecasts_hourly_v1.1.parquet
-├── electricity_physical_flows_hourly_v1.1.parquet
-├── weather_hourly_v1.0.parquet
+├── electricity_prices_hourly_v1.1.parquet        entsoe_prices_v1.1.md
+├── electricity_load_forecasts_hourly_v1.1.parquet entsoe_load_forecast_v1.1.md
+├── electricity_physical_flows_hourly_v1.1.parquet entsoe_physical_flows_v1.1.md
+├── weather_hourly_v1.0.parquet                   weather_v1.0.md
 └── weather_daily_v1.0.parquet
 ```
 
@@ -69,14 +73,14 @@ prices = pd.read_parquet(dataset_path("entsoe_prices", "electricity_prices_hourl
 
 so bumping a version in the manifest is the only change needed. `dataset_path` raises if the file isn't pulled or isn't part of that dataset.
 
-| Dataset | Version | Contents | Doc |
+| Dataset | Version | Contents | Doc (after `pull`) |
 |---|---|---|---|
-| `entsoe_prices` | v1.1 | hourly day-ahead prices, 61 areas, Jan 2016 – Sep 2025 | [docs/datasets/entsoe_prices.md](docs/datasets/entsoe_prices.md) |
-| `entsoe_load_forecast` | v1.1 | hourly day-ahead load forecast, 68 areas | [docs/datasets/entsoe_load_forecast.md](docs/datasets/entsoe_load_forecast.md) |
-| `entsoe_physical_flows` | v1.1 | hourly cross-border flows, 426 directed pairs | [docs/datasets/entsoe_physical_flows.md](docs/datasets/entsoe_physical_flows.md) |
-| `weather` | v1.0 | PECD/ERA5 hourly and daily weather, 38 country codes, 1991 – 2026 | [docs/datasets/weather.md](docs/datasets/weather.md) |
+| `entsoe_prices` | v1.1 | hourly day-ahead prices, 61 areas, Jan 2016 – Sep 2025 | `datasets/entsoe_prices_v1.1.md` |
+| `entsoe_load_forecast` | v1.1 | hourly day-ahead load forecast, 68 areas | `datasets/entsoe_load_forecast_v1.1.md` |
+| `entsoe_physical_flows` | v1.1 | hourly cross-border flows, 426 directed pairs | `datasets/entsoe_physical_flows_v1.1.md` |
+| `weather` | v1.0 | PECD/ERA5 hourly and daily weather, 38 country codes, 1991 – 2026 | `datasets/weather_v1.0.md` |
 
-JAO flow-based constraint data is documented in [docs/datasets/jao.md](docs/datasets/jao.md) but not yet in the bucket.
+JAO flow-based constraint data is described in [docs/jao.md](docs/jao.md) but is not yet a dataset in the bucket.
 
 ### Pulling data
 
@@ -99,29 +103,34 @@ Only one version of each dataset is pulled at a time. Pulling a different versio
 When you have a new build of a dataset, for example weather at per-bidding-zone resolution:
 
 ```bash
-# 1. say what changed: add a row to the version-history table in docs/datasets/weather.md
-#      | v1.1 | per-bidding-zone resolution for DK, IT, NO, SE |
+# 1. stage the data file(s) and the doc, with unversioned names
+staging/weather/
+├── weather_hourly.parquet
+├── weather_daily.parquet
+└── weather.md            # start from datasets/weather_v1.0.md; add a version-history row:
+                          #   | v1.1 | per-bidding-zone resolution for DK, IT, NO, SE |
 # 2. push
-scripts/datasets.py push weather v1.1 path/to/weather_hourly.parquet path/to/weather_daily.parquet
-# 3. commit the manifest and the doc together
-git add configs/datasets.json docs/datasets/weather.md
+scripts/datasets.py push weather v1.1
+# 3. commit the manifest
+git add configs/datasets.json
 git commit -m "weather v1.1: per-bidding-zone resolution"
 git push
 ```
 
 What `push` does:
 
-1. **Refuses unless the doc has a history row for the new version.** This is the only thing you write by hand: one line saying what changed. Without it the push stops before uploading anything. For a brand-new dataset with no doc yet, it prints a template to start from.
-2. Uploads to `weather/v1.1/`. It won't overwrite a version that already exists (`--force` to override; object versioning on the bucket means even that is recoverable).
-3. Updates `configs/datasets.json` with the new version, checksums and sizes.
-4. Rewrites the mechanical header lines of the doc (pinned version, bucket path, local filenames) so they can't go stale.
-5. Teammates get the new data on their next `git pull && scripts/datasets.py pull`.
+1. **Refuses unless `staging/weather/weather.md` exists and has a history row for the new version.** This is the only thing you write by hand: one line saying what changed. Without it the push stops before uploading anything. For a brand-new dataset it prints a doc template to start from.
+2. Rewrites the mechanical header lines of the doc (version, bucket path, local filenames) so they can't go stale.
+3. Uploads everything in `staging/weather/` to `weather/v1.1/`. It won't overwrite a version that already exists (`--force` to override; object versioning on the bucket means even that is recoverable).
+4. Updates `configs/datasets.json` with the new version, checksums and sizes.
+5. Copies the staged files into `datasets/` under their versioned names, so you don't re-download what you just uploaded. `staging/weather/` can then be deleted.
+6. Teammates get the new data and doc on their next `git pull && scripts/datasets.py pull`.
 
 Conventions:
 
-- Filenames in the bucket and manifest carry no version (`weather_hourly.parquet`); `pull` appends it locally (`weather_hourly_v1.0.parquet`). Code goes through `dataset_path`, so bumping a version never changes a line of code.
+- Filenames in the bucket, manifest and staging carry no version (`weather_hourly.parquet`); `pull` appends it locally (`weather_hourly_v1.0.parquet`). Code goes through `dataset_path`, so bumping a version never changes a line of code.
 - Version strings are `vMAJOR.MINOR`. Bump MINOR for fixes to the same source (masking, patching); bump MAJOR for a change in scope or schema (new zones, new columns, different time range).
-- Each dataset has a doc at `docs/datasets/<dataset id>.md`: a header (maintained by `push`), a version-history table (maintained by you), then schema, quality findings and caveats.
+- The doc is named `<dataset id>.md` and is part of every version: a header (maintained by `push`), a version-history table (maintained by you, cumulative), then schema, quality findings and caveats.
 - Pushing needs `roles/storage.objectAdmin` on the bucket; pulling needs `roles/storage.objectViewer`.
 
 ### Giving someone access
