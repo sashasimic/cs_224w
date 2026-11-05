@@ -5,12 +5,12 @@
 | Dataset id | `entsoe_physical_flows` |
 | Version | **v1.1** |
 | Bucket | `gs://cs224w-epgnn-datasets/entsoe_physical_flows/v1.1/` |
-| Local file(s) | `datasets/electricity_physical_flows_hourly_v1.1.parquet`, `datasets/entsoe_physical_flows_v1.1.md` |
+| Local file(s) | `datasets/entsoe_physical_flows_hourly_v1.1.parquet`, `datasets/entsoe_physical_flows_v1.1.md` |
 | Source | ENTSO-E Transparency Platform, `PhysicalFlows`, Jan 2016 – Sep 2025 |
 
 ```python
 from epgnn.paths import dataset_path
-df = pd.read_parquet(dataset_path("entsoe_physical_flows", "electricity_physical_flows_hourly.parquet"))
+df = pd.read_parquet(dataset_path("entsoe_physical_flows", "entsoe_physical_flows_hourly.parquet"))
 ```
 
 Version history:

@@ -141,12 +141,12 @@ DOC_TEMPLATE = """# <title>
 | Dataset id | `{name}` |
 | Version | **{version}** |
 | Bucket | `gs://<bucket>/{name}/{version}/` |
-| Local file(s) | `datasets/<file>_{version}.parquet`, `datasets/{name}_{version}.md` |
+| Local file(s) | `datasets/{name}_<something>_{version}.parquet`, `datasets/{name}_{version}.md` |
 | Source | <where the data comes from, period covered> |
 
 ```python
 from epgnn.paths import dataset_path
-df = pd.read_parquet(dataset_path("{name}", "<file>.parquet"))
+df = pd.read_parquet(dataset_path("{name}", "{name}_<something>.parquet"))
 ```
 
 Version history:
@@ -162,7 +162,12 @@ Version history:
 
 
 def staged_files(name, version):
-    """Files in staging/<name>/: the doc must be present; returns {filename: path}."""
+    """Files in staging/<name>/, all named after the dataset; returns {filename: path}.
+
+    Naming rule: the doc is <name>.md; every data file is <name>_<something>.<ext>,
+    e.g. weather_hourly.parquet. The dataset id is therefore visible in every filename,
+    locally (weather_hourly_v1.1.parquet) and in the bucket.
+    """
     d = STAGING / name
     files = {p.name: p for p in sorted(d.iterdir()) if p.is_file() and not p.name.startswith(".")} if d.exists() else {}
     doc_name = f"{name}.md"
@@ -171,6 +176,10 @@ def staged_files(name, version):
                  + DOC_TEMPLATE.format(name=name, version=version))
     if len(files) == 1:
         sys.exit(f"staging/{name}/ has only the doc; add the data file(s).")
+    bad = [f for f in files if f != doc_name and not (f.startswith(f"{name}_") and Path(f).suffix)]
+    if bad:
+        sys.exit(f"staging/{name}/ has files not named after the dataset: {bad}\n"
+                 f"Data files must be called {name}_<something>.<ext>, e.g. {name}_hourly.parquet.")
     return files
 
 

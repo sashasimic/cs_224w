@@ -5,12 +5,12 @@
 | Dataset id | `entsoe_load_forecast` |
 | Version | **v1.1** |
 | Bucket | `gs://cs224w-epgnn-datasets/entsoe_load_forecast/v1.1/` |
-| Local file(s) | `datasets/electricity_load_forecasts_hourly_v1.1.parquet`, `datasets/entsoe_load_forecast_v1.1.md` |
+| Local file(s) | `datasets/entsoe_load_forecast_hourly_v1.1.parquet`, `datasets/entsoe_load_forecast_v1.1.md` |
 | Source | ENTSO-E Transparency Platform, `DayAheadTotalLoadForecast`, Jan 2016 – Sep 2025 |
 
 ```python
 from epgnn.paths import dataset_path
-df = pd.read_parquet(dataset_path("entsoe_load_forecast", "electricity_load_forecasts_hourly.parquet"))
+df = pd.read_parquet(dataset_path("entsoe_load_forecast", "entsoe_load_forecast_hourly.parquet"))
 ```
 
 Version history:

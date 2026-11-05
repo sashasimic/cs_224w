@@ -1,8 +1,8 @@
 """Resolve dataset file paths from the manifest, so code never hardcodes a version.
 
     from epgnn.paths import dataset_path
-    prices = pd.read_parquet(dataset_path("entsoe_prices", "electricity_prices_hourly.parquet"))
-    # -> datasets/electricity_prices_hourly_v1.1.parquet
+    prices = pd.read_parquet(dataset_path("entsoe_prices", "entsoe_prices_hourly.parquet"))
+    # -> datasets/entsoe_prices_hourly_v1.1.parquet
 
 Filenames in the manifest are version-free; on disk the version is appended to the stem.
 """

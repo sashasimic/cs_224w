@@ -56,9 +56,9 @@ Locally the files are flat with the version appended, so `ls datasets/` shows wh
 
 ```
 datasets/
-├── electricity_prices_hourly_v1.1.parquet        entsoe_prices_v1.1.md
-├── electricity_load_forecasts_hourly_v1.1.parquet entsoe_load_forecast_v1.1.md
-├── electricity_physical_flows_hourly_v1.1.parquet entsoe_physical_flows_v1.1.md
+├── entsoe_prices_hourly_v1.1.parquet        entsoe_prices_v1.1.md
+├── entsoe_load_forecast_hourly_v1.1.parquet entsoe_load_forecast_v1.1.md
+├── entsoe_physical_flows_hourly_v1.1.parquet entsoe_physical_flows_v1.1.md
 ├── weather_hourly_v1.0.parquet                   weather_v1.0.md
 └── weather_daily_v1.0.parquet
 ```
@@ -67,8 +67,8 @@ Code never hardcodes these paths. It asks the manifest, using the version-free n
 
 ```python
 from epgnn.paths import dataset_path
-prices = pd.read_parquet(dataset_path("entsoe_prices", "electricity_prices_hourly.parquet"))
-# -> datasets/electricity_prices_hourly_v1.1.parquet
+prices = pd.read_parquet(dataset_path("entsoe_prices", "entsoe_prices_hourly.parquet"))
+# -> datasets/entsoe_prices_hourly_v1.1.parquet
 ```
 
 so bumping a version in the manifest is the only change needed. `dataset_path` raises if the file isn't pulled or isn't part of that dataset.
