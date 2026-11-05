@@ -266,7 +266,8 @@ def cmd_push(args):
         shutil.copyfile(p, dest)
         print(f"  local   {dest.relative_to(ROOT)}")
     print(f"manifest updated: {name} -> {version}")
-    print(f"next: git add configs/datasets.json && git commit    (staging/{name}/ can be deleted)")
+    doc_local = local_path(version, f"{name}.md").relative_to(ROOT)
+    print(f"next: git add configs/datasets.json {doc_local} && git commit    (staging/{name}/ can be deleted)")
 
 
 def cmd_status():

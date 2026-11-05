@@ -1,5 +1,6 @@
-# Data and its docs, pulled from GCS via scripts/datasets.py
-/datasets/
+# Data pulled from GCS via scripts/datasets.py: ignore everything except the dataset docs
+/datasets/*
+!/datasets/*.md
 # Files waiting to be pushed with scripts/datasets.py push
 /staging/
 

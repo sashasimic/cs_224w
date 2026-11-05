@@ -14,8 +14,8 @@ cs_224w/
 │   └── datasets.py          # pull / push / status for versioned datasets
 ├── epgnn/
 │   └── paths.py             # dataset_path(name, file): resolves datasets/<stem>_<version>.<ext>
-├── datasets/                # pulled from GCS (gitignored): data files AND their docs,
-│                            #   e.g. weather_hourly_v1.0.parquet, weather_v1.0.md
+├── datasets/                # pulled from GCS: data files AND their docs,
+│                            #   e.g. weather_hourly_v1.0.parquet (gitignored), weather_v1.0.md (tracked)
 ├── staging/                 # drop files here to push a new dataset version (gitignored)
 ├── docs/
 │   ├── milestone-plan.md    # what we build for the 11/10 milestone, and why
@@ -50,7 +50,7 @@ gs://cs224w-epgnn-datasets/<dataset>/<version>/<file>
 
 A dataset version is its data file(s) **plus its doc**, `<dataset>.md`: schema, quality findings, caveats, version history. They are stored together and pulled together, so the doc you read always describes the data you have.
 
-The repo never commits the files. It commits [configs/datasets.json](configs/datasets.json), which says which version of each dataset the code expects and the checksum of each file. **A commit pins a manifest; the manifest pins the data.** Old versions are never deleted, so checking out any commit and running `pull` reproduces the data that commit was built on.
+The repo never commits the data files. It commits [configs/datasets.json](configs/datasets.json), which says which version of each dataset the code expects and the checksum of each file, and the docs (`datasets/*.md`) so they can be read on GitHub. **A commit pins a manifest; the manifest pins the data.** Old versions are never deleted, so checking out any commit and running `pull` reproduces the data that commit was built on.
 
 Locally the files are flat with the version appended, so `ls datasets/` shows which versions you have:
 
@@ -73,12 +73,12 @@ prices = pd.read_parquet(dataset_path("entsoe_prices", "electricity_prices_hourl
 
 so bumping a version in the manifest is the only change needed. `dataset_path` raises if the file isn't pulled or isn't part of that dataset.
 
-| Dataset | Version | Contents | Doc (after `pull`) |
+| Dataset | Version | Contents | Doc |
 |---|---|---|---|
-| `entsoe_prices` | v1.1 | hourly day-ahead prices, 61 areas, Jan 2016 – Sep 2025 | `datasets/entsoe_prices_v1.1.md` |
-| `entsoe_load_forecast` | v1.1 | hourly day-ahead load forecast, 68 areas | `datasets/entsoe_load_forecast_v1.1.md` |
-| `entsoe_physical_flows` | v1.1 | hourly cross-border flows, 426 directed pairs | `datasets/entsoe_physical_flows_v1.1.md` |
-| `weather` | v1.0 | PECD/ERA5 hourly and daily weather, 38 country codes, 1991 – 2026 | `datasets/weather_v1.0.md` |
+| `entsoe_prices` | v1.1 | hourly day-ahead prices, 61 areas, Jan 2016 – Sep 2025 | [datasets/entsoe_prices_v1.1.md](datasets/entsoe_prices_v1.1.md) |
+| `entsoe_load_forecast` | v1.1 | hourly day-ahead load forecast, 68 areas | [datasets/entsoe_load_forecast_v1.1.md](datasets/entsoe_load_forecast_v1.1.md) |
+| `entsoe_physical_flows` | v1.1 | hourly cross-border flows, 426 directed pairs | [datasets/entsoe_physical_flows_v1.1.md](datasets/entsoe_physical_flows_v1.1.md) |
+| `weather` | v1.0 | PECD/ERA5 hourly and daily weather, 38 country codes, 1991 – 2026 | [datasets/weather_v1.0.md](datasets/weather_v1.0.md) |
 
 JAO flow-based constraint data is described in [docs/jao.md](docs/jao.md) but is not yet a dataset in the bucket.
 
@@ -111,8 +111,8 @@ staging/weather/
                           #   | v1.1 | per-bidding-zone resolution for DK, IT, NO, SE |
 # 2. push
 scripts/datasets.py push weather v1.1
-# 3. commit the manifest
-git add configs/datasets.json
+# 3. commit the manifest and the versioned doc copy that push wrote
+git add configs/datasets.json datasets/weather_v1.1.md
 git commit -m "weather v1.1: per-bidding-zone resolution"
 git push
 ```
@@ -123,7 +123,7 @@ What `push` does:
 2. Rewrites the mechanical header lines of the doc (version, bucket path, local filenames) so they can't go stale.
 3. Uploads everything in `staging/weather/` to `weather/v1.1/`. It won't overwrite a version that already exists (`--force` to override; object versioning on the bucket means even that is recoverable).
 4. Updates `configs/datasets.json` with the new version, checksums and sizes.
-5. Copies the staged files into `datasets/` under their versioned names, so you don't re-download what you just uploaded. `staging/weather/` can then be deleted.
+5. Copies the staged files into `datasets/` under their versioned names, so you don't re-download what you just uploaded. The data file is gitignored; the doc copy (`datasets/weather_v1.1.md`) is tracked, so commit it with the manifest. `staging/weather/` can then be deleted.
 6. Teammates get the new data and doc on their next `git pull && scripts/datasets.py pull`.
 
 Conventions:
