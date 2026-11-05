@@ -19,6 +19,8 @@ Usage:
     scripts/datasets.py pull --prune             # also delete local copies of other versions
     scripts/datasets.py pull --verify            # md5-check local files instead of trusting size
     scripts/datasets.py push weather v1.1        # upload everything in staging/weather/ as weather/v1.1
+    scripts/datasets.py clean                    # delete local files not at a manifest-pinned version
+    scripts/datasets.py clean -n                 # ...just show what would be deleted
     scripts/datasets.py status                   # local vs manifest vs bucket
 
 A file already on disk with the expected size is not downloaded again.
@@ -270,6 +272,28 @@ def cmd_push(args):
     print(f"next: git add configs/datasets.json {doc_local} && git commit    (staging/{name}/ can be deleted)")
 
 
+def pinned_local_names(m):
+    return {local_path(ds["version"], f).name for ds in m["datasets"].values() for f in ds["files"]}
+
+
+def cmd_clean(args):
+    """Delete files in datasets/ that are not at the version the manifest pins."""
+    m = load_manifest()
+    keep = pinned_local_names(m)
+    extra = [p for p in sorted(LOCAL.glob("*_v*.*")) if LOCAL.exists() and p.is_file() and p.name not in keep]
+    if not extra:
+        print("nothing to clean: datasets/ holds only manifest-pinned versions")
+        return
+    for p in extra:
+        print(f"  {'would delete' if args.dry_run else 'deleted'}  {p.name}")
+        if not args.dry_run:
+            p.unlink()
+    if args.dry_run:
+        print("run without -n to delete")
+    elif any(p.suffix == ".md" for p in extra):
+        print("note: deleted .md docs are tracked; `git status` will show them as deletions")
+
+
 def cmd_status():
     m = load_manifest()
     b = bucket(m)
@@ -287,9 +311,9 @@ def cmd_status():
             print(f"  {name:24s} {ds['version']:6s} {filename:46s} local={local:11s} bucket={remote}")
 
     print("\non disk (datasets/):")
-    current = {local_path(ds["version"], f).name for ds in m["datasets"].values() for f in ds["files"]}
+    current = pinned_local_names(m)
     for p in sorted(LOCAL.glob("*_v*.*")) if LOCAL.exists() else []:
-        tag = "<- manifest" if p.name in current else "(other version; pull --prune removes)"
+        tag = "<- manifest" if p.name in current else "(other version; `clean` removes)"
         print(f"  {p.name:52s} {tag}")
 
     print("\nin bucket:")
@@ -316,6 +340,10 @@ def main():
     p.add_argument("dataset"); p.add_argument("version")
     p.add_argument("--force", action="store_true", help="overwrite a version that already exists in the bucket")
     p.set_defaults(fn=cmd_push)
+
+    p = sub.add_parser("clean", help="delete local files not at a manifest-pinned version")
+    p.add_argument("-n", "--dry-run", action="store_true", help="show what would be deleted")
+    p.set_defaults(fn=cmd_clean)
 
     p = sub.add_parser("status", help="local vs manifest vs bucket")
     p.set_defaults(fn=lambda _: cmd_status())

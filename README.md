@@ -91,12 +91,13 @@ scripts/datasets.py pull weather@v1.0     # one dataset, exact version; manifest
 scripts/datasets.py pull --latest         # newest version in the bucket (may be newer than pinned)
 scripts/datasets.py pull --latest --pin   # ...and write those versions into the manifest
 scripts/datasets.py pull --prune          # also delete local copies of other versions
+scripts/datasets.py clean                 # delete everything in datasets/ not at a manifest-pinned version (-n to preview)
 scripts/datasets.py status                # local vs manifest vs bucket
 ```
 
 `pull` never re-downloads a file that is already on disk with the expected size, so it costs nothing to run after every `git pull`: if someone bumped a version in the manifest you get the new file, otherwise it's a no-op. Pass `--verify` to MD5-check local files too (slow, reads every file). Downloads are always MD5-checked.
 
-Only one version of each dataset is pulled at a time. Pulling a different version adds a second local file (`weather_hourly_v1.1.parquet` next to `_v1.0`); `--prune` removes the one the command didn't ask for.
+Only one version of each dataset is pulled at a time. Pulling a different version adds a second local file (`weather_hourly_v1.1.parquet` next to `_v1.0`). `clean` deletes every local file that isn't at the manifest's pinned version; `pull --prune` does the same for just the dataset being pulled.
 
 ### Pushing a new version
 
