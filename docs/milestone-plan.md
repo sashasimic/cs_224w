@@ -171,9 +171,9 @@ cs_224w/
 None requires new downloads; the five parquets in `datasets/` are sufficient.
 
 1. **Zone mapping file.** The three ENTSO-E tables use identical `AreaCode`s for all 38 zones (verified). `build_table.py` filters on `AreaCode`, so the load table's country and control-area rows are ignored automatically.
-2. **Weather zone-code mapping.** Weather v1.1 is per bidding zone, but its codes follow ENTSO-E's `_` convention (`NO_1`, `SE_4`, `DK_1`, `IT_NORD`, `IT_CNOR`, `IT_CSUD`, `IT_SUD`, `IT_SARD`, `DE_LU`) while the price/load tables use `NO1`, `IT-North`, `DE-LU`. `zones.csv` carries the weather code per zone; all 38 resolve (verified). NO_1/NO_2/NO_5 share one series (PECD publishes southern Norway as one zone).
-3. **Weather columns.** `weather_hourly.parquet` has `temp_pw`, `temp_anom`, `wind_cf`, `solar_cf`, `low_wind`; schema in `datasets/weather_v1.1.md`.
-4. **No daily weather file in v1.1.** The heatwave slice is derived from hourly data in `evaluate.py` (section 4). The other v1.0 daily features (`cdh`, `tmax_3d`, `ta_7d`, `precip_30d_anom`, `share_hot`) are not needed for the milestone.
+2. **Weather zone-code mapping.** `weather_hourly` v1.1 is per bidding zone, but its codes follow ENTSO-E's `_` convention (`NO_1`, `SE_4`, `DK_1`, `IT_NORD`, `IT_CNOR`, `IT_CSUD`, `IT_SUD`, `IT_SARD`, `DE_LU`) while the price/load tables use `NO1`, `IT-North`, `DE-LU`. `zones.csv` carries the weather code per zone; all 38 resolve (verified). NO_1/NO_2/NO_5 share one series (PECD publishes southern Norway as one zone).
+3. **Weather columns.** `weather_hourly.parquet` has `temp_pw`, `temp_anom`, `wind_cf`, `solar_cf`, `low_wind`; schema in `datasets/weather_hourly_v1.1.md`.
+4. **No per-zone daily weather yet** (future dataset `weather_daily`). The heatwave slice is derived from hourly data in `evaluate.py` (section 4). The other v1.0 daily features (`cdh`, `tmax_3d`, `ta_7d`, `precip_30d_anom`, `share_hot`) are not needed for the milestone.
 5. **Use `_input` columns for history**, `PriceEUR` + `IsValidTarget` for targets. Never let a filled value become a target.
 6. **Load-forecast gaps > 48 h** are null in `LoadForecastMW_input` (EE 2022 ≈ 290 h; DE-LU 2022 = 48 h). Handled by `load_avail` + zero-fill in `build_table.py`.
 7. **Net import** derived in `build_table.py` over active edges only (section 2.4).
@@ -196,7 +196,7 @@ None requires new downloads; the five parquets in `datasets/` are sufficient.
 - 71 zone pairs have flows in both directions; 68 at ≥ 98% coverage; the 3 exceptions are cables with known start dates.
 - IT-Sicily has no edge to any zone in the set.
 - Price, load and flow tables use the same `AreaCode` for every zone.
-- All 38 zones map to a code in weather v1.1 `weather_hourly`; no gaps 2019–2026 (re-verified 2026-11-05 after the v1.1 push).
+- All 38 zones map to a code in `weather_hourly` v1.1; no gaps 2019–2026 (re-verified 2026-11-05 after the v1.1 push).
 - `PriceEUR_input` is never null where `IsValidTarget` is true.
 - A hand-built example (FR, D = 2022-07-19): the last history hour is on local day D-1 even in summer, so it was published before `t_cut`.
 

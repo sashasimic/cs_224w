@@ -5,48 +5,48 @@
     "entsoe_prices": {
       "version": "v1.1",
       "files": {
-        "entsoe_prices_hourly.parquet": {
+        "entsoe_prices.parquet": {
           "md5": "3jcE9TQ/sN2KacRTBT5VPw==",
           "size": 43266254
         },
         "entsoe_prices.md": {
-          "md5": "nSVCFmO1EBo8Se1uP4gJ7w==",
-          "size": 25850
+          "md5": "auwwbrlupWDzYP+8hTCBTw==",
+          "size": 25836
         }
       }
     },
     "entsoe_load_forecast": {
       "version": "v1.1",
       "files": {
-        "entsoe_load_forecast_hourly.parquet": {
+        "entsoe_load_forecast.parquet": {
           "md5": "XSA/BKMbk9nAe4L6cOerCA==",
           "size": 58910488
         },
         "entsoe_load_forecast.md": {
-          "md5": "Urb1BYIq5MYIMMPSi08t/w==",
-          "size": 17897
+          "md5": "q1QBQ0TYNnStMW1ej0V75w==",
+          "size": 17883
         }
       }
     },
     "entsoe_physical_flows": {
       "version": "v1.1",
       "files": {
-        "entsoe_physical_flows_hourly.parquet": {
+        "entsoe_physical_flows.parquet": {
           "md5": "36wVTQLCscnLbk2r1+Y3NA==",
           "size": 324817826
         },
         "entsoe_physical_flows.md": {
-          "md5": "vCpC0djEElwdAEFHTM+78w==",
-          "size": 18294
+          "md5": "1bcuHhsu7nUJqr5r+nWgcw==",
+          "size": 18280
         }
       }
     },
-    "weather": {
+    "weather_hourly": {
       "version": "v1.1",
       "files": {
-        "weather.md": {
-          "md5": "GsXAP+DEGT2awSTm805HoA==",
-          "size": 3427
+        "weather_hourly.md": {
+          "md5": "XfjGYwJhA8RTQDHH/hSkMQ==",
+          "size": 3616
         },
         "weather_hourly.parquet": {
           "md5": "Kyib4+sscdL9mxhRIuD2mg==",

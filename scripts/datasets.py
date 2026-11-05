@@ -4,7 +4,7 @@
 A dataset version is its data file(s) plus its doc, <dataset>.md, stored and pulled together.
 
 Layout in the bucket:   gs://<bucket>/<dataset>/<version>/<file>      data files and <dataset>.md
-Layout on disk:         datasets/<stem>_<version>.<ext>              e.g. weather_hourly_v1.0.parquet, weather_v1.0.md
+Layout on disk:         datasets/<stem>_<version>.<ext>              e.g. weather_hourly_v1.1.parquet, weather_hourly_v1.1.md
 Staging for push:       staging/<dataset>/<file>                     data files and <dataset>.md, unversioned names
 Manifest (tracked):     configs/datasets.json                        which version of each dataset the code expects
 
@@ -12,13 +12,13 @@ Code resolves paths with `epgnn.paths.dataset_path(name, filename)`, never by ha
 
 Usage:
     scripts/datasets.py pull                     # every dataset at the version pinned in the manifest
-    scripts/datasets.py pull weather             # one dataset, manifest version
-    scripts/datasets.py pull weather@v1.0        # one dataset, a specific version (manifest untouched)
+    scripts/datasets.py pull weather_hourly      # one dataset, manifest version
+    scripts/datasets.py pull weather_hourly@v1.1 # one dataset, a specific version (manifest untouched)
     scripts/datasets.py pull --latest            # newest version in the bucket for every dataset
     scripts/datasets.py pull --latest --pin      # ...and write those versions into the manifest
     scripts/datasets.py pull --prune             # also delete local copies of other versions
     scripts/datasets.py pull --verify            # md5-check local files instead of trusting size
-    scripts/datasets.py push weather v1.1        # upload everything in staging/weather/ as weather/v1.1
+    scripts/datasets.py push weather_hourly v1.2 # upload everything in staging/weather_hourly/ as weather_hourly/v1.2
     scripts/datasets.py clean                    # delete datasets/ files not at a pinned version, and
                                                  #   staging/<dataset>/ dirs whose files are already pushed
     scripts/datasets.py clean -n                 # ...just show what would be deleted
@@ -141,12 +141,12 @@ DOC_TEMPLATE = """# <title>
 | Dataset id | `{name}` |
 | Version | **{version}** |
 | Bucket | `gs://<bucket>/{name}/{version}/` |
-| Local file(s) | `datasets/{name}_<something>_{version}.parquet`, `datasets/{name}_{version}.md` |
+| Local file(s) | `datasets/{name}_{version}.parquet`, `datasets/{name}_{version}.md` |
 | Source | <where the data comes from, period covered> |
 
 ```python
 from epgnn.paths import dataset_path
-df = pd.read_parquet(dataset_path("{name}", "{name}_<something>.parquet"))
+df = pd.read_parquet(dataset_path("{name}", "{name}.parquet"))
 ```
 
 Version history:
@@ -164,9 +164,10 @@ Version history:
 def staged_files(name, version):
     """Files in staging/<name>/, all named after the dataset; returns {filename: path}.
 
-    Naming rule: the doc is <name>.md; every data file is <name>_<something>.<ext>,
-    e.g. weather_hourly.parquet. The dataset id is therefore visible in every filename,
-    locally (weather_hourly_v1.1.parquet) and in the bucket.
+    Naming rule: the doc is <name>.md, the main data file is <name>.<ext> (e.g.
+    weather_hourly.parquet for dataset weather_hourly), and any extra file is
+    <name>_<something>.<ext>. Granularity (hourly/daily) belongs in the dataset id,
+    not the filename, so the dataset id is the filename everywhere.
     """
     d = STAGING / name
     files = {p.name: p for p in sorted(d.iterdir()) if p.is_file() and not p.name.startswith(".")} if d.exists() else {}
@@ -174,12 +175,15 @@ def staged_files(name, version):
     if doc_name not in files:
         sys.exit(f"staging/{name}/{doc_name} is missing. Put the data file(s) and the doc there; doc template:\n\n"
                  + DOC_TEMPLATE.format(name=name, version=version))
-    if len(files) == 1:
+    data = [f for f in files if f != doc_name]
+    if not data:
         sys.exit(f"staging/{name}/ has only the doc; add the data file(s).")
-    bad = [f for f in files if f != doc_name and not (f.startswith(f"{name}_") and Path(f).suffix)]
+    if not any(Path(f).stem == name for f in data):
+        sys.exit(f"staging/{name}/ has no main data file named {name}.<ext> (e.g. {name}.parquet); found {data}")
+    bad = [f for f in data if Path(f).stem != name and not f.startswith(f"{name}_")]
     if bad:
         sys.exit(f"staging/{name}/ has files not named after the dataset: {bad}\n"
-                 f"Data files must be called {name}_<something>.<ext>, e.g. {name}_hourly.parquet.")
+                 f"Use {name}.<ext> for the main file and {name}_<something>.<ext> for extras.")
     return files
 
 

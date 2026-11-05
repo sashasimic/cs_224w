@@ -2,22 +2,22 @@
 
 | | |
 |---|---|
-| Dataset id | `weather` |
+| Dataset id | `weather_hourly` |
 | Version | **v1.1** |
-| Bucket | `gs://cs224w-epgnn-datasets/weather/v1.1/` |
-| Local file(s) | `datasets/weather_v1.1.md`, `datasets/weather_hourly_v1.1.parquet` |
+| Bucket | `gs://cs224w-epgnn-datasets/weather_hourly/v1.1/` |
+| Local file(s) | `datasets/weather_hourly_v1.1.md`, `datasets/weather_hourly_v1.1.parquet` |
 | Source | Copernicus PECD 4.2 (ERA5-derived), per ENTSO-E bidding zone, 1 Jan 2010 – 30 Sep 2026 |
 
 ```python
 from epgnn.paths import dataset_path
-df = pd.read_parquet(dataset_path("weather", "weather_hourly.parquet"))
+df = pd.read_parquet(dataset_path("weather_hourly", "weather_hourly.parquet"))
 ```
 
 Version history:
 
 | Version | What |
 |---|---|
-| v1.0 | country-level hourly and daily features; DK/IT/NO/SE bidding zones averaged into countries, DE merged with LU; 1991 – 2026 |
+| v1.0 | (as dataset `weather`, still in the bucket under `weather/v1.0/`) country-level hourly and daily features; DK/IT/NO/SE bidding zones averaged into countries, DE merged with LU; 1991 – 2026 |
 | v1.1 | **hourly weather per ENTSO-E bidding zone** (45 zones; codes now `DE_LU`, `DK_1`, `NO_3`, `IT_NORD`, …, matching ENTSO-E); 2010 – Sep 2026. Hourly only: the daily file (`heatwave`, `cdh`, `tmax_3d`, …) has not yet been rebuilt per zone and is **not** in this version. Zones added: all DK/IT/NO/SE bidding zones, `DE_LU`, `IE_SEM`. Removed: country aggregates `DE DK DK_W IT NO SE`, and `CS CY IE IS LU NI UA_W`. |
 
 ---
@@ -45,6 +45,6 @@ Zones (45): `AT BA BE BG CH CZ DE_LU DK_1 DK_2 EE ES FI FR GB GR HR HU IE_SEM IT
 - **Italy:** IT_CALA became a bidding zone only in 2021, so weather rows exist before then but there are no matching prices.
 - `DE_LU` uses Germany's weather. `IE_SEM` combines Ireland and Northern Ireland, weighted by population.
 - **Zone codes differ from the ENTSO-E price/load tables' `AreaName`** (`NO_1` vs `NO1`, `IT_NORD` vs `IT-North`, `DE_LU` vs `DE-LU`). The zone mapping file (`configs/zones.csv`) carries the weather code per zone.
-- **No daily file in v1.1.** The v1.0 daily features (`heatwave`, `cdh`, `tmax_3d`, `ta_7d`, `precip_30d_anom`, `share_hot`) were country-level and are not carried over. Rebuild per zone from this hourly file, or pull `weather@v1.0` for the country-level daily file.
+- **No daily file in v1.1.** The v1.0 daily features (`heatwave`, `cdh`, `tmax_3d`, `ta_7d`, `precip_30d_anom`, `share_hot`) were country-level and are not carried over. Rebuild per zone from this hourly file, or use `gs://cs224w-epgnn-datasets/weather/v1.0/weather_daily.parquet` (country-level). A per-zone daily file will be its own dataset, `weather_daily`.
 
 **Source:** Copernicus Climate Change Service, Pan-European Climate Database v4.2 (from ERA5), https://cds.climate.copernicus.eu/datasets/sis-energy-pecd. Licence CC BY 4.0; attribute Copernicus/C3S.
