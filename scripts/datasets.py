@@ -19,7 +19,8 @@ Usage:
     scripts/datasets.py pull --prune             # also delete local copies of other versions
     scripts/datasets.py pull --verify            # md5-check local files instead of trusting size
     scripts/datasets.py push weather v1.1        # upload everything in staging/weather/ as weather/v1.1
-    scripts/datasets.py clean                    # delete local files not at a manifest-pinned version
+    scripts/datasets.py clean                    # delete datasets/ files not at a pinned version, and
+                                                 #   staging/<dataset>/ dirs whose files are already pushed
     scripts/datasets.py clean -n                 # ...just show what would be deleted
     scripts/datasets.py status                   # local vs manifest vs bucket
 
@@ -277,20 +278,44 @@ def pinned_local_names(m):
 
 
 def cmd_clean(args):
-    """Delete files in datasets/ that are not at the version the manifest pins."""
+    """Delete local files not at a manifest-pinned version, and staging dirs already pushed."""
     m = load_manifest()
+    verb = "would delete" if args.dry_run else "deleted"
+    deleted_doc = False
+
+    # datasets/: anything not at the pinned version
     keep = pinned_local_names(m)
     extra = [p for p in sorted(LOCAL.glob("*_v*.*")) if LOCAL.exists() and p.is_file() and p.name not in keep]
+    print("datasets/:")
     if not extra:
-        print("nothing to clean: datasets/ holds only manifest-pinned versions")
-        return
+        print("  nothing to clean; only manifest-pinned versions present")
     for p in extra:
-        print(f"  {'would delete' if args.dry_run else 'deleted'}  {p.name}")
+        print(f"  {verb}  {p.name}")
+        deleted_doc |= p.suffix == ".md"
         if not args.dry_run:
             p.unlink()
+
+    # staging/<name>/: only if every file matches the pinned version (i.e. it has been pushed)
+    print("staging/:")
+    dirs = [d for d in sorted(STAGING.iterdir()) if d.is_dir()] if STAGING.exists() else []
+    if not dirs:
+        print("  empty")
+    for d in dirs:
+        ds = m["datasets"].get(d.name)
+        files = [p for p in d.iterdir() if p.is_file() and not p.name.startswith(".")]
+        pushed = (ds is not None and files
+                  and all(p.name in ds["files"] and md5_b64(p) == ds["files"][p.name]["md5"] for p in files))
+        if pushed:
+            print(f"  {verb}  {d.name}/  (all files match pinned {ds['version']})")
+            if not args.dry_run:
+                shutil.rmtree(d)
+        else:
+            why = "no such dataset in manifest" if ds is None else "files differ from pinned version, not pushed yet"
+            print(f"  kept     {d.name}/  ({why})")
+
     if args.dry_run:
         print("run without -n to delete")
-    elif any(p.suffix == ".md" for p in extra):
+    elif deleted_doc:
         print("note: deleted .md docs are tracked; `git status` will show them as deletions")
 
 
@@ -341,7 +366,7 @@ def main():
     p.add_argument("--force", action="store_true", help="overwrite a version that already exists in the bucket")
     p.set_defaults(fn=cmd_push)
 
-    p = sub.add_parser("clean", help="delete local files not at a manifest-pinned version")
+    p = sub.add_parser("clean", help="delete unpinned files in datasets/ and already-pushed staging dirs")
     p.add_argument("-n", "--dry-run", action="store_true", help="show what would be deleted")
     p.set_defaults(fn=cmd_clean)
 

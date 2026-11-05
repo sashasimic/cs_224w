@@ -91,7 +91,7 @@ scripts/datasets.py pull weather@v1.0     # one dataset, exact version; manifest
 scripts/datasets.py pull --latest         # newest version in the bucket (may be newer than pinned)
 scripts/datasets.py pull --latest --pin   # ...and write those versions into the manifest
 scripts/datasets.py pull --prune          # also delete local copies of other versions
-scripts/datasets.py clean                 # delete everything in datasets/ not at a manifest-pinned version (-n to preview)
+scripts/datasets.py clean                 # delete datasets/ files not at a pinned version, and staging dirs already pushed (-n to preview)
 scripts/datasets.py status                # local vs manifest vs bucket
 ```
 
@@ -124,7 +124,7 @@ What `push` does:
 2. Rewrites the mechanical header lines of the doc (version, bucket path, local filenames) so they can't go stale.
 3. Uploads everything in `staging/weather/` to `weather/v1.1/`. It won't overwrite a version that already exists (`--force` to override; object versioning on the bucket means even that is recoverable).
 4. Updates `configs/datasets.json` with the new version, checksums and sizes.
-5. Copies the staged files into `datasets/` under their versioned names, so you don't re-download what you just uploaded. The data file is gitignored; the doc copy (`datasets/weather_v1.1.md`) is tracked, so commit it with the manifest. `staging/weather/` can then be deleted.
+5. Copies the staged files into `datasets/` under their versioned names, so you don't re-download what you just uploaded. The data file is gitignored; the doc copy (`datasets/weather_v1.1.md`) is tracked, so commit it with the manifest. `scripts/datasets.py clean` then removes `staging/weather/`, since its files now match the pinned version; a staging dir that hasn't been pushed is never deleted.
 6. Teammates get the new data and doc on their next `git pull && scripts/datasets.py pull`.
 
 Conventions:
