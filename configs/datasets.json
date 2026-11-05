@@ -42,19 +42,15 @@
       }
     },
     "weather": {
-      "version": "v1.0",
+      "version": "v1.1",
       "files": {
-        "weather_hourly.parquet": {
-          "md5": "SR0EP0VBV4mx5Yg8XftPbg==",
-          "size": 170883241
-        },
-        "weather_daily.parquet": {
-          "md5": "xzuSGOa/OPNxDf4WOAoOHQ==",
-          "size": 24187915
-        },
         "weather.md": {
-          "md5": "b+xhQQnXXr46SzYID4bP5w==",
-          "size": 5701
+          "md5": "GsXAP+DEGT2awSTm805HoA==",
+          "size": 3427
+        },
+        "weather_hourly.parquet": {
+          "md5": "Kyib4+sscdL9mxhRIuD2mg==",
+          "size": 77152904
         }
       }
     }
