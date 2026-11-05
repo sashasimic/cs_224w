@@ -78,7 +78,7 @@ so bumping a version in the manifest is the only change needed. `dataset_path` r
 | `entsoe_prices` | v1.1 | hourly day-ahead prices, 61 areas, Jan 2016 – Sep 2025 | [datasets/entsoe_prices_v1.1.md](datasets/entsoe_prices_v1.1.md) |
 | `entsoe_load_forecast` | v1.1 | hourly day-ahead load forecast, 68 areas | [datasets/entsoe_load_forecast_v1.1.md](datasets/entsoe_load_forecast_v1.1.md) |
 | `entsoe_physical_flows` | v1.1 | hourly cross-border flows, 426 directed pairs | [datasets/entsoe_physical_flows_v1.1.md](datasets/entsoe_physical_flows_v1.1.md) |
-| `weather` | v1.0 | PECD/ERA5 hourly and daily weather, 38 country codes, 1991 – 2026 | [datasets/weather_v1.0.md](datasets/weather_v1.0.md) |
+| `weather` | v1.1 | PECD/ERA5 hourly weather per bidding zone, 45 zones, 2010 – Sep 2026 | [datasets/weather_v1.1.md](datasets/weather_v1.1.md) |
 
 JAO flow-based constraint data is described in [docs/jao.md](docs/jao.md) but is not yet a dataset in the bucket.
 

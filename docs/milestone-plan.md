@@ -10,7 +10,7 @@ Goal: by the milestone, have one pipeline that goes from the parquet files to a 
 |---|---|
 | Zone nodes with interconnector edges (ablation rungs 1–3 of the proposal) | Constraint (CNEC) nodes, PTDF edges, shadow prices (rungs 4–5) |
 | 38 bidding zones, Jan 2019 – Sep 2025 | 2016–2018 history; Germany pre-split; Sicily; Ireland |
-| Prices, load forecasts, physical flows, country-level weather as inputs | Per-zone weather, weather forecasts, heat slices beyond a basic heatwave flag |
+| Prices, load forecasts, physical flows, per-zone hourly weather as inputs | Weather forecasts, per-zone daily heat features, heat slices beyond a basic heatwave flag |
 | Targets on the CET market day; the two DST days per year dropped | 23/25-hour outputs with masks |
 | Naive, local-GRU, flat-neighbour, and GNN models | HGT, learned temporal aggregation, US transfer |
 | MAE, spread MAE, separation F1 | Full slice analysis (renewable surplus, congested hours) |
@@ -139,7 +139,7 @@ Computed on validation (2022) and test (2023–Sep 2025), in EUR/MWh.
 | spread MAE | over **active** edges and hours: $|(\hat y_u - \hat y_v) - (y_u - y_v)|$ |
 | separation F1 | event = $|y_u - y_v| > 5$ €/MWh on an active edge-hour; F1 of predicted vs actual events. Reported on **coupled borders only**: edges touching CH (outside SDAC) and RS (not coupled) are excluded, since those borders are "separated" nearly every hour. GR (coupled Dec 2020) and BG (May 2021) are included; note this in the write-up. |
 
-Slices for the milestone: **all hours** and **heatwave days** (`heatwave = 1` in `weather_daily` for the zone's country on D). Per-zone MAE as an appendix table.
+Slices for the milestone: **all hours** and **heatwave days**. Weather v1.1 has no daily file, so the heatwave flag is computed in `evaluate.py` from hourly `temp_pw`: daily max per zone, flag = 1 when it exceeds the zone's 90th percentile for that calendar day (2019–2021 reference) on 3+ consecutive days. Same definition as v1.0's `heatwave`, now per zone. Per-zone MAE as an appendix table.
 
 One results table: 5 models × 2 splits × 3 metrics (mean ± std over seeds), plus the heatwave slice for MAE. That is the milestone deliverable.
 
@@ -148,7 +148,7 @@ One results table: 5 models × 2 splits × 3 metrics (mean ± std over seeds), p
 ```
 cs_224w/
 ├── configs/
-│   ├── zones.csv            # zone id, AreaCode, weather country, group
+│   ├── zones.csv            # zone id, AreaCode, weather zone code, group
 │   ├── edges.csv            # u, v, valid_from, keep, reason
 │   └── models/*.yaml        # one per model in section 3
 ├── epgnn/
@@ -171,9 +171,9 @@ cs_224w/
 None requires new downloads; the five parquets in `datasets/` are sufficient.
 
 1. **Zone mapping file.** The three ENTSO-E tables use identical `AreaCode`s for all 38 zones (verified). `build_table.py` filters on `AreaCode`, so the load table's country and control-area rows are ignored automatically.
-2. **Weather country mapping.** `weather_hourly.zone` is a country code: NO1–5 → `NO`, SE1–4 → `SE`, DK1/DK2 → `DK`, IT-* → `IT`, DE-LU → `DE` (the weather doc says DE and LU were merged), everything else → its own code. All 38 map to a code present in the file (verified). Nordic and Italian zones share weather for now; fix later by removing the country-merge step in the weather pipeline and re-running per bidding zone.
-3. **Weather columns.** The delivered `weather_hourly.parquet` has a single `wind_cf` and `solar_cf` (the doc describes rooftop/utility and onshore/offshore variants that were combined). Column names in this plan come from the parquets; the delivered schema is in the dataset doc (`datasets/weather_v1.0.md` after `pull`).
-4. **Weather daily 2026-10-01 row.** Outside the study period; filter by date.
+2. **Weather zone-code mapping.** Weather v1.1 is per bidding zone, but its codes follow ENTSO-E's `_` convention (`NO_1`, `SE_4`, `DK_1`, `IT_NORD`, `IT_CNOR`, `IT_CSUD`, `IT_SUD`, `IT_SARD`, `DE_LU`) while the price/load tables use `NO1`, `IT-North`, `DE-LU`. `zones.csv` carries the weather code per zone; all 38 resolve (verified). NO_1/NO_2/NO_5 share one series (PECD publishes southern Norway as one zone).
+3. **Weather columns.** `weather_hourly.parquet` has `temp_pw`, `temp_anom`, `wind_cf`, `solar_cf`, `low_wind`; schema in `datasets/weather_v1.1.md`.
+4. **No daily weather file in v1.1.** The heatwave slice is derived from hourly data in `evaluate.py` (section 4). The other v1.0 daily features (`cdh`, `tmax_3d`, `ta_7d`, `precip_30d_anom`, `share_hot`) are not needed for the milestone.
 5. **Use `_input` columns for history**, `PriceEUR` + `IsValidTarget` for targets. Never let a filled value become a target.
 6. **Load-forecast gaps > 48 h** are null in `LoadForecastMW_input` (EE 2022 ≈ 290 h; DE-LU 2022 = 48 h). Handled by `load_avail` + zero-fill in `build_table.py`.
 7. **Net import** derived in `build_table.py` over active edges only (section 2.4).
@@ -185,7 +185,7 @@ None requires new downloads; the five parquets in `datasets/` are sufficient.
 - A working spatio-temporal graph pipeline over 38 European bidding zones and 71 interconnectors, 2019–2025, with the information cutoff enforced in one file and checked by assertions.
 - First results on H1 (graph vs flat neighbour features) on 2022 validation and 2023–2025 test, with seed variance.
 - A spread-aware loss and the separation-event metric, with first numbers.
-- The constraint-node extension (H2) and per-zone weather (H3) as next steps, with the data issues already diagnosed.
+- The constraint-node extension (H2) and per-zone daily heat features (H3) as next steps, with the data issues already diagnosed.
 
 ## 8. Check log
 
@@ -196,7 +196,7 @@ None requires new downloads; the five parquets in `datasets/` are sufficient.
 - 71 zone pairs have flows in both directions; 68 at ≥ 98% coverage; the 3 exceptions are cables with known start dates.
 - IT-Sicily has no edge to any zone in the set.
 - Price, load and flow tables use the same `AreaCode` for every zone.
-- All 38 weather country codes exist in `weather_hourly`; no gaps 2015–2026.
+- All 38 zones map to a code in weather v1.1 `weather_hourly`; no gaps 2019–2026 (re-verified 2026-11-05 after the v1.1 push).
 - `PriceEUR_input` is never null where `IsValidTarget` is true.
 - A hand-built example (FR, D = 2022-07-19): the last history hour is on local day D-1 even in summer, so it was published before `t_cut`.
 
