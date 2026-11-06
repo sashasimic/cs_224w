@@ -1,0 +1,16 @@
+# Checkpoint 3 control: the same model on a shuffled graph (random rewiring, degrees kept).
+model: gat
+feature_set: own
+graph: shuffled
+history_window: 168
+hidden: 64
+layers: 2
+heads: 4
+pretrain: {splits: [pretrain]}
+fit_splits: [train]
+eval_splits: [val, test]
+epochs: 50
+lr: 0.001
+patience: 8
+spread_weight: 0.5
+seed: 0

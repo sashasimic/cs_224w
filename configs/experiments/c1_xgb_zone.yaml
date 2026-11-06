@@ -1,0 +1,8 @@
+# Checkpoint 1b: per-zone XGBoost on the zone's own gate-closure features.
+model: xgb
+feature_set: own
+neighbours: false
+per_zone: true
+fit_splits: [pretrain, train]
+eval_splits: [val, test]
+params: {max_depth: 6, n_estimators: 600, learning_rate: 0.05, subsample: 0.8, colsample_bytree: 0.8}

@@ -1,0 +1,8 @@
+# Checkpoint 2: same as c1_xgb_zone plus the neighbours' features (mean over interconnected zones).
+model: xgb
+feature_set: own
+neighbours: true
+per_zone: true
+fit_splits: [pretrain, train]
+eval_splits: [val, test]
+params: {max_depth: 6, n_estimators: 600, learning_rate: 0.05, subsample: 0.8, colsample_bytree: 0.8}

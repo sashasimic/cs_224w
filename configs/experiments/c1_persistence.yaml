@@ -1,0 +1,3 @@
+# Checkpoint 1a: weekly persistence. The reference every relative metric uses.
+model: persistence
+eval_splits: [val, test]

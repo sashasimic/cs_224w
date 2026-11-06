@@ -1,0 +1,16 @@
+# Checkpoint 3: GRU + GATv2 on the interconnector graph.
+model: gat
+feature_set: own
+graph: interconnects
+history_window: 168
+hidden: 64
+layers: 2
+heads: 4
+pretrain: {splits: [pretrain]}
+fit_splits: [train]
+eval_splits: [val, test]
+epochs: 50
+lr: 0.001
+patience: 8
+spread_weight: 0.5
+seed: 0

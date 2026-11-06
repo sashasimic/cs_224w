@@ -11,7 +11,7 @@ A spatio-temporal graph model of European day-ahead electricity markets. Stanfor
 - **Split** ([configs/splits.json](configs/splits.json)): pretrain 2016-01-01 – 2022-06-08 (no Core constraints yet), train 2022-06-09 – 2024-03-31, validation 2024-04-01 – 2025-03-31, test 2025-04-01 – 2026-09-30 (two summers). Tables stay whole; loaders filter by date.
 - **Decided:** no shadow prices (JAO does not publish them for these domains; constraint nodes carry RAM and Fmax). Zone ids are the weather/JAO codes. Germany before Oct 2018 is the joint DE-AT-LU zone, reported under `DE_LU`.
 - **Open:** ENTSO-E wind/solar day-ahead forecasts and transfer capacities (NTC) are not pulled yet (weather capacity factors and JAO `maxbex` stand in); whether the detailed JAO domain is published before gate closure is unverified (fallback: use day D-1's constraints); whether to use CWE-era constraints in training or treat 2016-22 as constraint-free pretraining.
-- **Not yet started:** the model code (loader, GRU + GATv2 hetero model, baselines, evaluation).
+- **Code:** the shared data layer, scoring and experiment runner are in place (`c1_persistence` runs end to end); the XGBoost, GATv2 and hetero models are stubs with fixed interfaces, one per teammate (see *Experiments*).
 
 ## Repository layout
 
@@ -19,18 +19,36 @@ A spatio-temporal graph model of European day-ahead electricity markets. Stanfor
 cs_224w/
 ├── configs/
 │   ├── datasets.json        # which dataset versions the code expects (tracked)
-│   └── splits.json          # the chronological split: pretrain / train / val / test by delivery day
+│   ├── splits.json          # the chronological split: pretrain / train / val / test by delivery day
+│   └── experiments/         # one YAML per run: c1_persistence, c1_xgb_zone, c2_xgb_neighbours,
+│                            #   c3_gat_interconnects, c3_gat_shuffled, c4a_gat_jao_summaries,
+│                            #   c4b_hetero_constraints, c4b_hetero_heat
+├── epgnn/                   # the package ("electricity price GNN")
+│   ├── paths.py             # dataset_path(name, file): resolves datasets/<stem>_<version>.<ext>
+│   ├── splits.py            # reads configs/splits.json; split_of(delivery_day)
+│   ├── zones.py, jao.py     # zone codes, ENTSO-E mapping, JAO rules (used by the build scripts)
+│   ├── data/                # shared data layer: every model reads through here
+│   │   ├── tables.py        #   load the pinned tables, cached
+│   │   ├── features.py      #   named feature sets + the gate-closure rule (what day D may see)
+│   │   ├── samples.py       #   (zone, day) samples: 168 h history to the cutoff, day-D inputs, 24 targets + mask
+│   │   ├── scaling.py       #   asinh / residual-vs-last-week target, train-only z-scores
+│   │   └── graph.py         #   zone graph + edge features; constraint nodes + PTDF relations (4b)
+│   ├── models/              # one module per model family, same run(cfg, fit_splits, eval_splits) interface
+│   │   ├── persistence.py   #   1a  (done)
+│   │   ├── xgb.py           #   1b, 2
+│   │   ├── encoders.py      #   HistoryGRU shared by gat and hetero
+│   │   ├── gat.py           #   3, 3', 4a
+│   │   └── hetero.py        #   4b
+│   ├── train.py             # masked + spread loss, training loop for the torch models
+│   ├── metrics.py           # MAE, RMSE, rel-MAE vs persistence, spread MAE / F1, slices
+│   └── run.py               # python -m epgnn.run configs/experiments/<name>.yaml
 ├── scripts/
 │   ├── datasets.py          # pull / push / status for versioned datasets
 │   ├── build_jao_cnec_hourly.py  # JAO bundle -> constraint-node table (jao_cnec_hourly)
 │   ├── build_agg_zones_hourly.py       # prices + load + weather -> one row per (zone, hour)
 │   └── build_agg_zone_edges_hourly.py  # physical flows -> one row per (zone_from, zone_to, hour)
-├── epgnn/
-│   ├── paths.py             # dataset_path(name, file): resolves datasets/<stem>_<version>.<ext>
-│   ├── jao.py               # shared JAO rules: synthetic-name pattern, zone codes, neighbours
-│   ├── zones.py             # canonical zone codes and the ENTSO-E name -> zone mapping (German splice)
-│   ├── agg.py               # helpers for the agg_* build scripts (provenance table from the manifest)
-│   └── splits.py            # reads configs/splits.json; split_of(delivery_day)
+├── results/                 # one JSON per run: metrics by split and slice, config, data versions, commit (tracked)
+├── runs/                    # predictions and checkpoints per run (gitignored)
 ├── datasets/                # pulled from GCS: data files AND their docs,
 │                            #   e.g. zone_nodes_hourly_v1.0.parquet (gitignored), zone_nodes_hourly_v1.0.md (tracked)
 ├── staging/                 # drop files here to push a new dataset version (gitignored)
@@ -54,6 +72,35 @@ scripts/datasets.py pull
 ```
 
 If `pull` fails with a permission error, your account has not been added to the bucket yet; ask Sasha.
+
+## Experiments
+
+A run is a config, not a branch. Every YAML in `configs/experiments/` names a model, a feature set and the splits; the checkpoints of the Methods doc are these files:
+
+| Config | Checkpoint | Model | Status |
+|---|---|---|---|
+| `c1_persistence` | 1a | price one week earlier | done |
+| `c1_xgb_zone` | 1b | per-zone XGBoost, own features | to do |
+| `c2_xgb_neighbours` | 2 | + neighbours' features | to do |
+| `c3_gat_interconnects` | 3 | GRU + GATv2 on the interconnector graph | to do |
+| `c3_gat_shuffled` | 3' | same, shuffled graph (control) | to do |
+| `c4a_gat_jao_summaries` | 4a | 3 + per-zone JAO summaries | to do |
+| `c4b_hetero_constraints` | 4b | + constraint nodes and PTDF relations | to do (needs `jao_cnec_hourly` with `cnec_id`) |
+| `c4b_hetero_heat` | 4b + H3 | + heat-stress features | to do |
+
+```bash
+python -m epgnn.run configs/experiments/c1_persistence.yaml
+# -> results/c1_persistence.json, runs/c1_persistence/pred_{val,test}.npy
+```
+
+Rules that keep the three model families comparable:
+
+- **Same samples, same score.** `epgnn/data/samples.py` defines the (zone, delivery day) samples per split and the targets; `epgnn/metrics.py` scores every run against weekly persistence on exactly those hours. Model code never builds its own test set.
+- **Leakage rule lives in one file.** `epgnn/data/features.py` lists which columns day D may see (lags, load forecast, calendar, JAO domain) and which are outcomes. Models ask for a feature set by name.
+- **Cutoff.** History windows end at D-1 10:00 UTC (noon CEST); day-D inputs are only the columns allowed by the feature set.
+- **Results are files.** `results/<run>.json` records metrics by split and slice, the config, the pinned dataset versions and the commit; report tables are generated from that folder.
+
+Ownership for the milestone: A owns `data/` + `metrics.py` + `models/xgb.py` (checkpoint 1); B `models/encoders.py` + `models/gat.py` + `train.py` (checkpoint 3); C `data/graph.py` constraint part + `models/hetero.py` (checkpoint 4b).
 
 ## Data
 
