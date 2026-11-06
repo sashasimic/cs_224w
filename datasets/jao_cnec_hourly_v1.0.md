@@ -35,8 +35,6 @@ x_c = h[["ram", "fmax", "ram_fmax"]]                     # constraint-node featu
 ptdf = h[[f"ptdf_{z}" for z in ZONES]]                   # zone -> constraint edge weights (NaN = zone not in domain)
 ```
 
-`jao_zone_hourly` is the per-zone summary of this table for models without constraint nodes.
-
 **Alignment with the other datasets (verified):**
 
 - `ts_utc` is the delivery hour in UTC, the same grid as `DeliveryHourUTC` in the ENTSO-E tables and `time_utc` in `weather_hourly`. Every JAO hour from 2016 on is in the ENTSO-E grid, and `market_day_cet` equals ENTSO-E's `MarketDayCET` for every hour.
@@ -74,9 +72,9 @@ ptdf = h[[f"ptdf_{z}" for z in ZONES]]                   # zone -> constraint ed
 ## How to use it in the graph
 
 - **Constraint nodes:** one per row of the hour. Features `ram`, `fmax`, `ram_fmax` (z-score `ram` and `fmax` on train, clip `ram_fmax` to [0, 1] or use `1 − ram_fmax` as tightness). There is no shadow price; JAO does not publish it for these domains.
-- **Zone → constraint and constraint → zone edges:** for each row and each zone with a non-null PTDF. Edge weight: the PTDF itself (signed), or, slack-free, the zone-to-zone spread `max_n |ptdf_zone − ptdf_n|` over the zone's neighbours (see `jao_zone_hourly` rule 3 and `epgnn.jao.NEIGHBOURS`). The published PTDFs are zone-to-slack and Germany's is ≈ 0 by construction, so a threshold on `|ptdf_zone|` alone under-connects DE-LU; prefer the spread or no threshold.
+- **Zone → constraint and constraint → zone edges:** for each row and each zone with a non-null PTDF. Edge weight: the PTDF itself (signed), or, slack-free, the zone-to-zone spread `max_n |ptdf_zone − ptdf_n|` over the zone's neighbours (neighbour table in `epgnn.jao.NEIGHBOURS`). The published PTDFs are zone-to-slack and Germany's is ≈ 0 by construction, so a threshold on `|ptdf_zone|` alone under-connects DE-LU; prefer the spread or no threshold.
 - **Zones outside the domain** (the other 26 project zones, and the Core-only zones before June 2022) have no edges to constraint nodes; they exchange messages over interconnectors only, as the proposal's fallback describes.
-- **Regime:** feed `regime` (or the date) as an input; the constraint set and PTDF conventions differ between CWE and Core, and `jao_zone_hourly` documents how the summary features compare across the switch.
+- **Regime:** feed `regime` (or the date) as an input; the constraint set and PTDF conventions differ between CWE and Core. Checked on Mar–Sep 2022 for BE, FR, NL and DE_LU: per-zone tightness summaries (spread-weighted mean of 1 − ram_fmax) have the same medians on both sides of the switch (0.21 vs 0.22–0.25), so the margin scale carries over.
 
 ## Caveats
 

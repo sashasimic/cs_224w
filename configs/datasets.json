@@ -54,25 +54,12 @@
         }
       }
     },
-    "jao_zone_hourly": {
-      "version": "v1.0",
-      "files": {
-        "jao_zone_hourly.md": {
-          "md5": "V5nBD/aET38q/qhYjap2Dg==",
-          "size": 9945
-        },
-        "jao_zone_hourly.parquet": {
-          "md5": "I8RuHOy/WSzfU6+sYjQYDw==",
-          "size": 16823491
-        }
-      }
-    },
     "jao_cnec_hourly": {
       "version": "v1.0",
       "files": {
         "jao_cnec_hourly.md": {
-          "md5": "ltuSedclzEchuD/uJdm5qQ==",
-          "size": 8807
+          "md5": "y3WoUXvIxXrsNbD4ehPt3g==",
+          "size": 8844
         },
         "jao_cnec_hourly.parquet": {
           "md5": "pY5bTNGHSQWoeTHkG77RTA==",
