@@ -1,0 +1,16 @@
+# Checkpoint 2.5: GRU + MLP per zone, no graph. Same encoder and head as checkpoint 3 without message
+# passing, so (3 - 2.5) isolates the graph and (2.5 - 1b) the sequence model vs trees.
+model: gru_mlp
+feature_set: own
+history_window: 168
+hidden: 64
+mlp_hidden: 128
+dropout: 0.1
+fit_splits: [pretrain, train]
+eval_splits: [val, test]
+epochs: 50
+lr: 0.001
+patience: 8
+batch_days: 16
+spread_weight: 0.5
+seed: 0

@@ -32,6 +32,7 @@ from epgnn.paths import ROOT, manifest
 def main(path: str) -> dict:
     cfg = yaml.safe_load(Path(path).read_text())
     name = cfg.get("name") or Path(path).stem
+    cfg["name"] = name
     model = importlib.import_module(f"epgnn.models.{cfg['model']}")
     preds = model.run(cfg, cfg.get("fit_splits", []), cfg["eval_splits"])
 

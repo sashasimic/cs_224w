@@ -35,6 +35,7 @@ cs_224w/
 │   │   └── graph.py         #   zone graph + edge features; constraint nodes + PTDF relations (4b)
 │   ├── models/              # one module per model family, same run(cfg, fit_splits, eval_splits) interface
 │   │   ├── persistence.py   #   1a  (done)
+│   ├── gru_mlp.py       #   2.5 GRU + MLP, no graph (done)
 │   │   ├── xgb.py           #   1b, 2
 │   │   ├── encoders.py      #   HistoryGRU shared by gat and hetero
 │   │   ├── gat.py           #   3, 3', 4a
@@ -83,6 +84,7 @@ The structure is in place; only the non-trainable persistence reference runs tod
 | `c1_persistence` | 1a | price one week earlier | done |
 | `c1_xgb_zone` | 1b | per-zone XGBoost, own features | done: test MAE 21.2, rel 0.73 |
 | `c2_xgb_neighbours` | 2 | + neighbours' features | done: test MAE 21.0, rel 0.73 |
+| `c25_gru_mlp` | 2.5 | GRU + MLP per zone, no graph (the no-edge case of 3) | model ready, run pending |
 | `c3_gat_interconnects` | 3 | GRU + GATv2 on the interconnector graph | to do |
 | `c3_gat_shuffled` | 3' | same, shuffled graph (control) | to do |
 | `c4a_gat_jao_summaries` | 4a | 3 + per-zone JAO summaries | to do |
