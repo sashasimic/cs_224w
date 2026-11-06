@@ -66,6 +66,32 @@
           "size": 246271875
         }
       }
+    },
+    "agg_zones_hourly": {
+      "version": "v1.0",
+      "files": {
+        "agg_zones_hourly.md": {
+          "md5": "RwiYuccDA39igsUT9yTy8g==",
+          "size": 6182
+        },
+        "agg_zones_hourly.parquet": {
+          "md5": "Y3LjtesdsHr+uqSOiUJpAA==",
+          "size": 116485663
+        }
+      }
+    },
+    "agg_zone_edges_hourly": {
+      "version": "v1.0",
+      "files": {
+        "agg_zone_edges_hourly.md": {
+          "md5": "lgB2AdWR1XxV3OeyGDwWKw==",
+          "size": 13135
+        },
+        "agg_zone_edges_hourly.parquet": {
+          "md5": "yDRD3hO5KscdvF3TDH+lOg==",
+          "size": 103852169
+        }
+      }
     }
   }
 }
