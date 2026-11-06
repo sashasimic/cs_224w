@@ -53,6 +53,19 @@
           "size": 77152904
         }
       }
+    },
+    "jao_zone_hourly": {
+      "version": "v1.0",
+      "files": {
+        "jao_zone_hourly.md": {
+          "md5": "lLHFofujIIwe1SsHBJs2pw==",
+          "size": 9743
+        },
+        "jao_zone_hourly.parquet": {
+          "md5": "I8RuHOy/WSzfU6+sYjQYDw==",
+          "size": 16823491
+        }
+      }
     }
   }
 }

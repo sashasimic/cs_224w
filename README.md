@@ -11,7 +11,8 @@ cs_224w/
 ├── configs/
 │   └── datasets.json        # which dataset versions the code expects (tracked)
 ├── scripts/
-│   └── datasets.py          # pull / push / status for versioned datasets
+│   ├── datasets.py          # pull / push / status for versioned datasets
+│   └── build_jao_zone_hourly.py  # JAO constraints -> per-zone hourly features (jao_zone_hourly)
 ├── epgnn/
 │   └── paths.py             # dataset_path(name, file): resolves datasets/<stem>_<version>.<ext>
 ├── datasets/                # pulled from GCS: data files AND their docs,
@@ -19,7 +20,7 @@ cs_224w/
 ├── staging/                 # drop files here to push a new dataset version (gitignored)
 ├── docs/
 │   ├── milestone-plan.md    # what we build for the 11/10 milestone, and why
-│   └── jao.md               # guide to the JAO constraint data (not yet a dataset)
+│   └── jao.md               # background on the JAO flow-based constraint data
 └── lectures/                # course notes and the proposal (gitignored, course material)
 ```
 
@@ -78,8 +79,9 @@ so bumping a version in the manifest is the only change needed. `dataset_path` r
 | `entsoe_load_forecast` | v1.2 | hourly day-ahead load forecast, 68 areas, Jan 2016 – Oct 2026 | [datasets/entsoe_load_forecast_v1.2.md](datasets/entsoe_load_forecast_v1.2.md) |
 | `entsoe_physical_flows` | v1.2 | hourly cross-border flows, 426 directed pairs, Jan 2016 – Oct 2026 | [datasets/entsoe_physical_flows_v1.2.md](datasets/entsoe_physical_flows_v1.2.md) |
 | `weather_hourly` | v1.1 | PECD/ERA5 hourly weather per bidding zone, 45 zones, 2010 – Sep 2026 | [datasets/weather_hourly_v1.1.md](datasets/weather_hourly_v1.1.md) |
+| `jao_zone_hourly` | v1.0 | JAO flow-based constraint tightness per zone-hour, 12 CWE/Core zones, May 2015 – Oct 2026 | [datasets/jao_zone_hourly_v1.0.md](datasets/jao_zone_hourly_v1.0.md) |
 
-JAO flow-based constraint data is described in [docs/jao.md](docs/jao.md) but is not yet a dataset in the bucket.
+`jao_zone_hourly` is derived from Arsen's raw JAO bundle by [scripts/build_jao_zone_hourly.py](scripts/build_jao_zone_hourly.py); the rules are in its doc. Background on the raw data: [docs/jao.md](docs/jao.md).
 
 ### Pulling data
 

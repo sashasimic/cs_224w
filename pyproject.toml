@@ -17,3 +17,8 @@ files = ["epgnn", "scripts"]
 [[tool.mypy.overrides]]
 module = "google.cloud.*"
 ignore_missing_imports = true
+
+# pandas / pyarrow / numpy stubs are not installed in the dev environment.
+[[tool.mypy.overrides]]
+module = ["pandas.*", "pyarrow.*", "numpy.*"]
+ignore_missing_imports = true
