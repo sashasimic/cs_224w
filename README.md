@@ -9,7 +9,8 @@ A spatio-temporal graph model of European day-ahead electricity markets. Stanfor
 ```
 cs_224w/
 ├── configs/
-│   └── datasets.json        # which dataset versions the code expects (tracked)
+│   ├── datasets.json        # which dataset versions the code expects (tracked)
+│   └── splits.json          # the chronological split: pretrain / train / val / test by delivery day
 ├── scripts/
 │   ├── datasets.py          # pull / push / status for versioned datasets
 │   ├── build_jao_cnec_hourly.py  # JAO bundle -> constraint-node table (jao_cnec_hourly)
@@ -20,7 +21,7 @@ cs_224w/
 │   ├── jao.py               # shared JAO rules: synthetic-name pattern, zone codes, neighbours
 │   ├── zones.py             # canonical zone codes and the ENTSO-E name -> zone mapping (German splice)
 │   ├── agg.py               # helpers for the agg_* build scripts (provenance table from the manifest)
-│   └── splits.py            # the chronological split (pretrain / train / val / test), defined once
+│   └── splits.py            # reads configs/splits.json; split_of(delivery_day)
 ├── datasets/                # pulled from GCS: data files AND their docs,
 │                            #   e.g. zone_nodes_hourly_v1.0.parquet (gitignored), zone_nodes_hourly_v1.0.md (tracked)
 ├── staging/                 # drop files here to push a new dataset version (gitignored)
@@ -82,7 +83,7 @@ so bumping a version in the manifest is the only change needed. `dataset_path` r
 | `zone_nodes_hourly` | v1.0 | per (zone, hour): day-ahead price (target), price lags, load forecast, weather (+ lags), net import, JAO Core summaries, `split`; 45 zones, Jan 2016 – Sep 2026 | [datasets/zone_nodes_hourly_v1.0.md](datasets/zone_nodes_hourly_v1.0.md) |
 | `zone_edges_hourly` | v1.0 | per (from, to, hour): physical flow + lags, JAO `maxbex` / scheduled flow, `split`; 180 directed interconnectors | [datasets/zone_edges_hourly_v1.0.md](datasets/zone_edges_hourly_v1.0.md) |
 
-These two are the model's zone-node and zone-edge tables (Sophie-An's build). Constraint nodes for the full hetero graph come from `jao_cnec_hourly` (below). The split is defined once in [epgnn/splits.py](epgnn/splits.py); tables are kept whole and filtered by date, there are no per-split files.
+These two are the model's zone-node and zone-edge tables (Sophie-An's build). Constraint nodes for the full hetero graph come from `jao_cnec_hourly` (below). The split is defined once in [configs/splits.json](configs/splits.json) (read by `epgnn/splits.py`); tables are kept whole and filtered by date, there are no per-split files.
 
 **Other datasets in the bucket, not pinned.** The sources and intermediate tables stay in `gs://cs224w-epgnn-datasets` but are not pulled by default. Pull one explicitly with `scripts/datasets.py pull NAME@VERSION` (add `--pin` to put it in the manifest so `dataset_path` and the build scripts can use it); `status` lists them.
 

@@ -135,4 +135,4 @@ Compared row by row with `agg_zones_hourly` v1.0 and `agg_zone_edges_hourly` v1.
 
 ## The `split` column
 
-The split is a date rule, kept here as a label for convenience (`pretrain` / `train` / `val` / `test` by delivery day, boundaries in the table above). The authoritative definition is `epgnn/splits.py`; loaders should filter by date from there rather than rely on the column, so the split can change without rebuilding this table. No per-split files are kept.
+The split is a date rule, kept here as a label for convenience (`pretrain` / `train` / `val` / `test` by delivery day, boundaries in the table above). The authoritative definition is `configs/splits.json` (read by `epgnn/splits.py`); loaders should filter by date from there rather than rely on the column, so the split can change without rebuilding this table. No per-split files are kept.

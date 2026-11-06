@@ -123,4 +123,4 @@ Same-hour weather counts as a perfect forecast, so use it only for the ablation.
 
 ## The `split` column
 
-Same labelling as `zone_nodes_hourly`; the authoritative definition is `epgnn/splits.py`.
+Same labelling as `zone_nodes_hourly`; the authoritative definition is `configs/splits.json` (read by `epgnn/splits.py`).

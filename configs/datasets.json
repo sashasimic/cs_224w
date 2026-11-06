@@ -6,8 +6,8 @@
       "version": "v1.0",
       "files": {
         "zone_nodes_hourly.md": {
-          "md5": "RriYsw4ZZplbcXYj6Ql6zA==",
-          "size": 10205
+          "md5": "l/gEbnnzW9YU74xaIrITAA==",
+          "size": 10237
         },
         "zone_nodes_hourly.parquet": {
           "md5": "uVgXvC737NKIX47yja0YXg==",
@@ -19,8 +19,8 @@
       "version": "v1.0",
       "files": {
         "zone_edges_hourly.md": {
-          "md5": "1m2VXgao2lOBAQYqZz2dKQ==",
-          "size": 8493
+          "md5": "Fbxbsz/MiJ9W4WQGOaLAkA==",
+          "size": 8525
         },
         "zone_edges_hourly.parquet": {
           "md5": "DI2xAokJu+oki2KJQUyAZQ==",

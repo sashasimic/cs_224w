@@ -1,0 +1,10 @@
+{
+  "_comment": "Chronological split by delivery day (Brussels time), inclusive. Tables are kept whole; loaders filter by date via epgnn.splits. pretrain = ENTSO-E + weather only (CWE era); train/val/test = Core constraints available. train_all = whole history as one training set (e.g. with CWE constraints from jao_cnec_hourly).",
+  "splits": {
+    "pretrain": ["2016-01-01", "2022-06-08"],
+    "train":    ["2022-06-09", "2024-03-31"],
+    "val":      ["2024-04-01", "2025-03-31"],
+    "test":     ["2025-04-01", "2026-09-30"]
+  },
+  "train_all": ["2016-01-01", "2024-03-31"]
+}
