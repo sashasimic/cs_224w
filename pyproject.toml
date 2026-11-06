@@ -9,6 +9,19 @@ dependencies = [
   "google-cloud-storage",
 ]
 
+# Model stack: same core as the course Colabs (torch + PyTorch Geometric), without their course-only
+# extras (deepsnap, ogb, torch_scatter/torch_sparse), plus XGBoost for the non-graph baselines.
+[project.optional-dependencies]
+model = [
+  "torch>=2.7",
+  "torch_geometric>=2.6",
+  "xgboost",
+  "scikit-learn",
+  "networkx",
+  "matplotlib",
+  "pyyaml",
+]
+
 [tool.mypy]
 python_version = "3.12"
 files = ["epgnn", "scripts"]

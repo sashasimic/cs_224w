@@ -42,7 +42,7 @@ cs_224w/
 
 ```bash
 # Python deps
-pip install pandas pyarrow google-cloud-storage torch torch_geometric
+pip install -e ".[model]"            # pandas, pyarrow, GCS client, torch, torch_geometric, xgboost, ...
 
 # Google Cloud SDK, then log in with the Google account that has bucket access
 brew install --cask google-cloud-sdk          # macOS; cloud.google.com/sdk for others
