@@ -19,7 +19,8 @@ cs_224w/
 │   ├── paths.py             # dataset_path(name, file): resolves datasets/<stem>_<version>.<ext>
 │   ├── jao.py               # shared JAO rules: synthetic-name pattern, zone codes, neighbours
 │   ├── zones.py             # canonical zone codes and the ENTSO-E name -> zone mapping (German splice)
-│   └── agg.py               # helpers for the agg_* build scripts (provenance table from the manifest)
+│   ├── agg.py               # helpers for the agg_* build scripts (provenance table from the manifest)
+│   └── splits.py            # the chronological split (pretrain / train / val / test), defined once
 ├── datasets/                # pulled from GCS: data files AND their docs,
 │                            #   e.g. weather_hourly_v1.1.parquet (gitignored), weather_hourly_v1.1.md (tracked)
 ├── staging/                 # drop files here to push a new dataset version (gitignored)
@@ -86,9 +87,11 @@ so bumping a version in the manifest is the only change needed. `dataset_path` r
 | `weather_hourly` | v1.1 | PECD/ERA5 hourly weather per bidding zone, 45 zones, 2010 – Sep 2026 | [datasets/weather_hourly_v1.1.md](datasets/weather_hourly_v1.1.md) |
 | `agg_zones_hourly` | v1.0 | **derived**: prices + load forecast + weather per (zone, hour), 44 zones, Jan 2016 – Oct 2026 | [datasets/agg_zones_hourly_v1.0.md](datasets/agg_zones_hourly_v1.0.md) |
 | `agg_zone_edges_hourly` | v1.0 | **derived**: physical flows per (zone_from, zone_to, hour), 174 directed pairs = 87 interconnectors | [datasets/agg_zone_edges_hourly_v1.0.md](datasets/agg_zone_edges_hourly_v1.0.md) |
+| `zone_nodes_hourly` | v1.0 | **model table** (Sophie-An's build): per (zone, hour) target, lags, load, weather, net import, JAO Core summaries, `split`; 45 zones | [datasets/zone_nodes_hourly_v1.0.md](datasets/zone_nodes_hourly_v1.0.md) |
+| `zone_edges_hourly` | v1.0 | **model table** (Sophie-An's build): per (from, to, hour) physical flow + lags, JAO `maxbex`/scheduled flow, `split`; 180 directed pairs | [datasets/zone_edges_hourly_v1.0.md](datasets/zone_edges_hourly_v1.0.md) |
 | `jao_cnec_hourly` | v1.0 | JAO physical constraints per hour with RAM, Fmax and PTDF per zone (constraint nodes), May 2015 – Oct 2026 | [datasets/jao_cnec_hourly_v1.0.md](datasets/jao_cnec_hourly_v1.0.md) |
 
-The three tables the model reads are `agg_zones_hourly` (zone nodes), `agg_zone_edges_hourly` (zone-zone edges) and `jao_cnec_hourly` (constraint nodes with PTDF edges), all keyed on the same zone codes and UTC hours. The `agg_*` tables are built from the pinned source datasets by `scripts/build_agg_*.py`; their docs list the source versions and checksums and the rules used. `jao_cnec_hourly` is the constraint-node table the proposal's graph needs. It is derived from Arsen's raw JAO bundle by [scripts/build_jao_cnec_hourly.py](scripts/build_jao_cnec_hourly.py); the rules are in its doc. Background on the raw data: [docs/jao.md](docs/jao.md).
+The model reads `zone_nodes_hourly` (zone nodes, with lags and the `split` label), `zone_edges_hourly` (zone-zone edges) and `jao_cnec_hourly` (constraint nodes with PTDF edges), all keyed on the same zone codes and UTC hours. `agg_zones_hourly` / `agg_zone_edges_hourly` are the raw joined tables built here from the pinned sources; the `zone_*` docs record how the two builds compare (they agree on every shared value except three conventions). The split is defined once in [epgnn/splits.py](epgnn/splits.py); tables are kept whole and filtered by date, there are no per-split files. The `agg_*` tables are built from the pinned source datasets by `scripts/build_agg_*.py`; their docs list the source versions and checksums and the rules used. `jao_cnec_hourly` is the constraint-node table the proposal's graph needs. It is derived from Arsen's raw JAO bundle by [scripts/build_jao_cnec_hourly.py](scripts/build_jao_cnec_hourly.py); the rules are in its doc. Background on the raw data: [docs/jao.md](docs/jao.md).
 
 ### Pulling data
 

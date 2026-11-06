@@ -92,6 +92,32 @@
           "size": 103852169
         }
       }
+    },
+    "zone_nodes_hourly": {
+      "version": "v1.0",
+      "files": {
+        "zone_nodes_hourly.md": {
+          "md5": "RriYsw4ZZplbcXYj6Ql6zA==",
+          "size": 10205
+        },
+        "zone_nodes_hourly.parquet": {
+          "md5": "uVgXvC737NKIX47yja0YXg==",
+          "size": 190962942
+        }
+      }
+    },
+    "zone_edges_hourly": {
+      "version": "v1.0",
+      "files": {
+        "zone_edges_hourly.md": {
+          "md5": "1m2VXgao2lOBAQYqZz2dKQ==",
+          "size": 8493
+        },
+        "zone_edges_hourly.parquet": {
+          "md5": "DI2xAokJu+oki2KJQUyAZQ==",
+          "size": 144723224
+        }
+      }
     }
   }
 }
