@@ -44,7 +44,7 @@ def main(path: str) -> dict:
         np.save(out_dir / f"pred_{split}.npy", yhat)
 
     commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
-    record = {"name": name, "config": cfg, "metrics": results,
+    record = {"name": name, "config": cfg, "metrics": results, "info": getattr(model.run, "info", {}),
               "datasets": {k: v["version"] for k, v in manifest()["datasets"].items()},
               "git": commit, "ran_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
     res = ROOT / "results" / f"{name}.json"

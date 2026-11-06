@@ -111,6 +111,14 @@ def run(cfg: dict, fit_splits: list[str], eval_splits: list[str]) -> dict[str, n
         m.fit(with_zone(Xtr, ztr), ytr, **kw)
         models["__pooled__"] = m
 
+    # trees actually used (best iteration under early stopping, else all); printed and kept on the module
+    used = {z: int(m.best_iteration) + 1 if getattr(m, "best_iteration", None) is not None else params["n_estimators"]
+            for z, m in models.items()}
+    vals = np.array(list(used.values()))
+    print(f"xgb: trees used per model: min {vals.min()}, median {int(np.median(vals))}, max {vals.max()} "
+          f"(cap {params['n_estimators']})")
+    run.info = {"trees_used": used}  # type: ignore[attr-defined]
+
     out = {}
     for sp, s in ev.items():
         x = ev_x[sp]
