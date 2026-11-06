@@ -23,3 +23,6 @@ runs/
 checkpoints/
 *.ckpt
 *.pt
+
+# Local scratch
+/tmp/
