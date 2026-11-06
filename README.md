@@ -12,9 +12,11 @@ cs_224w/
 │   └── datasets.json        # which dataset versions the code expects (tracked)
 ├── scripts/
 │   ├── datasets.py          # pull / push / status for versioned datasets
-│   └── build_jao_zone_hourly.py  # JAO constraints -> per-zone hourly features (jao_zone_hourly)
+│   ├── build_jao_cnec_hourly.py  # JAO bundle -> constraint-node table (jao_cnec_hourly)
+│   └── build_jao_zone_hourly.py  # JAO bundle -> per-zone hourly summary (jao_zone_hourly)
 ├── epgnn/
-│   └── paths.py             # dataset_path(name, file): resolves datasets/<stem>_<version>.<ext>
+│   ├── paths.py             # dataset_path(name, file): resolves datasets/<stem>_<version>.<ext>
+│   └── jao.py               # shared JAO rules: synthetic-name pattern, zone codes, neighbours
 ├── datasets/                # pulled from GCS: data files AND their docs,
 │                            #   e.g. weather_hourly_v1.1.parquet (gitignored), weather_hourly_v1.1.md (tracked)
 ├── staging/                 # drop files here to push a new dataset version (gitignored)
@@ -79,9 +81,10 @@ so bumping a version in the manifest is the only change needed. `dataset_path` r
 | `entsoe_load_forecast` | v1.2 | hourly day-ahead load forecast, 68 areas, Jan 2016 – Oct 2026 | [datasets/entsoe_load_forecast_v1.2.md](datasets/entsoe_load_forecast_v1.2.md) |
 | `entsoe_physical_flows` | v1.2 | hourly cross-border flows, 426 directed pairs, Jan 2016 – Oct 2026 | [datasets/entsoe_physical_flows_v1.2.md](datasets/entsoe_physical_flows_v1.2.md) |
 | `weather_hourly` | v1.1 | PECD/ERA5 hourly weather per bidding zone, 45 zones, 2010 – Sep 2026 | [datasets/weather_hourly_v1.1.md](datasets/weather_hourly_v1.1.md) |
+| `jao_cnec_hourly` | v1.0 | JAO physical constraints per hour with RAM, Fmax and PTDF per zone (constraint nodes), May 2015 – Oct 2026 | [datasets/jao_cnec_hourly_v1.0.md](datasets/jao_cnec_hourly_v1.0.md) |
 | `jao_zone_hourly` | v1.0 | JAO flow-based constraint tightness per zone-hour, 12 CWE/Core zones, May 2015 – Oct 2026 | [datasets/jao_zone_hourly_v1.0.md](datasets/jao_zone_hourly_v1.0.md) |
 
-`jao_zone_hourly` is derived from Arsen's raw JAO bundle by [scripts/build_jao_zone_hourly.py](scripts/build_jao_zone_hourly.py); the rules are in its doc. Background on the raw data: [docs/jao.md](docs/jao.md).
+Both JAO datasets are derived from Arsen's raw JAO bundle by the `scripts/build_jao_*.py` scripts; the rules are in their docs. `jao_cnec_hourly` is the constraint-node table the proposal's graph needs; `jao_zone_hourly` is its per-zone summary for models without constraint nodes. Background on the raw data: [docs/jao.md](docs/jao.md).
 
 ### Pulling data
 

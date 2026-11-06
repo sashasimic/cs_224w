@@ -9,15 +9,16 @@ The rules are documented in the dataset doc (jao_zone_hourly.md); this file is t
     scripts/build_jao_zone_hourly.py [--src staging/jao_cwe_core_hourly_views] [--out staging/jao_zone_hourly]
 """
 import argparse
-import re
+import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
 
-# Rule 1: a constraint is synthetic (not a physical line) if its source name matches this.
-SYNTHETIC = re.compile(r"LTA|IMPORT|EXPORT|EC_|EXTERNAL|CONSTRAINT|NET POSITION|NETPOSITION|MAXBEX")
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from epgnn.jao import NEIGHBOURS, SOURCE_ZONES, SYNTHETIC  # noqa: E402
+
 # Rule 3: a constraint is relevant to a zone if its zone-to-zone PTDF with some neighbour,
 # |ptdf_zone - ptdf_neighbour|, is >= this. Published PTDFs are zone-to-slack, so their absolute
 # size depends on the slack convention (Germany's is ~0 by construction); differences do not.
@@ -26,24 +27,8 @@ SPREAD_MIN = 0.10
 TOP_K = 3
 
 # Zones with a PTDF column in jao_cnec_hourly. DE_AT_LU is the pre-2018-10-01 combined zone.
-ZONES = ["AT", "BE", "CZ", "DE_LU", "FR", "HR", "HU", "NL", "PL", "RO", "SI", "SK", "DE_AT_LU"]
+ZONES = SOURCE_ZONES
 OUT_ZONES = [z for z in ZONES if z != "DE_AT_LU"]
-# Interconnected neighbours inside the flow-based domain (AC borders between the zones above).
-NEIGHBOURS = {
-    "AT": ["DE_LU", "DE_AT_LU", "CZ", "HU", "SI"],
-    "BE": ["FR", "NL", "DE_LU", "DE_AT_LU"],
-    "CZ": ["DE_LU", "AT", "PL", "SK"],
-    "DE_LU": ["AT", "BE", "CZ", "FR", "NL", "PL"],
-    "DE_AT_LU": ["BE", "FR", "NL", "CZ"],
-    "FR": ["BE", "DE_LU", "DE_AT_LU"],
-    "HR": ["HU", "SI"],
-    "HU": ["AT", "HR", "RO", "SI", "SK"],
-    "NL": ["BE", "DE_LU", "DE_AT_LU"],
-    "PL": ["DE_LU", "CZ", "SK"],
-    "RO": ["HU"],
-    "SI": ["AT", "HR", "HU"],
-    "SK": ["CZ", "HU", "PL"],
-}
 
 
 def load(src: Path) -> pd.DataFrame:
