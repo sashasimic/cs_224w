@@ -11,7 +11,7 @@ A spatio-temporal graph model of European day-ahead electricity markets. Stanfor
 - **Split** ([configs/splits.json](configs/splits.json)): pretrain 2016-01-01 – 2022-06-08 (no Core constraints yet), train 2022-06-09 – 2024-03-31, validation 2024-04-01 – 2025-03-31, test 2025-04-01 – 2026-09-30 (two summers). Tables stay whole; loaders filter by date.
 - **Decided:** no shadow prices (JAO does not publish them for these domains; constraint nodes carry RAM and Fmax). Zone ids are the weather/JAO codes. Germany before Oct 2018 is the joint DE-AT-LU zone, reported under `DE_LU`.
 - **Open:** ENTSO-E wind/solar day-ahead forecasts and transfer capacities (NTC) are not pulled yet (weather capacity factors and JAO `maxbex` stand in); whether the detailed JAO domain is published before gate closure is unverified (fallback: use day D-1's constraints); whether to use CWE-era constraints in training or treat 2016-22 as constraint-free pretraining.
-- **Code:** the shared data layer, scoring and experiment runner are in place (`c1_persistence` runs end to end); the XGBoost, GATv2 and hetero models are stubs with fixed interfaces, one per teammate (see *Experiments*).
+- **Code:** the basic structure is in place and runs end to end with one super simple, non-trainable model: weekly persistence (`c1_persistence`, forecast = same hour last week). It exercises the whole chain (samples, cutoff, masks, metrics, results file) and sets the reference score (test MAE 29.0 EUR/MWh). No trained model exists yet: XGBoost, GATv2 and the hetero model are stubs with fixed interfaces, one per teammate (see *Experiments*).
 
 ## Repository layout
 
@@ -75,7 +75,7 @@ If `pull` fails with a permission error, your account has not been added to the 
 
 ## Experiments
 
-A run is a config, not a branch. Every YAML in `configs/experiments/` names a model, a feature set and the splits; the checkpoints of the Methods doc are these files:
+The structure is in place; only the non-trainable persistence reference runs today. A run is a config, not a branch. Every YAML in `configs/experiments/` names a model, a feature set and the splits; the checkpoints of the Methods doc are these files:
 
 | Config | Checkpoint | Model | Status |
 |---|---|---|---|
