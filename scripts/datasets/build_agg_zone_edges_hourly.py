@@ -2,7 +2,7 @@
 """Build agg_zone_edges_hourly: one row per (directed zone pair, hour) from ENTSO-E physical flows, for every
 pair whose two ends are agg zones. Writes the parquet and its doc to staging/agg_zone_edges_hourly/.
 
-    scripts/build_agg_zone_edges_hourly.py [--version v1.0]
+    scripts/datasets/build_agg_zone_edges_hourly.py [--version v1.0]
 """
 import argparse
 import sys
@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pandas as pd
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 from epgnn.agg import sources_table, write_doc  # noqa: E402
 from epgnn.paths import ROOT, dataset_path  # noqa: E402
 from epgnn.zones import DE_SPLIT_TS, zone_of  # noqa: E402
@@ -49,7 +49,7 @@ def doc(out: pd.DataFrame, version: str) -> str:
 | Version | **{version}** |
 | Bucket | `gs://cs224w-epgnn-datasets/{NAME}/{version}/` |
 | Local file(s) | `datasets/{NAME}_{version}.parquet`, `datasets/{NAME}_{version}.md` |
-| Source | derived from the dataset listed under *Built from*, by `scripts/build_{NAME}.py` |
+| Source | derived from the dataset listed under *Built from*, by `scripts/datasets/build_{NAME}.py` |
 
 ```python
 from epgnn.paths import dataset_path
@@ -67,7 +67,7 @@ Version history:
 
 {sources_table(SOURCES)}
 
-Rebuild with `scripts/build_{NAME}.py`; the zone mapping is `epgnn/zones.py`.
+Rebuild with `scripts/datasets/build_{NAME}.py`; the zone mapping is `epgnn/zones.py`.
 
 ## What it is
 
@@ -122,7 +122,7 @@ def main() -> None:
     out.to_parquet(stage / f"{NAME}.parquet", index=False)
     write_doc(stage, NAME, doc(out, a.version))
     print(f"wrote {stage}/{NAME}.parquet: {len(out):,} rows, {out.groupby(['zone_from', 'zone_to']).ngroups} directed pairs, "
-          f"{out.ts_utc.min()} -> {out.ts_utc.max()}; doc written. Next: scripts/datasets.py push {NAME} {a.version}")
+          f"{out.ts_utc.min()} -> {out.ts_utc.max()}; doc written. Next: scripts/datasets/datasets.py push {NAME} {a.version}")
 
 
 if __name__ == "__main__":

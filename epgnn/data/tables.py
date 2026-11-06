@@ -28,11 +28,11 @@ def edge_pairs() -> pd.DataFrame:
 @lru_cache(maxsize=1)
 def cnec() -> pd.DataFrame:
     """jao_cnec_hourly: one row per physical constraint per hour (constraint nodes). Must be pinned:
-    scripts/datasets.py pull jao_cnec_hourly@v1.0 --pin"""
+    scripts/datasets/datasets.py pull jao_cnec_hourly@v1.0 --pin"""
     try:
         return pd.read_parquet(dataset_path("jao_cnec_hourly", "jao_cnec_hourly.parquet"))
     except KeyError as e:
-        raise KeyError("jao_cnec_hourly is not pinned; run: scripts/datasets.py pull jao_cnec_hourly@v1.0 --pin") from e
+        raise KeyError("jao_cnec_hourly is not pinned; run: scripts/datasets/datasets.py pull jao_cnec_hourly@v1.0 --pin") from e
 
 
 @lru_cache(maxsize=1)

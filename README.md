@@ -43,10 +43,11 @@ cs_224w/
 │   ├── metrics.py           # MAE, RMSE, rel-MAE vs persistence, spread MAE / F1, slices
 │   └── run.py               # python -m epgnn.run configs/experiments/<name>.yaml
 ├── scripts/
-│   ├── datasets.py          # pull / push / status for versioned datasets
-│   ├── build_jao_cnec_hourly.py  # JAO bundle -> constraint-node table (jao_cnec_hourly)
-│   ├── build_agg_zones_hourly.py       # prices + load + weather -> one row per (zone, hour)
-│   └── build_agg_zone_edges_hourly.py  # physical flows -> one row per (zone_from, zone_to, hour)
+│   └── datasets/            # dataset tools, run by hand; nothing here is model code
+│       ├── datasets.py      #   pull / push / status / clean for versioned datasets
+│       ├── build_jao_cnec_hourly.py        #   JAO bundle -> constraint-node table (jao_cnec_hourly)
+│       ├── build_agg_zones_hourly.py       #   prices + load + weather -> one row per (zone, hour)
+│       └── build_agg_zone_edges_hourly.py  #   physical flows -> one row per (zone_from, zone_to, hour)
 ├── results/                 # one JSON per run: metrics by split and slice, config, data versions, commit (tracked)
 ├── runs/                    # predictions and checkpoints per run (gitignored)
 ├── datasets/                # pulled from GCS: data files AND their docs,
@@ -68,7 +69,7 @@ gcloud auth login
 gcloud auth application-default login         # credentials for the Python client
 
 # Fetch the data
-scripts/datasets.py pull
+scripts/datasets/datasets.py pull
 ```
 
 If `pull` fails with a permission error, your account has not been added to the bucket yet; ask Sasha.
@@ -139,7 +140,7 @@ so bumping a version in the manifest is the only change needed. `dataset_path` r
 
 These two are the model's zone-node and zone-edge tables (Sophie-An's build). Constraint nodes for the full hetero graph come from `jao_cnec_hourly` (below). The split is defined once in [configs/splits.json](configs/splits.json) (read by `epgnn/splits.py`); tables are kept whole and filtered by date, there are no per-split files.
 
-**Other datasets in the bucket, not pinned.** The sources and intermediate tables stay in `gs://cs224w-epgnn-datasets` but are not pulled by default. Pull one explicitly with `scripts/datasets.py pull NAME@VERSION` (add `--pin` to put it in the manifest so `dataset_path` and the build scripts can use it); `status` lists them.
+**Other datasets in the bucket, not pinned.** The sources and intermediate tables stay in `gs://cs224w-epgnn-datasets` but are not pulled by default. Pull one explicitly with `scripts/datasets/datasets.py pull NAME@VERSION` (add `--pin` to put it in the manifest so `dataset_path` and the build scripts can use it); `status` lists them.
 
 | Dataset | Latest | Contents |
 |---|---|---|
@@ -147,24 +148,24 @@ These two are the model's zone-node and zone-edge tables (Sophie-An's build). Co
 | `entsoe_load_forecast` | v1.2 | hourly day-ahead load forecast, 68 areas, Jan 2016 – Oct 2026 |
 | `entsoe_physical_flows` | v1.2 | hourly cross-border flows, 426 directed pairs, Jan 2016 – Oct 2026 |
 | `weather_hourly` | v1.1 | PECD/ERA5 hourly weather per bidding zone, 45 zones, 2010 – Sep 2026 |
-| `jao_cnec_hourly` | v1.0 | JAO physical constraints per hour with RAM, Fmax and PTDF per zone (constraint nodes), May 2015 – Oct 2026; built from Arsen's raw bundle by [scripts/build_jao_cnec_hourly.py](scripts/build_jao_cnec_hourly.py) |
-| `agg_zones_hourly` | v1.0 | our own join of prices + load + weather per (zone, hour), 44 zones; built by `scripts/build_agg_zones_hourly.py` (cross-check for `zone_nodes_hourly`) |
-| `agg_zone_edges_hourly` | v1.0 | our own flows per (zone_from, zone_to, hour), 174 directed pairs; built by `scripts/build_agg_zone_edges_hourly.py` (cross-check for `zone_edges_hourly`) |
+| `jao_cnec_hourly` | v1.0 | JAO physical constraints per hour with RAM, Fmax and PTDF per zone (constraint nodes), May 2015 – Oct 2026; built from Arsen's raw bundle by [scripts/datasets/build_jao_cnec_hourly.py](scripts/datasets/build_jao_cnec_hourly.py) |
+| `agg_zones_hourly` | v1.0 | our own join of prices + load + weather per (zone, hour), 44 zones; built by `scripts/datasets/build_agg_zones_hourly.py` (cross-check for `zone_nodes_hourly`) |
+| `agg_zone_edges_hourly` | v1.0 | our own flows per (zone_from, zone_to, hour), 174 directed pairs; built by `scripts/datasets/build_agg_zone_edges_hourly.py` (cross-check for `zone_edges_hourly`) |
 
 Each has a doc next to it in the bucket (`<dataset>.md`), pulled with the data; the docs are the reference for schema, cleaning rules, known gaps and how the tables were derived from each other.
 
 ### Pulling data
 
 ```bash
-scripts/datasets.py pull                  # every dataset at the version the manifest pins
-scripts/datasets.py pull zone_nodes_hourly   # one dataset, pinned version
-scripts/datasets.py pull entsoe_prices@v1.2  # any dataset in the bucket, exact version; manifest untouched
-scripts/datasets.py pull entsoe_prices@v1.2 --pin  # ...and pin it, so dataset_path() can resolve it
-scripts/datasets.py pull --latest         # newest version in the bucket (may be newer than pinned)
-scripts/datasets.py pull --latest --pin   # ...and write those versions into the manifest
-scripts/datasets.py pull --prune          # also delete local copies of other versions
-scripts/datasets.py clean                 # delete datasets/ files not at a pinned version, and staging dirs already pushed (-n to preview)
-scripts/datasets.py status                # local vs manifest vs bucket
+scripts/datasets/datasets.py pull                  # every dataset at the version the manifest pins
+scripts/datasets/datasets.py pull zone_nodes_hourly   # one dataset, pinned version
+scripts/datasets/datasets.py pull entsoe_prices@v1.2  # any dataset in the bucket, exact version; manifest untouched
+scripts/datasets/datasets.py pull entsoe_prices@v1.2 --pin  # ...and pin it, so dataset_path() can resolve it
+scripts/datasets/datasets.py pull --latest         # newest version in the bucket (may be newer than pinned)
+scripts/datasets/datasets.py pull --latest --pin   # ...and write those versions into the manifest
+scripts/datasets/datasets.py pull --prune          # also delete local copies of other versions
+scripts/datasets/datasets.py clean                 # delete datasets/ files not at a pinned version, and staging dirs already pushed (-n to preview)
+scripts/datasets/datasets.py status                # local vs manifest vs bucket
 ```
 
 `pull` never re-downloads a file that is already on disk with the expected size, so it costs nothing to run after every `git pull`: if someone bumped a version in the manifest you get the new file, otherwise it's a no-op. Pass `--verify` to MD5-check local files too (slow, reads every file). Downloads are always MD5-checked.
@@ -182,7 +183,7 @@ staging/zone_nodes_hourly/
 └── zone_nodes_hourly.md  # start from datasets/zone_nodes_hourly_v1.0.md; add a version-history row:
                           #   | v1.1 | <what changed> |
 # 2. push
-scripts/datasets.py push zone_nodes_hourly v1.1
+scripts/datasets/datasets.py push zone_nodes_hourly v1.1
 # 3. commit the manifest and the versioned doc copy that push wrote
 git add configs/datasets.json datasets/zone_nodes_hourly_v1.1.md
 git commit -m "zone_nodes_hourly v1.1: <what changed>"
@@ -195,8 +196,8 @@ What `push` does:
 2. Rewrites the mechanical header lines of the doc (version, bucket path, local filenames) so they can't go stale.
 3. Uploads everything in `staging/zone_nodes_hourly/` to `zone_nodes_hourly/v1.1/`. It won't overwrite a version that already exists (`--force` to override; object versioning on the bucket means even that is recoverable).
 4. Updates `configs/datasets.json` with the new version, checksums and sizes.
-5. Copies the staged files into `datasets/` under their versioned names, so you don't re-download what you just uploaded. The data file is gitignored; the doc copy (`datasets/zone_nodes_hourly_v1.1.md`) is tracked, so commit it with the manifest. `scripts/datasets.py clean` then removes `staging/zone_nodes_hourly/`, since its files now match the pinned version; a staging dir that hasn't been pushed is never deleted.
-6. Teammates get the new data and doc on their next `git pull && scripts/datasets.py pull`.
+5. Copies the staged files into `datasets/` under their versioned names, so you don't re-download what you just uploaded. The data file is gitignored; the doc copy (`datasets/zone_nodes_hourly_v1.1.md`) is tracked, so commit it with the manifest. `scripts/datasets/datasets.py clean` then removes `staging/zone_nodes_hourly/`, since its files now match the pinned version; a staging dir that hasn't been pushed is never deleted.
+6. Teammates get the new data and doc on their next `git pull && scripts/datasets/datasets.py pull`.
 
 Conventions:
 

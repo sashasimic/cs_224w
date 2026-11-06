@@ -33,5 +33,5 @@ def dataset_path(name: str, filename: str) -> Path:
     f = Path(filename)
     p = DATASETS / f"{f.stem}_{ds['version']}{f.suffix}"
     if not p.exists():
-        raise FileNotFoundError(f"{p} missing; run scripts/datasets.py pull {name}")
+        raise FileNotFoundError(f"{p} missing; run scripts/datasets/datasets.py pull {name}")
     return p

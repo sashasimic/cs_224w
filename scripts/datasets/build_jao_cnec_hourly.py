@@ -7,7 +7,7 @@ Output: staging/jao_cnec_hourly/jao_cnec_hourly.parquet
 
 The rules are documented in the dataset doc (jao_cnec_hourly.md); this file is the executable version.
 
-    scripts/build_jao_cnec_hourly.py [--src staging/jao_cwe_core_hourly_views] [--out staging/jao_cnec_hourly]
+    scripts/datasets/build_jao_cnec_hourly.py [--src staging/jao_cwe_core_hourly_views] [--out staging/jao_cnec_hourly]
 """
 import argparse
 import sys
@@ -16,7 +16,7 @@ from pathlib import Path
 import pandas as pd
 import pyarrow.parquet as pq
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 from epgnn.jao import SOURCE_ZONES, SYNTHETIC, ZONES  # noqa: E402
 
 

@@ -11,18 +11,18 @@ Manifest (tracked):     configs/datasets.json                        which versi
 Code resolves paths with `epgnn.paths.dataset_path(name, filename)`, never by hand.
 
 Usage:
-    scripts/datasets.py pull                     # every dataset at the version pinned in the manifest
-    scripts/datasets.py pull weather_hourly      # one dataset, manifest version
-    scripts/datasets.py pull weather_hourly@v1.1 # one dataset, a specific version (manifest untouched)
-    scripts/datasets.py pull --latest            # newest version in the bucket for every dataset
-    scripts/datasets.py pull --latest --pin      # ...and write those versions into the manifest
-    scripts/datasets.py pull --prune             # also delete local copies of other versions
-    scripts/datasets.py pull --verify            # md5-check local files instead of trusting size
-    scripts/datasets.py push weather_hourly v1.2 # upload everything in staging/weather_hourly/ as weather_hourly/v1.2
-    scripts/datasets.py clean                    # delete datasets/ files not at a pinned version, and
+    scripts/datasets/datasets.py pull                     # every dataset at the version pinned in the manifest
+    scripts/datasets/datasets.py pull weather_hourly      # one dataset, manifest version
+    scripts/datasets/datasets.py pull weather_hourly@v1.1 # one dataset, a specific version (manifest untouched)
+    scripts/datasets/datasets.py pull --latest            # newest version in the bucket for every dataset
+    scripts/datasets/datasets.py pull --latest --pin      # ...and write those versions into the manifest
+    scripts/datasets/datasets.py pull --prune             # also delete local copies of other versions
+    scripts/datasets/datasets.py pull --verify            # md5-check local files instead of trusting size
+    scripts/datasets/datasets.py push weather_hourly v1.2 # upload everything in staging/weather_hourly/ as weather_hourly/v1.2
+    scripts/datasets/datasets.py clean                    # delete datasets/ files not at a pinned version, and
                                                  #   staging/<dataset>/ dirs whose files are already pushed
-    scripts/datasets.py clean -n                 # ...just show what would be deleted
-    scripts/datasets.py status                   # local vs manifest vs bucket
+    scripts/datasets/datasets.py clean -n                 # ...just show what would be deleted
+    scripts/datasets/datasets.py status                   # local vs manifest vs bucket
 
 A file already on disk with the expected size is not downloaded again.
 
@@ -44,7 +44,7 @@ from pathlib import Path
 
 from google.cloud import storage
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 MANIFEST = ROOT / "configs" / "datasets.json"
 LOCAL = ROOT / "datasets"
 STAGING = ROOT / "staging"

@@ -1,4 +1,4 @@
-"""Helpers shared by the scripts/build_agg_*.py scripts: provenance table and doc writing."""
+"""Helpers shared by the scripts/datasets/build_agg_*.py scripts: provenance table and doc writing."""
 from pathlib import Path
 
 from epgnn.paths import manifest

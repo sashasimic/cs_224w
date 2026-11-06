@@ -1,6 +1,6 @@
 """Shared rules for the JAO flow-based constraint datasets (jao_cnec_hourly).
 
-The build script in scripts/ imports these so the rules live in one place; the dataset doc
+The build scripts in scripts/datasets/ import these so the rules live in one place; the dataset doc
 describes the same rules in words. NEIGHBOURS is the AC-border table for zone-to-zone PTDF spreads.
 """
 import re
