@@ -3,10 +3,10 @@
 | | |
 |---|---|
 | Dataset id | `entsoe_prices` |
-| Version | **v1.1** |
-| Bucket | `gs://cs224w-epgnn-datasets/entsoe_prices/v1.1/` |
-| Local file(s) | `datasets/entsoe_prices_v1.1.parquet`, `datasets/entsoe_prices_v1.1.md` |
-| Source | ENTSO-E Transparency Platform, day-ahead prices, Jan 2016 – Sep 2025 |
+| Version | **v1.2** |
+| Bucket | `gs://cs224w-epgnn-datasets/entsoe_prices/v1.2/` |
+| Local file(s) | `datasets/entsoe_prices_v1.2.md`, `datasets/entsoe_prices_v1.2.parquet` |
+| Source | ENTSO-E Transparency Platform, day-ahead prices, Jan 2016 – Oct 2026 |
 
 ```python
 from epgnn.paths import dataset_path
@@ -19,10 +19,11 @@ Version history:
 |---|---|
 | v1.0 | first clean build: auction selection, currency conversion, hourly grid, gaps flagged (sections 1–5 below) |
 | v1.1 | 74 conflicts resolved, 4,115 placeholder prices masked, short gaps patched for inputs, `row_status`/`fix_*` columns (see *What changed in v1.1*) |
+| v1.2 | range extended to Oct 2026 (13 months, 15-min prices averaged to hourly), Moldova added, same schema; overlap identical to v1.1; known issue: IT-SACODC 1,700 €/MWh plateau not masked, UA-IPS not converted after Sep 2025 (see *What changed in v1.2*) |
 
 ---
 
-Source: ENTSO-E Transparency Platform, day-ahead prices. Archive: January 2016 – September 2025.
+Source: ENTSO-E Transparency Platform, day-ahead prices. Archive: January 2016 – October 2026 (v1.0/v1.1: to September 2025).
 
 ## 1. What the raw `energyprices` table describes
 
@@ -315,3 +316,80 @@ That's more than the proposal's 25, so zones can be chosen freely.
 - **IT-Calabria:** only from 2021.
 
 So the **33 ready zones** cover the full 2016 – Sep 2025 range with no extra work. Add **DE-LU and AT** with one of the two tweaks above, since Germany is central to the graph.
+
+## What changed in v1.2
+
+Same format and rules as v1.1, with the date range extended to **1 Jan 2016 – 31 Oct 2026** (Brussels-time market days; UTC hours 2016-01-01 00:00 to 2026-10-31 22:00). Built from a fresh download of the raw ENTSO-E day-ahead price files (130 monthly files, 2016_01 … 2026_10).
+
+### Same as v1.1
+
+- **Schema:** identical: the same 19 columns in the same order with the same types. Code written for v1.1 runs unchanged.
+- **Values:** for every hour v1.1 covers, v1.2 is identical to v1.1 in all columns except `IssueIDs` (renumbered, see below) and 376 IT-SACODC hours (see *What's different*).
+- **Rules:** before applying them, the v1.0 rules were re-run on the new raw files over the v1.0 period. The result was identical to v1.0 (table, issue log and zone summary), so later ENTSO-E updates did not change any historical value.
+
+### What's different from v1.1
+
+| # | Change | Rows |
+|---|---|---|
+| 1 | **13 more months:** Oct 2025 – Oct 2026. Day-ahead prices moved to 15-minute steps on 1 Oct 2025; they're averaged to hourly, as before (`Averaged four 15-minute prices`). | +674,834 rows |
+| 2 | **New zone:** Moldova (MD, `10Y1001A1001A990`), with sparse data from Dec 2025. | 62 zones (v1.1: 61) |
+| 3 | **One new conflict resolved:** Belgium, 25 Oct 2026 01:00 UTC (clock-change night). Two versions were published, on 24 and 27 Oct; the later one was used (−0.61 vs −0.70 and −0.70 vs 0.00 €/MWh for the last two quarters), and it's closer to FR/NL/DE-LU that hour. | 1 h |
+| 4 | **UA-IPS not converted after Sep 2025:** Ukraine still reports in UAH, and the exchange-rate sources couldn't be reached from the build environment. These hours keep their UAH price in `PriceOriginal`; `PriceEUR` is blank, `IsValidTarget` = False, `row_status` = `MASKED_UNFILLED`, `fix_reason` = `FX_RATE_UNAVAILABLE_NOT_CONVERTED`, and the issue is `FXRateUnavailable`. | 9,482 h |
+| 5 | **More placeholder prices masked:** IT-SACODC has 6 new plateau runs (≥ 1,750 €/MWh), and Ireland has 1 new full day of exact zeros (Oct 2026). | +421 plateau h, +24 zero h |
+| 6 | **IT-SACODC, Sep 2025:** 376 plateau hours that were the end of the data in v1.1 now fall inside the zone's lifetime, because the zone continues. They change from `OUTSIDE_ZONE_LIFETIME` to `MASKED_UNFILLED` (`GAP_GT_48H_NOT_FILLED`). Prices are unchanged (still masked). | 376 h |
+| 7 | **Issue IDs renumbered:** new issues are inserted per zone, so `ISS-xxxxx` numbers differ from v1.1. Version entries are `ISS-V12-001` (edge hour dropped) and `ISS-V12-002` (partial first market day). | — |
+| 8 | **New column in the zone summary:** `FXUnavailableHours`. | — |
+
+**New gaps in 2026,** kept blank as before:
+- 7 Aug 2026 missing for all Italian zones and Kosovo
+- Ireland 29 Oct
+- Sardinia 21 Sep
+- Albania 24 May and 14 Sep
+
+**Many more identical duplicate records since Oct 2025** (61,172 vs 190 before). They're collapsed as before. In 2026, DK1 and DK2 also publish a second auction series (sequence 2), excluded by the same rule as EXAA.
+
+### Known issue: IT-SACODC plateau at 1,700 €/MWh not masked
+
+`IT-SACODC` reports exactly **1,700.0 €/MWh for 1,056 hours in Sep–Oct 2026** and these rows are marked `VALID` (`IsValidTarget` = True). This is a placeholder plateau like the ones masked in v1.1, but it sits just under the plateau rule's 1,750 €/MWh threshold, so the rule did not catch it. The zone's monthly mean jumps from ~180 to ~1,300 €/MWh in those two months.
+
+`IT-SACODC` is a cable link, not one of the project's model zones, so this does not affect any target or input the model uses. Anyone using that zone should mask `IT-SACODC` hours with `PriceEUR == 1700` in Sep–Oct 2026. To be fixed in a rebuild (lower the plateau threshold, e.g. any run of ≥ 48 identical hours at ≥ 1,000 €/MWh), together with the UA-IPS currency conversion.
+
+### Verification against v1.1 (done before pushing)
+
+- Schema byte-identical to v1.1 (19 columns, same order and Arrow types).
+- Full grid: 62 zones × 94,967 hours = 5,887,954 rows, no duplicate (zone, hour) keys, no hour gaps; every zone has 24 hours on the first and last market day; DST days are 23 h (2026-03-29) and 25 h (2025-10-26, 2026-10-25).
+- Overlap (2016-01-01 → 2025-09-30, 61 zones, 5,213,182 rows): every v1.1 key present exactly once; `PriceOriginal`, `PriceEUR`, `PriceEUR_input`, `IsValidTarget`, `Currency`, `FXRateDate`, `CoverageMinutes`, `MarketDayCET`, `is_filled`, `fill_source_hour_utc`, `fill_lag_days`, `TransformationNote` all identical. Only `IssueIDs`/`fix_detail` (renumbered) and the 376 IT-SACODC status labels differ, as declared above.
+- Extension (Oct 2025 – Oct 2026): all live rows are 15-min averages with `CoverageMinutes` = 60; `IsValidTarget` consistent with `row_status`; no valid row with a blank `PriceEUR`. Price levels are 10–40 €/MWh above the preceding 12 months in every zone (Nordics more), consistent across coupled zones; the −500 €/MWh floor is hit by 10 coupled zones on 2026-05-01, the ≥ 900 €/MWh spikes are Baltic (Oct 2025) and SEE (2026-06-30) clusters. Gaps match the list above.
+
+### Counts (v1.2)
+
+| row_status | rows |
+|---|---|
+| VALID | 4,441,254 |
+| VALID_CORRECTED | 75 |
+| MASKED_FILLED | 1,902 |
+| MASKED_UNFILLED | 26,791 |
+| OUTSIDE_ZONE_LIFETIME | 1,417,932 |
+| **Total** | **5,887,954** (62 zones × 94,967 hours) |
+
+| fix_reason code | hours |
+|---|---|
+| `CONFLICT_RESOLVED_LATEST_UPDATE` | 75 (MK 72, AL 1, XK 1, BE 1) |
+| `SUSPECT_ZERO_RUN_MASKED` | 216 |
+| `PLACEHOLDER_PLATEAU_MASKED` | 4,344 |
+| `INPUT_FILLED_RULE_B` | 1,902 |
+| `GAP_GT_48H_NOT_FILLED` | 14,551 |
+| `PL_PENDING_TGE_RECOVERY_NOT_FILLED` | 2,742 |
+| `NO_SOURCE_WITHIN_7D_NOT_FILLED` | 16 |
+| `FX_RATE_UNAVAILABLE_NOT_CONVERTED` | 9,482 |
+
+### Companion files (not in the bucket)
+
+The build also produced `issue_log_v1.2.csv` (514 issues), `zone_summary_v1.2.csv`, `conflict_resolutions_v1.2.csv`, `conflicting_source_records.csv`, `exchange_rates.csv` (ends 2025-09-29), `build_rules.md` and the build scripts (`merge_raw.py`, `b10.py`, `b11.py`, `verify12.py`, `cmp12.py`). Only the parquet and this doc were delivered for v1.2; ask the builder for the rest if needed.
+
+### Open items
+
+- **IT-SACODC Sep–Oct 2026:** mask the 1,700 €/MWh plateau (see *Known issue* above).
+- **UA-IPS, Oct 2025 onwards:** add NBU UAH/EUR rates to `exchange_rates.csv` and rebuild to convert those 9,482 hours.
+- **Poland 2016–17:** still masked, pending recovery from TGE.
+- **Deferred zone and period decisions**, unchanged: zone lifetimes, the DE-AT-LU split, Austria before Oct 2018, the legacy Irish market, the Ukrainian areas, the special Italian areas, Moldova (new and sparse).

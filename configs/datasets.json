@@ -3,15 +3,15 @@
   "bucket": "cs224w-epgnn-datasets",
   "datasets": {
     "entsoe_prices": {
-      "version": "v1.1",
+      "version": "v1.2",
       "files": {
-        "entsoe_prices.parquet": {
-          "md5": "3jcE9TQ/sN2KacRTBT5VPw==",
-          "size": 43266254
-        },
         "entsoe_prices.md": {
-          "md5": "auwwbrlupWDzYP+8hTCBTw==",
-          "size": 25836
+          "md5": "T/DxBcg+5xVCCI9idI7gFQ==",
+          "size": 32852
+        },
+        "entsoe_prices.parquet": {
+          "md5": "b/P5uhqjw38oKYqMyUoJhw==",
+          "size": 51649658
         }
       }
     },
