@@ -2,7 +2,16 @@
 
 A spatio-temporal graph model of European day-ahead electricity markets. Stanford CS224W, Fall 2026, Project 1.
 
-**Task.** Predict the next day's 24 hourly day-ahead prices for ~38 European bidding zones using only information available at noon the day before. Zones are nodes in a graph connected by interconnectors (and, later, by flow-based transmission constraints). See [docs/milestone-plan.md](docs/milestone-plan.md) for the current plan.
+**Task.** Predict the next day's 24 hourly day-ahead prices for European bidding zones using only information available at noon the day before (gate closure). The graph has two node types: **zones** (price, load-forecast and weather history), connected by **interconnector edges** (physical flows), and **transmission constraints** from the JAO flow-based domain, each connected to the zones that load it with the PTDF as edge weight. Hypotheses: H1 the graph beats neighbours-as-features; H2 published constraints improve cross-border spread forecasts; H3 heat stress raises prices and spreads most under stress.
+
+## Current state (6 Nov 2026)
+
+- **Data is in place.** ENTSO-E prices, load forecasts and physical flows (Jan 2016 – Oct 2026), per-zone PECD/ERA5 weather (to Sep 2026) and JAO flow-based constraints (CWE + Core, May 2015 – Oct 2026) are cleaned, documented and versioned in the bucket (see *Data*).
+- **Model tables.** `zone_nodes_hourly` and `zone_edges_hourly` are the per-(zone, hour) and per-(border, hour) inputs the model reads; `jao_cnec_hourly` supplies the constraint nodes. All three share the same zone codes (`DE_LU`, `NO_1`, `IT_NORD`, ...) and UTC hours.
+- **Split** ([configs/splits.json](configs/splits.json)): pretrain 2016-01-01 – 2022-06-08 (no Core constraints yet), train 2022-06-09 – 2024-03-31, validation 2024-04-01 – 2025-03-31, test 2025-04-01 – 2026-09-30 (two summers). Tables stay whole; loaders filter by date.
+- **Decided:** no shadow prices (JAO does not publish them for these domains; constraint nodes carry RAM and Fmax). Zone ids are the weather/JAO codes. Germany before Oct 2018 is the joint DE-AT-LU zone, reported under `DE_LU`.
+- **Open:** ENTSO-E wind/solar day-ahead forecasts and transfer capacities (NTC) are not pulled yet (weather capacity factors and JAO `maxbex` stand in); whether the detailed JAO domain is published before gate closure is unverified (fallback: use day D-1's constraints); whether to use CWE-era constraints in training or treat 2016-22 as constraint-free pretraining.
+- **Not yet started:** the model code (loader, GRU + GATv2 hetero model, baselines, evaluation).
 
 ## Repository layout
 
@@ -25,9 +34,7 @@ cs_224w/
 ├── datasets/                # pulled from GCS: data files AND their docs,
 │                            #   e.g. zone_nodes_hourly_v1.0.parquet (gitignored), zone_nodes_hourly_v1.0.md (tracked)
 ├── staging/                 # drop files here to push a new dataset version (gitignored)
-├── docs/
-│   ├── milestone-plan.md    # what we build for the 11/10 milestone, and why
-│   └── jao.md               # background on the JAO flow-based constraint data
+├── tmp/                     # local scratch (gitignored)
 └── lectures/                # course notes and the proposal (gitignored, course material)
 ```
 
@@ -97,7 +104,7 @@ These two are the model's zone-node and zone-edge tables (Sophie-An's build). Co
 | `agg_zones_hourly` | v1.0 | our own join of prices + load + weather per (zone, hour), 44 zones; built by `scripts/build_agg_zones_hourly.py` (cross-check for `zone_nodes_hourly`) |
 | `agg_zone_edges_hourly` | v1.0 | our own flows per (zone_from, zone_to, hour), 174 directed pairs; built by `scripts/build_agg_zone_edges_hourly.py` (cross-check for `zone_edges_hourly`) |
 
-Each has a doc next to it in the bucket (`<dataset>.md`), pulled with the data. Background on the raw JAO data: [docs/jao.md](docs/jao.md).
+Each has a doc next to it in the bucket (`<dataset>.md`), pulled with the data; the docs are the reference for schema, cleaning rules, known gaps and how the tables were derived from each other.
 
 ### Pulling data
 
@@ -115,33 +122,33 @@ scripts/datasets.py status                # local vs manifest vs bucket
 
 `pull` never re-downloads a file that is already on disk with the expected size, so it costs nothing to run after every `git pull`: if someone bumped a version in the manifest you get the new file, otherwise it's a no-op. Pass `--verify` to MD5-check local files too (slow, reads every file). Downloads are always MD5-checked.
 
-Only one version of each dataset is pulled at a time. Pulling a different version adds a second local file (`weather_hourly_v1.2.parquet` next to `_v1.1`). `clean` deletes every local file that isn't at the manifest's pinned version; `pull --prune` does the same for just the dataset being pulled.
+Only one version of each dataset is pulled at a time. Pulling a different version adds a second local file (`zone_nodes_hourly_v1.1.parquet` next to `_v1.0`). `clean` deletes every local file that isn't at the manifest's pinned version; `pull --prune` does the same for just the dataset being pulled.
 
 ### Pushing a new version
 
-When you have a new build of a dataset, for example weather at per-bidding-zone resolution:
+When you have a new build of a dataset, for example a rebuilt node table:
 
 ```bash
 # 1. stage the data file(s) and the doc, with unversioned names
-staging/weather_hourly/
-├── weather_hourly.parquet
-└── weather_hourly.md     # start from datasets/weather_hourly_v1.1.md; add a version-history row:
-                          #   | v1.2 | <what changed> |
+staging/zone_nodes_hourly/
+├── zone_nodes_hourly.parquet
+└── zone_nodes_hourly.md  # start from datasets/zone_nodes_hourly_v1.0.md; add a version-history row:
+                          #   | v1.1 | <what changed> |
 # 2. push
-scripts/datasets.py push weather_hourly v1.2
+scripts/datasets.py push zone_nodes_hourly v1.1
 # 3. commit the manifest and the versioned doc copy that push wrote
-git add configs/datasets.json datasets/weather_hourly_v1.2.md
-git commit -m "weather_hourly v1.2: <what changed>"
+git add configs/datasets.json datasets/zone_nodes_hourly_v1.1.md
+git commit -m "zone_nodes_hourly v1.1: <what changed>"
 git push
 ```
 
 What `push` does:
 
-1. **Refuses unless `staging/weather_hourly/weather_hourly.md` exists and has a history row for the new version.** This is the only thing you write by hand: one line saying what changed. Without it the push stops before uploading anything. For a brand-new dataset it prints a doc template to start from.
+1. **Refuses unless `staging/zone_nodes_hourly/zone_nodes_hourly.md` exists and has a history row for the new version.** This is the only thing you write by hand: one line saying what changed. Without it the push stops before uploading anything. For a brand-new dataset it prints a doc template to start from.
 2. Rewrites the mechanical header lines of the doc (version, bucket path, local filenames) so they can't go stale.
-3. Uploads everything in `staging/weather_hourly/` to `weather_hourly/v1.2/`. It won't overwrite a version that already exists (`--force` to override; object versioning on the bucket means even that is recoverable).
+3. Uploads everything in `staging/zone_nodes_hourly/` to `zone_nodes_hourly/v1.1/`. It won't overwrite a version that already exists (`--force` to override; object versioning on the bucket means even that is recoverable).
 4. Updates `configs/datasets.json` with the new version, checksums and sizes.
-5. Copies the staged files into `datasets/` under their versioned names, so you don't re-download what you just uploaded. The data file is gitignored; the doc copy (`datasets/weather_hourly_v1.2.md`) is tracked, so commit it with the manifest. `scripts/datasets.py clean` then removes `staging/weather_hourly/`, since its files now match the pinned version; a staging dir that hasn't been pushed is never deleted.
+5. Copies the staged files into `datasets/` under their versioned names, so you don't re-download what you just uploaded. The data file is gitignored; the doc copy (`datasets/zone_nodes_hourly_v1.1.md`) is tracked, so commit it with the manifest. `scripts/datasets.py clean` then removes `staging/zone_nodes_hourly/`, since its files now match the pinned version; a staging dir that hasn't been pushed is never deleted.
 6. Teammates get the new data and doc on their next `git pull && scripts/datasets.py pull`.
 
 Conventions:
