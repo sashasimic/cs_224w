@@ -3,10 +3,10 @@
 | | |
 |---|---|
 | Dataset id | `entsoe_physical_flows` |
-| Version | **v1.1** |
-| Bucket | `gs://cs224w-epgnn-datasets/entsoe_physical_flows/v1.1/` |
-| Local file(s) | `datasets/entsoe_physical_flows_v1.1.parquet`, `datasets/entsoe_physical_flows_v1.1.md` |
-| Source | ENTSO-E Transparency Platform, `PhysicalFlows`, Jan 2016 – Sep 2025 |
+| Version | **v1.2** |
+| Bucket | `gs://cs224w-epgnn-datasets/entsoe_physical_flows/v1.2/` |
+| Local file(s) | `datasets/entsoe_physical_flows_v1.2.md`, `datasets/entsoe_physical_flows_v1.2.parquet` |
+| Source | ENTSO-E Transparency Platform, `PhysicalFlows`, Jan 2016 – Oct 2026 |
 
 ```python
 from epgnn.paths import dataset_path
@@ -19,10 +19,11 @@ Version history:
 |---|---|
 | v1.0 | first clean build: hourly averaging, both directions kept, zeros kept |
 | v1.1 | short gaps patched for inputs, `FlowMW_input` and `row_status`/`fix_*` columns |
+| v1.2 | range extended to Oct 2026 (13 months), same schema and rules; overlap identical to v1.1 except ENTSO-E-revised Serbian/Croatian border hours; NL→BE conflicts resolved (see *What changed in v1.2*) |
 
 ---
 
-Source: ENTSO-E Transparency Platform, `PhysicalFlows`. Archive: January 2016 – September 2025.
+Source: ENTSO-E Transparency Platform, `PhysicalFlows`. Archive: January 2016 – October 2026 (v1.0/v1.1: to September 2025).
 
 ## Raw table description
 
@@ -271,3 +272,75 @@ Links between the candidate zones (the 33 core zones plus DE-LU, AT, PL, HR, BG,
 - **Timing:** at noon on D-1, flows are only known up to about 11:00 that morning. Build flow history with that cutoff.
 
 **Bottom line across all three tables (prices, load, flows):** the 33 core zones, plus DE-LU and AT with the Germany tweak, have prices, load and links ready for the whole period. The only exceptions are Ireland (load missing for validation and test) and Sicily (no link unless Calabria is added).
+
+## What changed in v1.2
+
+Same format and rules as v1.1, with the date range extended to **1 Jan 2016 – 31 Oct 2026** (Brussels-time market days; UTC hours 2016-01-01 00:00 to 2026-10-31 22:00). The data is ENTSO-E PhysicalFlows (12.1.G) for 426 directed area pairs, built from a fresh raw download (130 monthly files, 2016_01 … 2026_10). It matches `entsoe_prices` v1.2 and `entsoe_load_forecast` v1.2.
+
+### Same as v1.1
+
+- **Schema:** identical: the same 24 columns in the same order with the same types, and still one Parquet row group per directed pair. The issue log and pair summary keep their v1.1 columns.
+- **Values:** for every hour v1.1 covers, v1.2 equals v1.1, except where ENTSO-E has since revised the source (see below). Issue IDs are also renumbered.
+- **Rules:** before applying them, the v1.0 rules were re-run on the new raw files over the v1.0 period. They reproduced v1.0 exactly, apart from those revisions.
+- **Extreme-value screen:** uses **frozen thresholds** (`ExtremeThresholdMW` from v1.1). Still no hour is screened out.
+- **Float noise:** where the recomputed hourly average differs from v1.1 only by floating-point noise (≤ 1e-9 relative, 42,902 values), the v1.1 value is kept.
+- **Still no masking for flows:** zeros, week-long constant runs and all-zero pairs stay valid, as in v1.1.
+
+### What's different from v1.1
+
+| # | Change | Rows |
+|---|---|---|
+| 1 | **13 more months:** Oct 2025 – Oct 2026 | +4,049,130 rows (426 pairs × 9,505 h) |
+| 2 | **ENTSO-E revisions in the v1.1 period:** Serbia's borders (AL, BA, BG, ME, MK, RO; Jul 2017 – Jan 2024) have revised values, and 128 hours that were missing are now published and valid. Croatia ↔ Bosnia / Slovenia / Serbia have small revisions (Apr – Aug 2025). | 875 values |
+| 3 | **UA-WEPS (Burshtyn island)** is now published with a display name (`UA-BEI`). Its type label is still blank, so it keeps its `MissingAreaMetadata` issue. | 6 pairs (names only) |
+| 4 | **IT-Centre-North ↔ IT-SACODC, 15–30 Sep 2025:** these 373 h each way were the end of the data in v1.1. The pair continues, so they now fall inside its lifetime and change from `OUTSIDE_ZONE_LIFETIME` to `MASKED_UNFILLED` (`GAP_GT_48H_NOT_FILLED`). | 746 h |
+| 5 | **New: NL → BE conflicts (30 Jun – 7 Aug 2026).** ENTSO-E published two versions of these hours: hourly values in July, then 15-minute values in August. Under the v1.0 rules the hour becomes blank. As with prices, v1.1 rules resolve it with the **latest-updated version** (the 15-minute data). These hours get `row_status` = `VALID_CORRECTED`, `fix_reason` = `CONFLICT_RESOLVED_LATEST_UPDATE`, and both versions in `fix_detail`. The versions differ by 0.16 MW (median) and at most 11.6 MW. Every hour is listed in `conflict_resolutions_v1.2.csv`. | 841 h |
+| 6 | **New: agreeing duplicates at two resolutions.** For BE → NL (924 h) and NL → BE (83 h), the hourly record equals the mean of the four 15-minute records. It is collapsed like an identical duplicate (v1.0 rule), counted in `AgreeingDuplicatesRemoved`, and noted in `TransformationNote`. The hour stays `VALID`. | 1,007 h |
+| 7 | **Issue IDs renumbered.** New issues are inserted per pair, so `FLOW-xxxxxx` numbers differ from v1.1. The version entries are `FLOW-V12-001` (edge hour dropped) and `FLOW-V12-002` (partial first market day). | — |
+
+What is new in the 13 months, kept as in v1.1:
+- 2,360 internal gaps (24,703 h)
+- 1,041 partial hours, mostly on the Italian virtual-area links and NL ↔ GB/UK
+- 2 new week-long constant runs, NL → GB and NL → UK, 6–15 Sep 2026
+- 6 more `BothDirectionsPositive` pairs: SE ↔ DE(TenneT), SE ↔ DE and SE4 ↔ DE-LU
+- **Latvia ↔ Russia** stops reporting on 30 Oct 2025; the hours after that are `OUTSIDE_ZONE_LIFETIME`
+
+### Verification against v1.1 (done before pushing)
+
+- Schema identical to v1.1 (24 columns, same order and Arrow types).
+- Full grid: 426 directed pairs × 94,967 hours = 40,455,942 rows, same 426 pairs as v1.1, no duplicate (pair, hour) keys, no hour gaps; every pair has 24 hours on the first and last market day; DST days are 23 h (2026-03-29) and 25 h (2025-10-26, 2026-10-25).
+- Overlap (2016-01-01 → 2025-09-30, 36,406,812 rows): every v1.1 key present exactly once. `FlowMW` differs on 875 rows, all on Serbia's borders (AL, BA, BG, ME, MK, RO, HR; Jul 2017 – Jan 2024, Aug 2025) and HR ↔ BA / SI (Apr – Jun 2025): 747 revised values (median |Δ| 2.7 MW, max 358 MW) and 128 newly published hours (`MASKED_FILLED` → `VALID`). `SourceUpdateTime*` changed on 1,728 rows on the same borders (republished, values mostly unchanged). 746 IT-Centre-North ↔ IT-SACODC hours (15–30 Sep 2025) moved `OUTSIDE_ZONE_LIFETIME` → `MASKED_UNFILLED`, still masked. The UA-WEPS endpoint gained the display name `UA-BEI` on 6 pairs. Everything else identical apart from renumbered `IssueIDs`.
+- Extension (Oct 2025 – Oct 2026): `IsValidValue` consistent with `row_status`; no valid row with a blank value; `FlowMW_input` equals `FlowMW` wherever valid; the 841 `VALID_CORRECTED` hours are all NL → BE, 30 Jun – 7 Aug 2026, as declared. Of the 60 bidding-zone pairs live in the extension, all but the IT-SACODC/SACOAC cable pairs are ≥ 98.5% valid. Per-direction mean flows move a lot year-on-year on Nordic/DE-DK borders (hydro year; e.g. NO2 → NO1 ×4), but 99th-percentile flows stay within interconnector capacity, so these are real dispatch changes, not scaling errors. No constant non-zero runs ≥ 7 days on bidding-zone pairs. All 360 pairs that were live on 30 Sep 2025 continue into the extension; Latvia ↔ Russia ends 30 Oct 2025, and 8 DK/GB-related pairs are missing only the final hour (2026-10-31 22:00 UTC).
+
+### Counts (v1.2)
+
+| row_status | rows |
+|---|---|
+| VALID | 31,414,052 |
+| VALID_CORRECTED | 841 |
+| MASKED_FILLED | 37,954 |
+| MASKED_UNFILLED | 245,535 |
+| OUTSIDE_ZONE_LIFETIME | 8,757,560 |
+| **Total** | **40,455,942** (426 pairs × 94,967 hours) |
+
+| fix_reason code | hours |
+|---|---|
+| `CONFLICT_RESOLVED_LATEST_UPDATE` | 841 |
+| `INPUT_FILLED_RULE_B` | 37,954 |
+| `GAP_GT_48H_NOT_FILLED` | 243,198 |
+| `NO_SOURCE_WITHIN_7D_NOT_FILLED` | 2,337 |
+
+### Companion files (not in the bucket)
+
+The build also produced `issue_log_v1.2.csv` (16,716 issues; new type `ConflictingRecords`), `pair_summary_v1.2.csv` (`ExtremeThresholdMW` = the frozen threshold), `conflict_resolutions_v1.2.csv`, `build_rules.md` and the build scripts (`merge_raw_flows.py`, `f10.py`, `fconf.py`, `fb11.py`, `fverify12.py`, `fcmp12.py`, `fcmp10.py`). Only the parquet and this doc were delivered for v1.2; ask the builder for the rest if needed. There is no CSV copy of the table (≈ 6 GB).
+
+### Open items (unchanged)
+
+- **Timing / leakage:** actual flows for day D cannot be inputs for day D's prices. Build features relative to the D-1 noon cutoff. Original publication vintages are not available.
+- **Both directions positive** on 310 directed pairs: decide the netting convention before building edge features.
+- **Overlapping geographies:** countries and control areas sit alongside bidding zones; use bidding-zone pairs for graph edges.
+- **Deferred decisions:**
+  - pair lifetimes
+  - the DE-AT-LU split
+  - the Italian virtual areas
+  - the Ukrainian, Russian and Belarusian endpoints

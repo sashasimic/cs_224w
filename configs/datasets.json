@@ -29,15 +29,15 @@
       }
     },
     "entsoe_physical_flows": {
-      "version": "v1.1",
+      "version": "v1.2",
       "files": {
-        "entsoe_physical_flows.parquet": {
-          "md5": "36wVTQLCscnLbk2r1+Y3NA==",
-          "size": 324817826
-        },
         "entsoe_physical_flows.md": {
-          "md5": "1bcuHhsu7nUJqr5r+nWgcw==",
-          "size": 18280
+          "md5": "OnA7wMPWddWA539p54aVSg==",
+          "size": 25818
+        },
+        "entsoe_physical_flows.parquet": {
+          "md5": "/KvYtuoN4B2akaT3ZOOq4g==",
+          "size": 381565537
         }
       }
     },
