@@ -3,10 +3,10 @@
 | | |
 |---|---|
 | Dataset id | `entsoe_load_forecast` |
-| Version | **v1.1** |
-| Bucket | `gs://cs224w-epgnn-datasets/entsoe_load_forecast/v1.1/` |
-| Local file(s) | `datasets/entsoe_load_forecast_v1.1.parquet`, `datasets/entsoe_load_forecast_v1.1.md` |
-| Source | ENTSO-E Transparency Platform, `DayAheadTotalLoadForecast`, Jan 2016 – Sep 2025 |
+| Version | **v1.2** |
+| Bucket | `gs://cs224w-epgnn-datasets/entsoe_load_forecast/v1.2/` |
+| Local file(s) | `datasets/entsoe_load_forecast_v1.2.md`, `datasets/entsoe_load_forecast_v1.2.parquet` |
+| Source | ENTSO-E Transparency Platform, `DayAheadTotalLoadForecast`, Jan 2016 – Oct 2026 |
 
 ```python
 from epgnn.paths import dataset_path
@@ -19,10 +19,11 @@ Version history:
 |---|---|
 | v1.0 | first clean build: hourly averaging, zero/extreme screening, availability unverified |
 | v1.1 | 404 flat-run hours masked, short gaps patched for inputs, `LoadForecastMW_input` and `row_status`/`fix_*` columns |
+| v1.2 | range extended to Oct 2026 (13 months), same schema and rules; overlap identical to v1.1 except 49 ENTSO-E-revised Serbia/Estonia hours (see *What changed in v1.2*) |
 
 ---
 
-Source: ENTSO-E Transparency Platform, `DayAheadTotalLoadForecast`. Archive: January 2016 – September 2025.
+Source: ENTSO-E Transparency Platform, `DayAheadTotalLoadForecast`. Archive: January 2016 – October 2026 (v1.0/v1.1: to September 2025).
 
 ## Raw table description
 
@@ -279,3 +280,62 @@ This table also has whole countries and control areas next to bidding zones. Exa
 For graph nodes, use only the bidding-zone rows that match the price zones.
 
 So the **33 core zones, plus DE-LU and AT**, have both prices and load ready for the full period. Ireland is the one zone that drops out because of load.
+
+## What changed in v1.2
+
+Same format and rules as v1.1, with the date range extended to **1 Jan 2016 – 31 Oct 2026** (Brussels-time market days; UTC hours 2016-01-01 00:00 to 2026-10-31 22:00). It's ENTSO-E DayAheadTotalLoadForecast (6.1.B) for 68 areas, built from a fresh raw download (130 monthly files, 2016_01 … 2026_10).
+
+### Same as v1.1
+
+- **Schema:** identical: the same 21 columns in the same order with the same types. The area summary, issue log and flagged-records files also keep their v1.1 columns.
+- **Values:** for every hour v1.1 covers, v1.2 equals v1.1, except where ENTSO-E has since revised the source (see below), plus renumbered issue IDs.
+- **Rules:** before applying them, the v1.0 rules were re-run on the new raw files over the v1.0 period. They reproduced v1.0 exactly, apart from those revisions.
+- **Extreme-value screen:** uses **frozen medians**. The 0.1× / 5× thresholds use each area's `PositiveMedianMW` from v1.1, not a median recomputed with the extra 13 months, so no v1.1-period hour changes validity because of the longer history.
+- **Float noise:** where the recomputed hourly average differs from v1.1 only by floating-point noise (≤ 1e-9 relative, 217,903 values), the v1.1 value is kept, so the v1.1 period is bit-identical.
+
+### What's different from v1.1
+
+| # | Change | Rows |
+|---|---|---|
+| 1 | **13 more months:** Oct 2025 – Oct 2026 | +646,408 rows (68 areas) |
+| 2 | **ENTSO-E revisions in the v1.1 period:** Serbia 3 Jul 2022 is now published (24 hours that were missing, now valid), 24 more Serbia hours on 22 Jul 2022 have revised values (+0.2–5%), and Estonia 30 Sep 2025 21:00 UTC is now sent as 15-minute data (same value) | 49 rows |
+| 3 | **Moldova** now has a matching price zone (electricity prices v1.2), so `ExactPriceAreaMatch` = True and it has no `NoExactPriceArea` issue | — |
+| 4 | **New screen flags in the new months:** 90 extreme runs in North Macedonia (319 h; forecasts near 0 MW, as low as 0.15), plus exact-zero days in Estonia (28 h) and Moldova (44 h). Masked by the unchanged v1.0 screens | — |
+| 5 | **Issue IDs renumbered:** new issues are inserted per area. The version entries are `LOAD-V12-001` (edge hour dropped) and `LOAD-V12-002` (partial first market day) | — |
+
+No new flat placeholder runs appeared after Sep 2025; the 404 masked hours are the same as in v1.1.
+
+### Verification against v1.1 (done before pushing)
+
+- Schema identical to v1.1 (21 columns, same order and Arrow types).
+- Full grid: 68 areas × 94,967 hours = 6,457,756 rows, no duplicate (area, hour) keys, no hour gaps; every area has 24 hours on the first and last market day; DST days are 23 h (2026-03-29) and 25 h (2025-10-26, 2026-10-25).
+- Overlap (2016-01-01 → 2025-09-30, 5,811,416 rows): every v1.1 key present exactly once; all columns identical except the 49 revised Serbia/Estonia rows listed above and renumbered `IssueIDs`/`fix_detail`.
+- Extension (Oct 2025 – Oct 2026): `IsValidValue` consistent with `row_status`, no valid row with a blank value, `CoverageMinutes` = 60 on all live rows (one 45-min hour). Validity 98–100% for every bidding zone used by the project; gaps are small and peripheral (Georgia, Moldova, North Macedonia near-zero runs, Cyprus Dec 2025, Belgium 96 h Nov–Dec 2025, Slovenia a few days). IE(SEM) and NIE stay empty, as before Oct 2025. 13-month mean within ±5% of the previous 12 months for nearly every area; IT-Calabria (+18%) and Latvia (+14%) are the largest moves and look like real level shifts, not errors.
+
+### Counts (v1.2)
+
+| row_status | rows |
+|---|---|
+| VALID | 5,661,209 |
+| MASKED_FILLED | 18,041 |
+| MASKED_UNFILLED | 194,644 |
+| OUTSIDE_ZONE_LIFETIME | 583,862 |
+| **Total** | **6,457,756** (68 areas × 94,967 hours) |
+
+| fix_reason code | hours |
+|---|---|
+| `PLACEHOLDER_FLAT_RUN_MASKED` | 404 |
+| `INPUT_FILLED_RULE_B` | 18,041 |
+| `GAP_GT_48H_NOT_FILLED` | 194,634 |
+| `NO_SOURCE_WITHIN_7D_NOT_FILLED` | 10 |
+
+### Companion files (not in the bucket)
+
+The build also produced `issue_log_v1.2.csv` (1,295 issues), `area_summary_v1.2.csv` (`PositiveMedianMW` = the frozen screening median), `flagged_source_records.csv` (6,410 raw zero/extreme intervals through Oct 2026), `build_rules.md` and the build scripts (`merge_raw_load.py`, `l10.py`, `lb11.py`, `lverify12.py`, `lcmp12.py`). Only the parquet and this doc were delivered for v1.2; ask the builder for the rest if needed.
+
+### Open items (unchanged)
+
+- **Forecast vintage unverified:** the recorded update times are all after delivery.
+- **Overlapping geographies:** countries and control areas sit alongside bidding zones; use bidding-zone rows for price nodes.
+- **Large gaps:** Ireland (IE(SEM), NIE and the Ireland country series), Cyprus, Albania, UK.
+- **Deferred area and period decisions:** area lifetimes, the DE-AT-LU split, the Ukrainian areas.

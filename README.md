@@ -75,7 +75,7 @@ so bumping a version in the manifest is the only change needed. `dataset_path` r
 | Dataset | Version | Contents | Doc |
 |---|---|---|---|
 | `entsoe_prices` | v1.2 | hourly day-ahead prices, 62 areas, Jan 2016 – Oct 2026 | [datasets/entsoe_prices_v1.2.md](datasets/entsoe_prices_v1.2.md) |
-| `entsoe_load_forecast` | v1.1 | hourly day-ahead load forecast, 68 areas | [datasets/entsoe_load_forecast_v1.1.md](datasets/entsoe_load_forecast_v1.1.md) |
+| `entsoe_load_forecast` | v1.2 | hourly day-ahead load forecast, 68 areas, Jan 2016 – Oct 2026 | [datasets/entsoe_load_forecast_v1.2.md](datasets/entsoe_load_forecast_v1.2.md) |
 | `entsoe_physical_flows` | v1.1 | hourly cross-border flows, 426 directed pairs | [datasets/entsoe_physical_flows_v1.1.md](datasets/entsoe_physical_flows_v1.1.md) |
 | `weather_hourly` | v1.1 | PECD/ERA5 hourly weather per bidding zone, 45 zones, 2010 – Sep 2026 | [datasets/weather_hourly_v1.1.md](datasets/weather_hourly_v1.1.md) |
 

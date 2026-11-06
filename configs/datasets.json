@@ -16,15 +16,15 @@
       }
     },
     "entsoe_load_forecast": {
-      "version": "v1.1",
+      "version": "v1.2",
       "files": {
-        "entsoe_load_forecast.parquet": {
-          "md5": "XSA/BKMbk9nAe4L6cOerCA==",
-          "size": 58910488
-        },
         "entsoe_load_forecast.md": {
-          "md5": "q1QBQ0TYNnStMW1ej0V75w==",
-          "size": 17883
+          "md5": "XmdPuwXLGybBV5Z+zlP+JQ==",
+          "size": 22951
+        },
+        "entsoe_load_forecast.parquet": {
+          "md5": "WDNjm7PA8IHcw1lEPHWZMA==",
+          "size": 67280354
         }
       }
     },
