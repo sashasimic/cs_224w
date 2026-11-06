@@ -58,8 +58,8 @@
       "version": "v1.0",
       "files": {
         "jao_zone_hourly.md": {
-          "md5": "lLHFofujIIwe1SsHBJs2pw==",
-          "size": 9743
+          "md5": "V5nBD/aET38q/qhYjap2Dg==",
+          "size": 9945
         },
         "jao_zone_hourly.parquet": {
           "md5": "I8RuHOy/WSzfU6+sYjQYDw==",
@@ -71,8 +71,8 @@
       "version": "v1.0",
       "files": {
         "jao_cnec_hourly.md": {
-          "md5": "MP/d6O52PNaHiW4tGfy97A==",
-          "size": 8111
+          "md5": "ltuSedclzEchuD/uJdm5qQ==",
+          "size": 8807
         },
         "jao_cnec_hourly.parquet": {
           "md5": "pY5bTNGHSQWoeTHkG77RTA==",

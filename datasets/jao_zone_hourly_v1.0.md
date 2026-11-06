@@ -106,6 +106,7 @@ Counts, stats and coverage (physical constraints per hour: CWE 16–25 typical, 
 ## Caveats
 
 - **AT in CWE (Oct 2018 – Jun 2022) is thin:** its only CWE neighbour is DE_LU and Austrian lines rarely appear in the CWE domain, so `cnec_avail` is 25–86% of hours in those years with typically 1–2 relevant constraints. Treat AT's constraint features as reliable from June 2022.
+- **Minimum-RAM floor from 2019:** `min_ratio` can go below 0.05 in 2015–2018 but is floored at 0.20 from 2019 (EU minRAM rule, CWE then Core). See the `jao_cnec_hourly` doc; feed the year or a flag.
 - **The other 26 project zones** (Nordics, Iberia, Italy, GB, SEE…) are never in the domain. They get no rows here; the model should give them `cnec_avail = 0` and zero features.
 - **CWE hours are derived**, not published: CWE files give delivery day + period, mapped to UTC via Europe/Brussels. Core hours are published UTC. The bundle's `timestamp_status` records this; the two are contiguous at the switch.
 - **Missing hours:** 120 hours in 2026 are absent from the source (`jao_hour = false`). The source covers 2015-05-20 → 2026-10-29, two days short of the ENTSO-E v1.2 datasets.
