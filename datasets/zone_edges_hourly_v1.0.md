@@ -73,7 +73,7 @@ Constraint nodes (checkpoint 4) come straight from `jao_core_hourly_views/jao_cn
 - **JAO:**
   - Core only, from 9 Jun 2022.
   - Five domain days are missing in 2026. About 98.6% of Core zone-hours from Oct 2025 have domain data.
-  - Shadow prices and published net-position bounds are not yet acquired.
+  - Published net-position bounds are not acquired.
 - **Load forecast vintage:** ENTSO-E update times are later than the delivery hours, so revisions after gate closure cannot be ruled out.
 - **Southern Norway:** NO_1, NO_2 and NO_5 have identical weather. The source data has only one zone covering all three.
 - **15-minute prices:** from 1 Oct 2025, each hourly price is the mean of four 15-minute prices, done in ENTSO-E v1.2. Italy and IE_SEM have 1–2 masked days.
