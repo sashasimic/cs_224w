@@ -81,7 +81,7 @@ The structure is in place; only the non-trainable persistence reference runs tod
 | Config | Checkpoint | Model | Status |
 |---|---|---|---|
 | `c1_persistence` | 1a | price one week earlier | done |
-| `c1_xgb_zone` | 1b | per-zone XGBoost, own features | to do |
+| `c1_xgb_zone` | 1b | per-zone XGBoost, own features | done: test MAE 21.2, rel 0.73 |
 | `c2_xgb_neighbours` | 2 | + neighbours' features | to do |
 | `c3_gat_interconnects` | 3 | GRU + GATv2 on the interconnector graph | to do |
 | `c3_gat_shuffled` | 3' | same, shuffled graph (control) | to do |
