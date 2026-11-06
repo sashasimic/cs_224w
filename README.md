@@ -22,7 +22,7 @@ cs_224w/
 │   ├── agg.py               # helpers for the agg_* build scripts (provenance table from the manifest)
 │   └── splits.py            # the chronological split (pretrain / train / val / test), defined once
 ├── datasets/                # pulled from GCS: data files AND their docs,
-│                            #   e.g. weather_hourly_v1.1.parquet (gitignored), weather_hourly_v1.1.md (tracked)
+│                            #   e.g. zone_nodes_hourly_v1.0.parquet (gitignored), zone_nodes_hourly_v1.0.md (tracked)
 ├── staging/                 # drop files here to push a new dataset version (gitignored)
 ├── docs/
 │   ├── milestone-plan.md    # what we build for the 11/10 milestone, and why
@@ -63,42 +63,48 @@ Locally the files are flat with the version appended, so `ls datasets/` shows wh
 
 ```
 datasets/
-├── entsoe_prices_v1.1.parquet        entsoe_prices_v1.1.md
-├── entsoe_load_forecast_v1.1.parquet entsoe_load_forecast_v1.1.md
-├── entsoe_physical_flows_v1.1.parquet entsoe_physical_flows_v1.1.md
-└── weather_hourly_v1.1.parquet                   weather_hourly_v1.1.md
+├── zone_nodes_hourly_v1.0.parquet   zone_nodes_hourly_v1.0.md
+└── zone_edges_hourly_v1.0.parquet   zone_edges_hourly_v1.0.md
 ```
 
 Code never hardcodes these paths. It asks the manifest, using the version-free name:
 
 ```python
 from epgnn.paths import dataset_path
-prices = pd.read_parquet(dataset_path("entsoe_prices", "entsoe_prices.parquet"))
-# -> datasets/entsoe_prices_v1.1.parquet
+nodes = pd.read_parquet(dataset_path("zone_nodes_hourly", "zone_nodes_hourly.parquet"))
+# -> datasets/zone_nodes_hourly_v1.0.parquet
 ```
 
 so bumping a version in the manifest is the only change needed. `dataset_path` raises if the file isn't pulled or isn't part of that dataset.
 
 | Dataset | Version | Contents | Doc |
 |---|---|---|---|
-| `entsoe_prices` | v1.2 | hourly day-ahead prices, 62 areas, Jan 2016 – Oct 2026 | [datasets/entsoe_prices_v1.2.md](datasets/entsoe_prices_v1.2.md) |
-| `entsoe_load_forecast` | v1.2 | hourly day-ahead load forecast, 68 areas, Jan 2016 – Oct 2026 | [datasets/entsoe_load_forecast_v1.2.md](datasets/entsoe_load_forecast_v1.2.md) |
-| `entsoe_physical_flows` | v1.2 | hourly cross-border flows, 426 directed pairs, Jan 2016 – Oct 2026 | [datasets/entsoe_physical_flows_v1.2.md](datasets/entsoe_physical_flows_v1.2.md) |
-| `weather_hourly` | v1.1 | PECD/ERA5 hourly weather per bidding zone, 45 zones, 2010 – Sep 2026 | [datasets/weather_hourly_v1.1.md](datasets/weather_hourly_v1.1.md) |
-| `agg_zones_hourly` | v1.0 | **derived**: prices + load forecast + weather per (zone, hour), 44 zones, Jan 2016 – Oct 2026 | [datasets/agg_zones_hourly_v1.0.md](datasets/agg_zones_hourly_v1.0.md) |
-| `agg_zone_edges_hourly` | v1.0 | **derived**: physical flows per (zone_from, zone_to, hour), 174 directed pairs = 87 interconnectors | [datasets/agg_zone_edges_hourly_v1.0.md](datasets/agg_zone_edges_hourly_v1.0.md) |
-| `zone_nodes_hourly` | v1.0 | **model table** (Sophie-An's build): per (zone, hour) target, lags, load, weather, net import, JAO Core summaries, `split`; 45 zones | [datasets/zone_nodes_hourly_v1.0.md](datasets/zone_nodes_hourly_v1.0.md) |
-| `zone_edges_hourly` | v1.0 | **model table** (Sophie-An's build): per (from, to, hour) physical flow + lags, JAO `maxbex`/scheduled flow, `split`; 180 directed pairs | [datasets/zone_edges_hourly_v1.0.md](datasets/zone_edges_hourly_v1.0.md) |
-| `jao_cnec_hourly` | v1.0 | JAO physical constraints per hour with RAM, Fmax and PTDF per zone (constraint nodes), May 2015 – Oct 2026 | [datasets/jao_cnec_hourly_v1.0.md](datasets/jao_cnec_hourly_v1.0.md) |
+| `zone_nodes_hourly` | v1.0 | per (zone, hour): day-ahead price (target), price lags, load forecast, weather (+ lags), net import, JAO Core summaries, `split`; 45 zones, Jan 2016 – Sep 2026 | [datasets/zone_nodes_hourly_v1.0.md](datasets/zone_nodes_hourly_v1.0.md) |
+| `zone_edges_hourly` | v1.0 | per (from, to, hour): physical flow + lags, JAO `maxbex` / scheduled flow, `split`; 180 directed interconnectors | [datasets/zone_edges_hourly_v1.0.md](datasets/zone_edges_hourly_v1.0.md) |
 
-The model reads `zone_nodes_hourly` (zone nodes, with lags and the `split` label), `zone_edges_hourly` (zone-zone edges) and `jao_cnec_hourly` (constraint nodes with PTDF edges), all keyed on the same zone codes and UTC hours. `agg_zones_hourly` / `agg_zone_edges_hourly` are the raw joined tables built here from the pinned sources; the `zone_*` docs record how the two builds compare (they agree on every shared value except three conventions). The split is defined once in [epgnn/splits.py](epgnn/splits.py); tables are kept whole and filtered by date, there are no per-split files. The `agg_*` tables are built from the pinned source datasets by `scripts/build_agg_*.py`; their docs list the source versions and checksums and the rules used. `jao_cnec_hourly` is the constraint-node table the proposal's graph needs. It is derived from Arsen's raw JAO bundle by [scripts/build_jao_cnec_hourly.py](scripts/build_jao_cnec_hourly.py); the rules are in its doc. Background on the raw data: [docs/jao.md](docs/jao.md).
+These two are the model's zone-node and zone-edge tables (Sophie-An's build). Constraint nodes for the full hetero graph come from `jao_cnec_hourly` (below). The split is defined once in [epgnn/splits.py](epgnn/splits.py); tables are kept whole and filtered by date, there are no per-split files.
+
+**Other datasets in the bucket, not pinned.** The sources and intermediate tables stay in `gs://cs224w-epgnn-datasets` but are not pulled by default. Pull one explicitly with `scripts/datasets.py pull NAME@VERSION` (add `--pin` to put it in the manifest so `dataset_path` and the build scripts can use it); `status` lists them.
+
+| Dataset | Latest | Contents |
+|---|---|---|
+| `entsoe_prices` | v1.2 | hourly day-ahead prices, 62 areas, Jan 2016 – Oct 2026 |
+| `entsoe_load_forecast` | v1.2 | hourly day-ahead load forecast, 68 areas, Jan 2016 – Oct 2026 |
+| `entsoe_physical_flows` | v1.2 | hourly cross-border flows, 426 directed pairs, Jan 2016 – Oct 2026 |
+| `weather_hourly` | v1.1 | PECD/ERA5 hourly weather per bidding zone, 45 zones, 2010 – Sep 2026 |
+| `jao_cnec_hourly` | v1.0 | JAO physical constraints per hour with RAM, Fmax and PTDF per zone (constraint nodes), May 2015 – Oct 2026; built from Arsen's raw bundle by [scripts/build_jao_cnec_hourly.py](scripts/build_jao_cnec_hourly.py) |
+| `agg_zones_hourly` | v1.0 | our own join of prices + load + weather per (zone, hour), 44 zones; built by `scripts/build_agg_zones_hourly.py` (cross-check for `zone_nodes_hourly`) |
+| `agg_zone_edges_hourly` | v1.0 | our own flows per (zone_from, zone_to, hour), 174 directed pairs; built by `scripts/build_agg_zone_edges_hourly.py` (cross-check for `zone_edges_hourly`) |
+
+Each has a doc next to it in the bucket (`<dataset>.md`), pulled with the data. Background on the raw JAO data: [docs/jao.md](docs/jao.md).
 
 ### Pulling data
 
 ```bash
 scripts/datasets.py pull                  # every dataset at the version the manifest pins
-scripts/datasets.py pull weather_hourly   # one dataset, pinned version
-scripts/datasets.py pull weather_hourly@v1.1  # one dataset, exact version; manifest untouched
+scripts/datasets.py pull zone_nodes_hourly   # one dataset, pinned version
+scripts/datasets.py pull entsoe_prices@v1.2  # any dataset in the bucket, exact version; manifest untouched
+scripts/datasets.py pull entsoe_prices@v1.2 --pin  # ...and pin it, so dataset_path() can resolve it
 scripts/datasets.py pull --latest         # newest version in the bucket (may be newer than pinned)
 scripts/datasets.py pull --latest --pin   # ...and write those versions into the manifest
 scripts/datasets.py pull --prune          # also delete local copies of other versions

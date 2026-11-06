@@ -87,6 +87,13 @@ def version_key(v: str):
     return tuple(int(x) for x in re.findall(r"\d+", v))
 
 
+def bucket_datasets(b):
+    """Dataset names present in the bucket (top-level prefixes), pinned or not."""
+    it = b.list_blobs(delimiter="/")
+    list(it)  # prefixes are populated only after iterating
+    return sorted(p.rstrip("/") for p in it.prefixes)
+
+
 def bucket_versions(b, name):
     """Versions of a dataset present in the bucket, oldest first."""
     seen = set()
@@ -219,16 +226,21 @@ def cmd_pull(args):
     # which datasets, and which version of each
     if args.dataset:
         name, _, version = args.dataset.partition("@")
-        if name not in m["datasets"]:
-            sys.exit(f"unknown dataset {name!r}; known: {sorted(m['datasets'])}")
+        if name not in m["datasets"] and not (version or args.latest):
+            # a dataset that is in the bucket but not pinned can be pulled with an explicit version
+            sys.exit(f"{name!r} is not in the manifest; pull it as {name}@<version> or with --latest "
+                     f"(add --pin to pin it). Pinned: {sorted(m['datasets'])}; in bucket: {bucket_datasets(b)}")
         targets = {name: version or None}
     else:
         targets = {name: None for name in m["datasets"]}
 
     for name, version in targets.items():
-        pinned = m["datasets"][name]["version"]
+        pinned = m["datasets"][name]["version"] if name in m["datasets"] else None
         if args.latest:
-            version = bucket_versions(b, name)[-1]
+            versions = bucket_versions(b, name)
+            if not versions:
+                sys.exit(f"no dataset {name!r} in the bucket; known: {bucket_datasets(b)}")
+            version = versions[-1]
         elif version is None:
             version = pinned
 
@@ -236,6 +248,8 @@ def cmd_pull(args):
             files = m["datasets"][name]["files"]
         else:
             files = bucket_files(b, name, version)
+            if not files:
+                sys.exit(f"no files at {name}/{version}/ in the bucket; versions: {bucket_versions(b, name)}")
 
         fetch(b, name, version, files, args.verify)
         if args.prune:
@@ -245,6 +259,8 @@ def cmd_pull(args):
             if args.pin:
                 m["datasets"][name] = {"version": version, "files": files}
                 print(f"  pinned  {name} -> {version} (manifest updated)")
+            elif pinned is None:
+                print(f"  note    {name} {version} pulled; not in the manifest (use --pin to add it)")
             else:
                 print(f"  note    {name} {version} pulled; manifest still pins {pinned} (use --pin to switch)")
 
@@ -355,11 +371,12 @@ def cmd_status():
         print(f"  {p.name:52s} {tag}")
 
     print("\nin bucket:")
-    for name in m["datasets"]:
+    for name in bucket_datasets(b):
         versions = bucket_versions(b, name)
-        pinned = m["datasets"][name]["version"]
+        pinned = m["datasets"].get(name, {}).get("version")
         tags = [v + (" *" if v == pinned else "") for v in versions]
-        print(f"  {name:24s} {', '.join(tags)}    (* = pinned)")
+        note = "(* = pinned)" if pinned else "(not pinned; `pull NAME@VERSION --pin` to use)"
+        print(f"  {name:24s} {', '.join(tags):20s} {note}")
 
 
 def main():
