@@ -35,3 +35,8 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = ["pandas.*", "pyarrow.*", "numpy.*"]
 ignore_missing_imports = true
+
+# epgnn isntall
+[tool.setuptools.packages.find]
+include = ["epgnn", "epgnn.*"]
+

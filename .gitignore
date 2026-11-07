@@ -17,6 +17,7 @@ __pycache__/
 .venv/
 venv/
 .ipynb_checkpoints/
+*.egg-info/
 
 # Experiment outputs
 runs/
@@ -29,3 +30,5 @@ checkpoints/
 
 # Editor, machine-specific
 /.vscode/
+
+
