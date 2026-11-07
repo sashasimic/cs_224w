@@ -1,0 +1,840 @@
+{
+  "aggregation_definition": "Per-zone scores plus country scores pooling bidding-zone-hour errors; not errors of a constructed national average price",
+  "country_scores": [
+    {
+      "country": "AT",
+      "mae": 20.038290512931432,
+      "n_zone_hours": 13152,
+      "persistence_mae": 27.244877333581446,
+      "relative_mae": 0.7354883733769897,
+      "rmse": 31.23699397611318,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "AT"
+      ]
+    },
+    {
+      "country": "AT",
+      "mae": 19.993229023399273,
+      "n_zone_hours": 8760,
+      "persistence_mae": 28.343530718770864,
+      "relative_mae": 0.7053895021680733,
+      "rmse": 32.38795608627386,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "AT"
+      ]
+    },
+    {
+      "country": "BA",
+      "mae": null,
+      "n_zone_hours": 0,
+      "persistence_mae": null,
+      "relative_mae": null,
+      "rmse": null,
+      "split": "test",
+      "status": "no_valid_targets",
+      "zones": [
+        "BA"
+      ]
+    },
+    {
+      "country": "BA",
+      "mae": null,
+      "n_zone_hours": 0,
+      "persistence_mae": null,
+      "relative_mae": null,
+      "rmse": null,
+      "split": "val",
+      "status": "no_valid_targets",
+      "zones": [
+        "BA"
+      ]
+    },
+    {
+      "country": "BE",
+      "mae": 23.657805047254005,
+      "n_zone_hours": 13152,
+      "persistence_mae": 31.117612464365056,
+      "relative_mae": 0.7602705726329809,
+      "rmse": 36.086721406564926,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "BE"
+      ]
+    },
+    {
+      "country": "BE",
+      "mae": 22.027740652298743,
+      "n_zone_hours": 8760,
+      "persistence_mae": 32.2621642799644,
+      "relative_mae": 0.6827731847481328,
+      "rmse": 30.02186865395097,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "BE"
+      ]
+    },
+    {
+      "country": "BG",
+      "mae": 22.574115183501323,
+      "n_zone_hours": 13152,
+      "persistence_mae": 29.070595713763648,
+      "relative_mae": 0.7765274370629245,
+      "rmse": 32.248229391536526,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "BG"
+      ]
+    },
+    {
+      "country": "BG",
+      "mae": 26.047745588408212,
+      "n_zone_hours": 8760,
+      "persistence_mae": 36.330962382018626,
+      "relative_mae": 0.7169572144694986,
+      "rmse": 48.391122454904504,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "BG"
+      ]
+    },
+    {
+      "country": "CH",
+      "mae": 14.66302493247595,
+      "n_zone_hours": 13152,
+      "persistence_mae": 21.325227396343745,
+      "relative_mae": 0.6875905546024779,
+      "rmse": 24.440152945963696,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "CH"
+      ]
+    },
+    {
+      "country": "CH",
+      "mae": 13.425188530517156,
+      "n_zone_hours": 8760,
+      "persistence_mae": 19.19118951297446,
+      "relative_mae": 0.6995495782812668,
+      "rmse": 20.269499529443504,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "CH"
+      ]
+    },
+    {
+      "country": "CZ",
+      "mae": 22.316169579592042,
+      "n_zone_hours": 13152,
+      "persistence_mae": 29.399694678982264,
+      "relative_mae": 0.7590612699643371,
+      "rmse": 34.54661576872933,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "CZ"
+      ]
+    },
+    {
+      "country": "CZ",
+      "mae": 22.532016133284834,
+      "n_zone_hours": 8760,
+      "persistence_mae": 31.536610737221835,
+      "relative_mae": 0.7144717078519438,
+      "rmse": 34.50655941357017,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "CZ"
+      ]
+    },
+    {
+      "country": "DE_LU",
+      "mae": 24.584315237946463,
+      "n_zone_hours": 13152,
+      "persistence_mae": 33.90980664919538,
+      "relative_mae": 0.7249913127573024,
+      "rmse": 37.61030397932502,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "DE_LU"
+      ]
+    },
+    {
+      "country": "DE_LU",
+      "mae": 25.64901181551326,
+      "n_zone_hours": 8760,
+      "persistence_mae": 37.464366329212346,
+      "relative_mae": 0.6846241997028996,
+      "rmse": 39.01099117473426,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "DE_LU"
+      ]
+    },
+    {
+      "country": "DK",
+      "mae": 27.20952687725055,
+      "n_zone_hours": 26304,
+      "persistence_mae": 37.35288826501155,
+      "relative_mae": 0.7284450584973294,
+      "rmse": 38.72435894932744,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "DK_1",
+        "DK_2"
+      ]
+    },
+    {
+      "country": "DK",
+      "mae": 31.075770321572794,
+      "n_zone_hours": 17520,
+      "persistence_mae": 45.26361123177427,
+      "relative_mae": 0.6865508401980561,
+      "rmse": 44.1437363065405,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "DK_1",
+        "DK_2"
+      ]
+    },
+    {
+      "country": "EE",
+      "mae": 39.05118821988756,
+      "n_zone_hours": 13152,
+      "persistence_mae": 51.06891862381677,
+      "relative_mae": 0.76467623110538,
+      "rmse": 55.605562418185336,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "EE"
+      ]
+    },
+    {
+      "country": "EE",
+      "mae": 37.138199789714726,
+      "n_zone_hours": 8760,
+      "persistence_mae": 53.665291019123615,
+      "relative_mae": 0.6920338841818735,
+      "rmse": 53.98922534660775,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "EE"
+      ]
+    },
+    {
+      "country": "ES",
+      "mae": 18.21790968164261,
+      "n_zone_hours": 13152,
+      "persistence_mae": 25.769767523590044,
+      "relative_mae": 0.7069489340548243,
+      "rmse": 24.84655825502937,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "ES"
+      ]
+    },
+    {
+      "country": "ES",
+      "mae": 19.39559824981208,
+      "n_zone_hours": 8760,
+      "persistence_mae": 31.322944046834007,
+      "relative_mae": 0.6192137693318934,
+      "rmse": 26.619658691024554,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "ES"
+      ]
+    },
+    {
+      "country": "FI",
+      "mae": 29.28511420726908,
+      "n_zone_hours": 13152,
+      "persistence_mae": 41.547678691977005,
+      "relative_mae": 0.7048556051562065,
+      "rmse": 43.946218291621975,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "FI"
+      ]
+    },
+    {
+      "country": "FI",
+      "mae": 30.65439248810635,
+      "n_zone_hours": 8760,
+      "persistence_mae": 44.77007532631638,
+      "relative_mae": 0.6847071903425487,
+      "rmse": 48.76590041271735,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "FI"
+      ]
+    },
+    {
+      "country": "FR",
+      "mae": 22.08931593418386,
+      "n_zone_hours": 13152,
+      "persistence_mae": 32.44253898736366,
+      "relative_mae": 0.6808750678480382,
+      "rmse": 30.804401920441727,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "FR"
+      ]
+    },
+    {
+      "country": "FR",
+      "mae": 20.462418532950938,
+      "n_zone_hours": 8760,
+      "persistence_mae": 33.15231391382021,
+      "relative_mae": 0.6172244443070614,
+      "rmse": 27.067302699698327,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "FR"
+      ]
+    },
+    {
+      "country": "GB",
+      "mae": null,
+      "n_zone_hours": 0,
+      "persistence_mae": null,
+      "relative_mae": null,
+      "rmse": null,
+      "split": "test",
+      "status": "no_valid_targets",
+      "zones": [
+        "GB"
+      ]
+    },
+    {
+      "country": "GB",
+      "mae": null,
+      "n_zone_hours": 0,
+      "persistence_mae": null,
+      "relative_mae": null,
+      "rmse": null,
+      "split": "val",
+      "status": "no_valid_targets",
+      "zones": [
+        "GB"
+      ]
+    },
+    {
+      "country": "GR",
+      "mae": 23.242657987535928,
+      "n_zone_hours": 13152,
+      "persistence_mae": 28.548641990010363,
+      "relative_mae": 0.8141423327830765,
+      "rmse": 32.53996767081826,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "GR"
+      ]
+    },
+    {
+      "country": "GR",
+      "mae": 22.61102408441953,
+      "n_zone_hours": 8760,
+      "persistence_mae": 30.84535846596235,
+      "relative_mae": 0.7330446202909474,
+      "rmse": 40.20557868280428,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "GR"
+      ]
+    },
+    {
+      "country": "HR",
+      "mae": 20.528592710631575,
+      "n_zone_hours": 13152,
+      "persistence_mae": 28.35921193082122,
+      "relative_mae": 0.7238774039528506,
+      "rmse": 31.930013315463118,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "HR"
+      ]
+    },
+    {
+      "country": "HR",
+      "mae": 23.58381736521273,
+      "n_zone_hours": 8760,
+      "persistence_mae": 32.83822368141944,
+      "relative_mae": 0.7181818844408734,
+      "rmse": 41.00023524387285,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "HR"
+      ]
+    },
+    {
+      "country": "HU",
+      "mae": 22.604952368392567,
+      "n_zone_hours": 13152,
+      "persistence_mae": 31.011260804570597,
+      "relative_mae": 0.7289272277849772,
+      "rmse": 35.80154493459398,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "HU"
+      ]
+    },
+    {
+      "country": "HU",
+      "mae": 27.48940146709516,
+      "n_zone_hours": 8760,
+      "persistence_mae": 38.65215865936275,
+      "relative_mae": 0.711199643708292,
+      "rmse": 50.08702786213644,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "HU"
+      ]
+    },
+    {
+      "country": "IE_SEM",
+      "mae": 29.496982356278657,
+      "n_zone_hours": 13128,
+      "persistence_mae": 39.583994086076565,
+      "relative_mae": 0.7451744837101733,
+      "rmse": 42.86956000983965,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "IE_SEM"
+      ]
+    },
+    {
+      "country": "IE_SEM",
+      "mae": 29.406612837830874,
+      "n_zone_hours": 8760,
+      "persistence_mae": 40.474190613644446,
+      "relative_mae": 0.7265522149297156,
+      "rmse": 43.2092110603036,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "IE_SEM"
+      ]
+    },
+    {
+      "country": "IT",
+      "mae": 13.631504347841416,
+      "n_zone_hours": 91872,
+      "persistence_mae": 19.043727977748993,
+      "relative_mae": 0.7158002027632767,
+      "rmse": 21.704223945495663,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "IT_CALA",
+        "IT_CNOR",
+        "IT_CSUD",
+        "IT_NORD",
+        "IT_SARD",
+        "IT_SICI",
+        "IT_SUD"
+      ]
+    },
+    {
+      "country": "IT",
+      "mae": 11.937546655804585,
+      "n_zone_hours": 61320,
+      "persistence_mae": 17.231367047853308,
+      "relative_mae": 0.6927800111652644,
+      "rmse": 18.413334526119847,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "IT_CALA",
+        "IT_CNOR",
+        "IT_CSUD",
+        "IT_NORD",
+        "IT_SARD",
+        "IT_SICI",
+        "IT_SUD"
+      ]
+    },
+    {
+      "country": "LT",
+      "mae": 36.63970558778618,
+      "n_zone_hours": 13152,
+      "persistence_mae": 50.4679910005459,
+      "relative_mae": 0.7259988927910734,
+      "rmse": 53.53646257598596,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "LT"
+      ]
+    },
+    {
+      "country": "LT",
+      "mae": 37.120350694329986,
+      "n_zone_hours": 8760,
+      "persistence_mae": 54.06034583706009,
+      "relative_mae": 0.6866465635682782,
+      "rmse": 53.98603803862502,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "LT"
+      ]
+    },
+    {
+      "country": "LV",
+      "mae": 36.867128358362294,
+      "n_zone_hours": 13152,
+      "persistence_mae": 50.27199607780264,
+      "relative_mae": 0.7333531833767944,
+      "rmse": 53.74002636831388,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "LV"
+      ]
+    },
+    {
+      "country": "LV",
+      "mae": 37.00783733206431,
+      "n_zone_hours": 8760,
+      "persistence_mae": 53.93045998647741,
+      "relative_mae": 0.6862140122918237,
+      "rmse": 53.873889262435995,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "LV"
+      ]
+    },
+    {
+      "country": "ME",
+      "mae": 18.066517109276248,
+      "n_zone_hours": 13152,
+      "persistence_mae": 24.12237300738152,
+      "relative_mae": 0.7489527296401494,
+      "rmse": 27.64816719592355,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "ME"
+      ]
+    },
+    {
+      "country": "ME",
+      "mae": 17.248919168035563,
+      "n_zone_hours": 8760,
+      "persistence_mae": 22.27149317284119,
+      "relative_mae": 0.7744841818270916,
+      "rmse": 30.532742956528555,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "ME"
+      ]
+    },
+    {
+      "country": "MK",
+      "mae": 20.637116441759225,
+      "n_zone_hours": 13152,
+      "persistence_mae": 27.143306800053814,
+      "relative_mae": 0.7603022208671462,
+      "rmse": 30.73069230152898,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "MK"
+      ]
+    },
+    {
+      "country": "MK",
+      "mae": 23.578912981163676,
+      "n_zone_hours": 8760,
+      "persistence_mae": 29.439282040821908,
+      "relative_mae": 0.8009336962928659,
+      "rmse": 52.41824643142832,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "MK"
+      ]
+    },
+    {
+      "country": "NL",
+      "mae": 23.104271001365333,
+      "n_zone_hours": 13152,
+      "persistence_mae": 31.03666538671499,
+      "relative_mae": 0.7444186001778059,
+      "rmse": 36.07194376941248,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "NL"
+      ]
+    },
+    {
+      "country": "NL",
+      "mae": 24.550435229506956,
+      "n_zone_hours": 8760,
+      "persistence_mae": 34.51216097467443,
+      "relative_mae": 0.7113560709085257,
+      "rmse": 36.671051000061986,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "NL"
+      ]
+    },
+    {
+      "country": "NO",
+      "mae": 15.43293451452443,
+      "n_zone_hours": 65760,
+      "persistence_mae": 20.169484063270204,
+      "relative_mae": 0.7651625825485886,
+      "rmse": 23.993212507923417,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "NO_1",
+        "NO_2",
+        "NO_3",
+        "NO_4",
+        "NO_5"
+      ]
+    },
+    {
+      "country": "NO",
+      "mae": 10.945030932571255,
+      "n_zone_hours": 43800,
+      "persistence_mae": 18.16859952995647,
+      "relative_mae": 0.602414672332066,
+      "rmse": 21.616426140473166,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "NO_1",
+        "NO_2",
+        "NO_3",
+        "NO_4",
+        "NO_5"
+      ]
+    },
+    {
+      "country": "PL",
+      "mae": 25.074202616087362,
+      "n_zone_hours": 13152,
+      "persistence_mae": 33.24019143355855,
+      "relative_mae": 0.7543338812054197,
+      "rmse": 39.19790203328993,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "PL"
+      ]
+    },
+    {
+      "country": "PL",
+      "mae": 23.122490552100714,
+      "n_zone_hours": 8760,
+      "persistence_mae": 33.59841313373433,
+      "relative_mae": 0.6882018641792544,
+      "rmse": 33.31581262667829,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "PL"
+      ]
+    },
+    {
+      "country": "PT",
+      "mae": 17.917809245928108,
+      "n_zone_hours": 13152,
+      "persistence_mae": 25.977539908695498,
+      "relative_mae": 0.6897423431512256,
+      "rmse": 24.38425497566185,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "PT"
+      ]
+    },
+    {
+      "country": "PT",
+      "mae": 19.242745862350922,
+      "n_zone_hours": 8760,
+      "persistence_mae": 31.00126596637215,
+      "relative_mae": 0.620708389238814,
+      "rmse": 26.22983680895678,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "PT"
+      ]
+    },
+    {
+      "country": "RO",
+      "mae": 22.53915023428335,
+      "n_zone_hours": 13152,
+      "persistence_mae": 30.610376554711806,
+      "relative_mae": 0.7363238473724014,
+      "rmse": 33.77826915026512,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "RO"
+      ]
+    },
+    {
+      "country": "RO",
+      "mae": 26.628770909063118,
+      "n_zone_hours": 8760,
+      "persistence_mae": 37.5291393308256,
+      "relative_mae": 0.7095492032025056,
+      "rmse": 48.53404537089511,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "RO"
+      ]
+    },
+    {
+      "country": "RS",
+      "mae": 22.154386467770266,
+      "n_zone_hours": 13152,
+      "persistence_mae": 30.575741265725103,
+      "relative_mae": 0.724573977626013,
+      "rmse": 32.28286985829552,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "RS"
+      ]
+    },
+    {
+      "country": "RS",
+      "mae": 21.692532555901842,
+      "n_zone_hours": 8760,
+      "persistence_mae": 32.069739736279594,
+      "relative_mae": 0.6764174805996848,
+      "rmse": 37.93159235527568,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "RS"
+      ]
+    },
+    {
+      "country": "SE",
+      "mae": 22.00785215140159,
+      "n_zone_hours": 52608,
+      "persistence_mae": 31.381140724511948,
+      "relative_mae": 0.7013082266385288,
+      "rmse": 32.719875849074505,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "SE_1",
+        "SE_2",
+        "SE_3",
+        "SE_4"
+      ]
+    },
+    {
+      "country": "SE",
+      "mae": 17.59363794668216,
+      "n_zone_hours": 35040,
+      "persistence_mae": 27.022407804265647,
+      "relative_mae": 0.6510758802146751,
+      "rmse": 29.692820151711246,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "SE_1",
+        "SE_2",
+        "SE_3",
+        "SE_4"
+      ]
+    },
+    {
+      "country": "SI",
+      "mae": 21.15052491798204,
+      "n_zone_hours": 13152,
+      "persistence_mae": 28.68423870087035,
+      "relative_mae": 0.7373570251784399,
+      "rmse": 34.07827897556783,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "SI"
+      ]
+    },
+    {
+      "country": "SI",
+      "mae": 22.25439106827255,
+      "n_zone_hours": 8760,
+      "persistence_mae": 31.376005731694843,
+      "relative_mae": 0.7092805648550737,
+      "rmse": 38.60728078238816,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "SI"
+      ]
+    },
+    {
+      "country": "SK",
+      "mae": 22.28529603363641,
+      "n_zone_hours": 13152,
+      "persistence_mae": 30.335257023589918,
+      "relative_mae": 0.7346334997691454,
+      "rmse": 34.17028226567278,
+      "split": "test",
+      "status": "scored",
+      "zones": [
+        "SK"
+      ]
+    },
+    {
+      "country": "SK",
+      "mae": 25.238956431752563,
+      "n_zone_hours": 8760,
+      "persistence_mae": 35.57256171162533,
+      "relative_mae": 0.7095062941026345,
+      "rmse": 39.012567786218376,
+      "split": "val",
+      "status": "scored",
+      "zones": [
+        "SK"
+      ]
+    }
+  ],
+  "partner_commit": "757da793c2e2e726cc6e750f2d42f1dd836ca39c"
+}

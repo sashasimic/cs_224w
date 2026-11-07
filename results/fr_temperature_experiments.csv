@@ -1,0 +1,7 @@
+experiment,name,split,policy,hours,mae,rmse,persistence_mae,improvement_over_weekly_xgb_percent,selected_rounds
+weekly_price,c1_xgb_fr_weekly_conditional,val,conditional,8760,33.62390167063883,42.608821168241995,33.15231392694064,0.0,127
+weekly_price,c1_xgb_fr_weekly_conditional,test,conditional,13152,35.615340634700445,44.896960168331866,32.442538967457416,0.0,127
+current_temperature,c1_xgb_fr_weekly_temp_current_conditional,val,conditional,8760,31.063765896157044,39.52368369440743,33.15231392694064,7.6140353952954705,116
+current_temperature,c1_xgb_fr_weekly_temp_current_conditional,test,conditional,13152,35.30289775427241,44.5365479043146,32.442538967457416,0.8772705100105638,116
+perfect_temperature,c1_xgb_fr_weekly_temp_perfect_oracle,val,oracle_perfect_weather,8760,30.697226848314887,38.2900284231949,33.15231392694064,8.704149955564445,322
+perfect_temperature,c1_xgb_fr_weekly_temp_perfect_oracle,test,oracle_perfect_weather,13152,35.08499702103019,44.756172368981744,32.442538967457416,1.489087579169568,322

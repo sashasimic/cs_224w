@@ -1,0 +1,115 @@
+\documentclass{article}
+\usepackage[final,nonatbib]{neurips_2019}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,booktabs,float,graphicx,microtype}
+\usepackage[hidelinks]{hyperref}
+\input{numbers}
+\title{Weather, Interconnections, and Energy Prices\\
+  \small\normalfont Stanford CS224W Project Milestone --- Draft, November 8, 2026}
+\author{Project team\\\small Author details to be completed}
+\begin{document}
+\maketitle
+\begin{abstract}
+We construct an auditable European electricity-price dataset and reproduce a
+teammate's XGBoost pipeline. Controlled France experiments identify prior-day
+auction prices as the largest measured feature improvement; post-origin realised
+weather adds little. These conditional benchmarks establish a stronger baseline
+for subsequent graph experiments; historical publication vintages remain unverified.
+\end{abstract}
+
+\section{Approach}
+At 12:00 Europe/Brussels on calendar day $D-1$, predict every hourly day-ahead
+price of delivery day $D$, including 23/25-hour daylight-saving days. Our planned
+graph connects bidding zones, interconnectors and JAO transmission constraints.
+We implement a dataset builder and per-zone XGBoost \cite{chen}, and reproduce
+the teammate's \texttt{c1\_xgb\_zone} pipeline unchanged at \texttt{757da793}.
+
+\section{Experiments}
+\paragraph{Exact data.}
+Our master has 5,887,954 zone-hours, 62 price-area identities, January 2016--October
+2026. ENTSO-E prices, load forecasts and physical flows use releases v1.2.
+We join PECD/ERA5 temperature, anomaly and wind/solar capacity factors
+(2010--September 2026) and original CWE/CORE JAO exports (May 2015--October 2026).
+Weather is reanalysis; its v1.1 release identity is unverified. We retain NaNs,
+negative prices and separate DE\_AT\_LU/DE\_LU identities. The partner's original
+v1.0 table has 4,240,035 rows and 45 zones through September 2026, with filled
+inputs and a historical German splice. The appendix records hashes and geography.
+
+\paragraph{Splits and metrics.}
+Fit on January 1, 2016--March 31, 2024 (pretrain + train); validate on April 1,
+2024--March 31, 2025; test on April 1, 2025--September 30, 2026, using Brussels
+delivery dates. October 2026 remains unassigned. MAE and RMSE are in EUR/MWh.
+Weekly persistence copies the same zone's price 168 elapsed hours earlier.
+Comparisons use identical valid target-hour masks, never feature-complete subsets
+or filled labels. The ten zones BE, FR, NL, DE\_LU, AT, ES, PT, PL, CZ, CH supply
+87,600 validation and 131,520 test zone-hours per method.
+
+\paragraph{Models and aggregate results.}
+Our inputs are hour, weekday, month, UTC offset, CWE/CORE era flags and weekly
+price. Switching raw-price squared error to $z=\operatorname{asinh}(p/50)$ with
+L1 loss improves test MAE; invert with $50\sinh(\hat z)$ before scoring.
+The partner adds prior-day price, load forecast, four weather lags and net imports,
+and changes tree settings (Table~\ref{tab:matched}). Its full 43-zone reproduction
+scores 21.25 test MAE versus the published 21.24.
+\begin{table}[!ht]
+\centering\small\input{matched_results}
+\caption{Matched ten-zone MAE (EUR/MWh). All models fit per zone.}
+\label{tab:matched}
+\end{table}
+
+\newpage
+\paragraph{Controlled France experiments.}
+Fix the partner learner: CPU histogram trees, depth 6, at most 600 rounds,
+learning rate 0.05, row/column sampling 0.8, L1 objective, asinh scale 50,
+seed 0, and 50-round early stopping on transformed validation MAE. Retain all
+72,310 training, 8,760 validation and 13,152 test targets.
+
+\begin{figure}[H]
+\centering\includegraphics[width=\linewidth]{figures/france_ablation.pdf}
+\caption{France, fixed learner and targets. Past-time weather masks lag-24
+intervals ending after the origin; the last row unmasks them. Later rows guard
+prior-day prices by delivery date.}
+\label{fig:france}
+\end{figure}
+
+Changing only our seven-feature model to partner hyperparameters worsens test
+MAE to 36.32. Its equivalent legacy-table control matches within $10^{-6}$
+EUR/MWh. Removing the era/offset inputs and adopting the partner feature order gives
+\WeeklyCalendarTest. Adding prior-day auction prices then reduces test MAE to
+\RecentPriceTest\ (30.8\%); the validation improvement is 11.16 EUR/MWh
+(95\% paired calendar-week bootstrap interval [\PriceBootstrapLower,
+\PriceBootstrapUpper], 2,000 replicates). This is the largest measured addition;
+other increments are small and mixed.
+
+\paragraph{Timing audit and interpretation.}
+Previous-day day-ahead prices are normally auctioned on $D-2$ \cite{auction};
+their delivery time does not imply unavailability. However, an elapsed 24-hour lag
+can reach day $D$ on the 25-hour autumn transition; we mask that case (one
+validation and one test hour). Half the original weather-lag-24 observations occur
+after the origin. Masking them gives \PastWeatherTest\ test MAE, versus
+\AllWeatherTest\ when supplied; using 48-hour weather lags gives
+\WeatherFortyEightTest. Post-origin weather therefore does not explain most of
+the France advantage. Past effective time still cannot prove publication availability:
+ERA5 is retrospective \cite{era5}, and load/weather revision vintages are absent.
+These are conditional scores, not certified operational forecasts.
+
+\paragraph{Limitations.}
+This one-country, one-seed sequence is order-dependent, not causal feature
+importance. Bootstrap intervals condition on fitted models. Repeated exploratory
+test inspection prevents a fresh blind-confirmation claim. Detailed CNEC and
+graph models remain future work.
+
+\section{Future work}
+Establish a publication-aware recent-price baseline, obtain archived weather
+forecasts, and repeat across countries and seeds. Compare neighbour features,
+interconnector graphs and JAO constraint nodes under identical evaluation rules,
+keeping physical flows, scheduled exchanges and MaxBex distinct.
+
+\begin{thebibliography}{3}\small
+\bibitem{chen} T. Chen and C. Guestrin. XGBoost: A scalable tree boosting system.
+\emph{KDD}, 2016. \href{https://arxiv.org/abs/1603.02754}{arXiv:1603.02754}.
+\bibitem{auction} Nord Pool. \href{https://www.nordpoolgroup.com/en/the-power-market/Day-ahead-market/}{Day-ahead market: auction timeline}. Accessed November 2026.
+\bibitem{era5} ECMWF. \href{https://www.ecmwf.int/en/forecasts/datasets/complete-era5-global-atmospheric-reanalysis}{ERA5 global atmospheric reanalysis}. Accessed November 2026.
+\end{thebibliography}
+\end{document}

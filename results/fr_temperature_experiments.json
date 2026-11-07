@@ -1,0 +1,125 @@
+{
+  "comparison": "Same baseline plus one temperature feature per experiment; fixed params, splits, targets, masks and runtime versions",
+  "current_definition": "Reanalysis temperature for D-1 11:00 Europe/Brussels, source hour ending at the D-1 noon origin, frozen for all D hours; publication vintages unverified",
+  "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+  "experiment_fingerprints": {
+    "current_temperature": "bb7840f9c5654596bc1c0083402b07baff828b5d95de685423cd8a92cb18c14d",
+    "perfect_temperature": "356c0e6e70114bb3f3fe361b9631f96d14c86d5f4adf6d7df27135dcd5688365",
+    "weekly_price": "478a40652c8810611237b40c9aa5840a7270fbdecac457862160da2641cef130"
+  },
+  "partner_reference": {
+    "availability_correction": "Earlier commentary was too conservative about price_lag24. Future delivery/valid time does not imply future availability for day-ahead auction prices or forecasts. This experiment still uses the original weekly-only baseline to isolate temperature. Exact elapsed 24h lags also need a fall-DST guard: the last hour of a 25-hour day can reference a price from the same delivery day, which would not be published by the previous noon. One such France validation hour is present.",
+    "branch": "c1_xgb_zone",
+    "commit": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
+    "comparison": "Different feature set, loss/target transform, source table and aggregate country coverage; per-France score not reported",
+    "delivery_clock_check_not_publication_audit": {
+      "fraction": 0.5,
+      "lag24_intervals_after_origin": 4380,
+      "lag24_same_delivery_day_due_to_fall_dst_hours": 1,
+      "note": "This counts delivery intervals after the origin, not publication times. It does not establish unavailable price information: prices for D-1 are normally auctioned/published on D-2. Historical revision vintages remain unverified. Realised weather_lag24 after the origin is a separate timing concern.",
+      "rows": 8760,
+      "scope": "France validation timestamps only; no test targets examined"
+    },
+    "features": [
+      "price_lag24",
+      "price_lag168",
+      "load_fc",
+      "temp_pw_lag24",
+      "temp_anom_lag24",
+      "wind_cf_lag24",
+      "solar_cf_lag24",
+      "net_import_lag48",
+      "hour_local",
+      "dow",
+      "month"
+    ],
+    "market_schedule_sources": [
+      "https://www.epexspot.com/sites/default/files/2024-12/_Trading%20brochure%202024%20December%20%281%29.pdf",
+      "https://www.nordpoolgroup.com/en/the-power-market/Day-ahead-market/"
+    ],
+    "objective": "reg:absoluteerror on asinh(price/50); default early stopping on transformed-target error",
+    "published_all_zone_test_mae": 21.243274688720703,
+    "published_test_hours": 565320
+  },
+  "perfect_definition": "Actual/reanalysis temperature at target delivery hour; explicit future-weather oracle diagnostic",
+  "rows": [
+    {
+      "experiment": "weekly_price",
+      "hours": 8760,
+      "improvement_over_weekly_xgb_percent": 0.0,
+      "mae": 33.62390167063883,
+      "name": "c1_xgb_fr_weekly_conditional",
+      "persistence_mae": 33.15231392694064,
+      "policy": "conditional",
+      "rmse": 42.608821168241995,
+      "selected_rounds": 127,
+      "split": "val"
+    },
+    {
+      "experiment": "weekly_price",
+      "hours": 13152,
+      "improvement_over_weekly_xgb_percent": 0.0,
+      "mae": 35.615340634700445,
+      "name": "c1_xgb_fr_weekly_conditional",
+      "persistence_mae": 32.442538967457416,
+      "policy": "conditional",
+      "rmse": 44.896960168331866,
+      "selected_rounds": 127,
+      "split": "test"
+    },
+    {
+      "experiment": "current_temperature",
+      "hours": 8760,
+      "improvement_over_weekly_xgb_percent": 7.6140353952954705,
+      "mae": 31.063765896157044,
+      "name": "c1_xgb_fr_weekly_temp_current_conditional",
+      "persistence_mae": 33.15231392694064,
+      "policy": "conditional",
+      "rmse": 39.52368369440743,
+      "selected_rounds": 116,
+      "split": "val"
+    },
+    {
+      "experiment": "current_temperature",
+      "hours": 13152,
+      "improvement_over_weekly_xgb_percent": 0.8772705100105638,
+      "mae": 35.30289775427241,
+      "name": "c1_xgb_fr_weekly_temp_current_conditional",
+      "persistence_mae": 32.442538967457416,
+      "policy": "conditional",
+      "rmse": 44.5365479043146,
+      "selected_rounds": 116,
+      "split": "test"
+    },
+    {
+      "experiment": "perfect_temperature",
+      "hours": 8760,
+      "improvement_over_weekly_xgb_percent": 8.704149955564445,
+      "mae": 30.697226848314887,
+      "name": "c1_xgb_fr_weekly_temp_perfect_oracle",
+      "persistence_mae": 33.15231392694064,
+      "policy": "oracle_perfect_weather",
+      "rmse": 38.2900284231949,
+      "selected_rounds": 322,
+      "split": "val"
+    },
+    {
+      "experiment": "perfect_temperature",
+      "hours": 13152,
+      "improvement_over_weekly_xgb_percent": 1.489087579169568,
+      "mae": 35.08499702103019,
+      "name": "c1_xgb_fr_weekly_temp_perfect_oracle",
+      "persistence_mae": 32.442538967457416,
+      "policy": "oracle_perfect_weather",
+      "rmse": 44.756172368981744,
+      "selected_rounds": 322,
+      "split": "test"
+    }
+  ],
+  "training": [
+    "pretrain",
+    "train"
+  ],
+  "weather_archive": "PECD/ERA5 population-weighted temperature in Celsius; no archived weather forecasts were fetched",
+  "zone": "FR"
+}

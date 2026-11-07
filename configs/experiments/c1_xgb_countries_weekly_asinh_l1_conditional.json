@@ -1,0 +1,16 @@
+{
+  "base_config": "configs/experiments/c1_xgb_be_weekly_asinh_l1_conditional.json",
+  "name": "c1_xgb_countries_weekly_asinh_l1_conditional",
+  "zones": [
+    "BE",
+    "FR",
+    "NL",
+    "DE_LU",
+    "AT",
+    "ES",
+    "PT",
+    "PL",
+    "CZ",
+    "CH"
+  ]
+}

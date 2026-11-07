@@ -1,0 +1,328 @@
+{
+  "best_iteration_zero_based": 393,
+  "best_validation_mae": 0.2588536339232562,
+  "comparison_limitation": "Weekly persistence is a conditional archived-price benchmark, not a certified strict feature set",
+  "conditional_features": [
+    "price_lag168"
+  ],
+  "config": {
+    "conditional_features": [
+      "price_lag168"
+    ],
+    "dataset_directory": "staging/forecast_dataset_v1.0/current",
+    "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+    "early_stopping_rounds": 50,
+    "evaluation_splits": [
+      "val",
+      "test"
+    ],
+    "features": [
+      "hour_local",
+      "dow",
+      "month",
+      "utc_offset_hours",
+      "in_cwe",
+      "in_core",
+      "price_lag168"
+    ],
+    "fit_splits": [
+      "pretrain",
+      "train"
+    ],
+    "name": "c1_xgb_at_weekly_asinh_l1_conditional",
+    "params": {
+      "colsample_bytree": 1.0,
+      "device": "cpu",
+      "eval_metric": "mae",
+      "learning_rate": 0.05,
+      "max_depth": 5,
+      "min_child_weight": 20,
+      "n_estimators": 1000,
+      "n_jobs": 4,
+      "objective": "reg:absoluteerror",
+      "random_state": 224,
+      "reg_lambda": 5.0,
+      "subsample": 0.8,
+      "tree_method": "hist"
+    },
+    "target_scale_eur_mwh": 50.0,
+    "target_transform": "asinh",
+    "validation_split": "val",
+    "zone": "AT"
+  },
+  "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+  "early_stopping_metric_units": "asinh(price/scale) units",
+  "early_stopping_split": "val",
+  "elapsed_seconds": 1.0993756669340655,
+  "experiment_fingerprint": "c464d8594cbc69e512ae72b39f3cf97abdefe473f1a0990455c40673b263094d",
+  "feature_importance_gain_normalized": {
+    "dow": 0.016253715381026268,
+    "hour_local": 0.011061039753258228,
+    "in_core": 0.0,
+    "in_cwe": 0.0770803913474083,
+    "month": 0.030254067853093147,
+    "price_lag168": 0.8453336358070374,
+    "utc_offset_hours": 0.02001710794866085
+  },
+  "feature_missingness": "NaNs retained; native XGBoost missing-value handling",
+  "feature_policy": "conditional",
+  "fit_rows": 48216,
+  "forecast_contract": "12:00 Europe/Brussels on previous calendar date; explicit conditional historical inputs",
+  "git_commit": "0be09476d3bfaa991469007e422ceeac98dfec0e",
+  "git_dirty": true,
+  "input_availability_limitation": "Historical price/domain/temperature interval timing checked; publication vintages unverified",
+  "metrics": {
+    "test": {
+      "missing_targets": 0,
+      "model": {
+        "mae": 26.23540246217779,
+        "n_hours": 13152,
+        "rmse": 40.193338535428275
+      },
+      "rows": 13152,
+      "slices": {
+        "post_2025_10": {
+          "missing_targets": 0,
+          "model": {
+            "mae": 27.599308953233482,
+            "n_hours": 8760,
+            "rmse": 41.630323148788314
+          },
+          "rows": 8760,
+          "valid_targets": 8760,
+          "weekly_persistence_conditional_common_hours": {
+            "admission": "conditional; historical publication vintages unverified",
+            "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+            "model": {
+              "mae": 27.599308953233482,
+              "n_hours": 8760,
+              "rmse": 41.630323148788314
+            },
+            "persistence": {
+              "mae": 28.522754280821918,
+              "n_hours": 8760,
+              "rmse": 45.758964364556505
+            },
+            "relative_mae": 0.9676242582151563,
+            "valid_targets_without_persistence": 0
+          }
+        },
+        "pre_2025_10": {
+          "missing_targets": 0,
+          "model": {
+            "mae": 23.51504252100113,
+            "n_hours": 4392,
+            "rmse": 37.161650757141615
+          },
+          "rows": 4392,
+          "valid_targets": 4392,
+          "weekly_persistence_conditional_common_hours": {
+            "admission": "conditional; historical publication vintages unverified",
+            "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+            "model": {
+              "mae": 23.51504252100113,
+              "n_hours": 4392,
+              "rmse": 37.161650757141615
+            },
+            "persistence": {
+              "mae": 24.69610655737705,
+              "n_hours": 4392,
+              "rmse": 38.94507316544117
+            },
+            "relative_mae": 0.9521761038068116,
+            "valid_targets_without_persistence": 0
+          }
+        },
+        "summer": {
+          "missing_targets": 0,
+          "model": {
+            "mae": 25.83986766927353,
+            "n_hours": 4416,
+            "rmse": 40.54777963600767
+          },
+          "rows": 4416,
+          "valid_targets": 4416,
+          "weekly_persistence_conditional_common_hours": {
+            "admission": "conditional; historical publication vintages unverified",
+            "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+            "model": {
+              "mae": 25.83986766927353,
+              "n_hours": 4416,
+              "rmse": 40.54777963600767
+            },
+            "persistence": {
+              "mae": 25.160499886775362,
+              "n_hours": 4416,
+              "rmse": 39.90110589360624
+            },
+            "relative_mae": 1.0270013626738494,
+            "valid_targets_without_persistence": 0
+          }
+        }
+      },
+      "valid_targets": 13152,
+      "weekly_persistence_conditional_common_hours": {
+        "admission": "conditional; historical publication vintages unverified",
+        "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+        "model": {
+          "mae": 26.23540246217779,
+          "n_hours": 13152,
+          "rmse": 40.193338535428275
+        },
+        "persistence": {
+          "mae": 27.244877395072994,
+          "n_hours": 13152,
+          "rmse": 43.60210676921491
+        },
+        "relative_mae": 0.9629480831109279,
+        "valid_targets_without_persistence": 0
+      }
+    },
+    "val": {
+      "missing_targets": 0,
+      "model": {
+        "mae": 26.552954279666686,
+        "n_hours": 8760,
+        "rmse": 44.0122110379305
+      },
+      "rows": 8760,
+      "slices": {
+        "pre_2025_10": {
+          "missing_targets": 0,
+          "model": {
+            "mae": 26.552954279666686,
+            "n_hours": 8760,
+            "rmse": 44.0122110379305
+          },
+          "rows": 8760,
+          "valid_targets": 8760,
+          "weekly_persistence_conditional_common_hours": {
+            "admission": "conditional; historical publication vintages unverified",
+            "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+            "model": {
+              "mae": 26.552954279666686,
+              "n_hours": 8760,
+              "rmse": 44.0122110379305
+            },
+            "persistence": {
+              "mae": 28.34353082191781,
+              "n_hours": 8760,
+              "rmse": 48.03055245416725
+            },
+            "relative_mae": 0.9368259179316331,
+            "valid_targets_without_persistence": 0
+          }
+        },
+        "summer": {
+          "missing_targets": 0,
+          "model": {
+            "mae": 21.153160324038186,
+            "n_hours": 2208,
+            "rmse": 28.929728650963973
+          },
+          "rows": 2208,
+          "valid_targets": 2208,
+          "weekly_persistence_conditional_common_hours": {
+            "admission": "conditional; historical publication vintages unverified",
+            "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+            "model": {
+              "mae": 21.153160324038186,
+              "n_hours": 2208,
+              "rmse": 28.929728650963973
+            },
+            "persistence": {
+              "mae": 22.37317028985507,
+              "n_hours": 2208,
+              "rmse": 30.059919106424463
+            },
+            "relative_mae": 0.9454699557545455,
+            "valid_targets_without_persistence": 0
+          }
+        }
+      },
+      "valid_targets": 8760,
+      "weekly_persistence_conditional_common_hours": {
+        "admission": "conditional; historical publication vintages unverified",
+        "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+        "model": {
+          "mae": 26.552954279666686,
+          "n_hours": 8760,
+          "rmse": 44.0122110379305
+        },
+        "persistence": {
+          "mae": 28.34353082191781,
+          "n_hours": 8760,
+          "rmse": 48.03055245416725
+        },
+        "relative_mae": 0.9368259179316331,
+        "valid_targets_without_persistence": 0
+      }
+    }
+  },
+  "missing_feature_rows_by_split": {
+    "pretrain": {
+      "dow": 0,
+      "hour_local": 0,
+      "in_core": 0,
+      "in_cwe": 0,
+      "month": 0,
+      "price_lag168": 24262,
+      "utc_offset_hours": 0
+    },
+    "test": {
+      "dow": 0,
+      "hour_local": 0,
+      "in_core": 0,
+      "in_cwe": 0,
+      "month": 0,
+      "price_lag168": 0,
+      "utc_offset_hours": 0
+    },
+    "train": {
+      "dow": 0,
+      "hour_local": 0,
+      "in_core": 0,
+      "in_cwe": 0,
+      "month": 0,
+      "price_lag168": 0,
+      "utc_offset_hours": 0
+    },
+    "unassigned": {
+      "dow": 0,
+      "hour_local": 0,
+      "in_core": 0,
+      "in_cwe": 0,
+      "month": 0,
+      "price_lag168": 0,
+      "utc_offset_hours": 0
+    },
+    "val": {
+      "dow": 0,
+      "hour_local": 0,
+      "in_core": 0,
+      "in_cwe": 0,
+      "month": 0,
+      "price_lag168": 0,
+      "utc_offset_hours": 0
+    }
+  },
+  "name": "c1_xgb_at_weekly_asinh_l1_conditional",
+  "normalization": "none",
+  "oracle_features": [],
+  "prediction_units": "EUR/MWh after inverse transformation",
+  "ran_at": "2026-11-07T22:18:56+00:00",
+  "runner_sha256": "920ada4294e9dcf9122f8dd9056e47edef6fc1ec122e5f01d9f9c39775ee1426",
+  "selected_rounds": 394,
+  "target_scale_eur_mwh": 50.0,
+  "target_transform": "asinh(price/50); inverse 50*sinh(prediction)",
+  "unassigned_rows_not_used": 745,
+  "validation_rows": 8760,
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "3.1.1",
+    "pyarrow": "26.0.1",
+    "python": "3.14.8",
+    "xgboost": "3.4.1"
+  },
+  "zone": "AT"
+}

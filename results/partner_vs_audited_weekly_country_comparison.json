@@ -1,0 +1,229 @@
+{
+  "availability_status": "Reproduction of partner protocol, not a strict-noon availability certification",
+  "comparison": "Partner full own-zone features/hyperparameters/v1.0 inputs versus audited weekly-only asinh/L1 models; not a single-feature ablation",
+  "partner_commit": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
+  "published_run_git": "068b30f",
+  "rows": [
+    {
+      "hours": 8760,
+      "max_target_rounding_difference_eur_mwh": 2.1972656213620212e-05,
+      "partner_pipeline_mae": 22.027740652298743,
+      "persistence_mae": 32.2621642799644,
+      "split": "val",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 30.68473203927232,
+      "zone": "BE"
+    },
+    {
+      "hours": 8760,
+      "max_target_rounding_difference_eur_mwh": 1.0986328106810106e-05,
+      "partner_pipeline_mae": 20.462418532950938,
+      "persistence_mae": 33.15231391382021,
+      "split": "val",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 33.237267912793705,
+      "zone": "FR"
+    },
+    {
+      "hours": 8760,
+      "max_target_rounding_difference_eur_mwh": 2.929687502728484e-05,
+      "partner_pipeline_mae": 24.550435229506956,
+      "persistence_mae": 34.51216097467443,
+      "split": "val",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 31.086180159188267,
+      "zone": "NL"
+    },
+    {
+      "hours": 8760,
+      "max_target_rounding_difference_eur_mwh": 2.929687502728484e-05,
+      "partner_pipeline_mae": 25.64901181551326,
+      "persistence_mae": 37.464366329212346,
+      "split": "val",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 33.292739613070225,
+      "zone": "DE_LU"
+    },
+    {
+      "hours": 8760,
+      "max_target_rounding_difference_eur_mwh": 2.4414062522737368e-05,
+      "partner_pipeline_mae": 19.993229023399273,
+      "persistence_mae": 28.343530718770864,
+      "split": "val",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 26.552954279666686,
+      "zone": "AT"
+    },
+    {
+      "hours": 8760,
+      "max_target_rounding_difference_eur_mwh": 7.32421875682121e-06,
+      "partner_pipeline_mae": 19.39559824981208,
+      "persistence_mae": 31.322944046834007,
+      "split": "val",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 30.9534830579685,
+      "zone": "ES"
+    },
+    {
+      "hours": 8760,
+      "max_target_rounding_difference_eur_mwh": 7.32421875682121e-06,
+      "partner_pipeline_mae": 19.242745862350922,
+      "persistence_mae": 31.00126596637215,
+      "split": "val",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 30.638669000905477,
+      "zone": "PT"
+    },
+    {
+      "hours": 8760,
+      "max_target_rounding_difference_eur_mwh": 2.929687502728484e-05,
+      "partner_pipeline_mae": 23.122490552100714,
+      "persistence_mae": 33.59841313373433,
+      "split": "val",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 29.11363993709148,
+      "zone": "PL"
+    },
+    {
+      "hours": 8760,
+      "max_target_rounding_difference_eur_mwh": 2.1972656213620212e-05,
+      "partner_pipeline_mae": 22.532016133284834,
+      "persistence_mae": 31.536610737221835,
+      "split": "val",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 29.13285831523719,
+      "zone": "CZ"
+    },
+    {
+      "hours": 8760,
+      "max_target_rounding_difference_eur_mwh": 1.464843751364242e-05,
+      "partner_pipeline_mae": 13.425188530517156,
+      "persistence_mae": 19.19118951297446,
+      "split": "val",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 19.700195913240364,
+      "zone": "CH"
+    },
+    {
+      "hours": 13152,
+      "max_target_rounding_difference_eur_mwh": 2.929687502728484e-05,
+      "partner_pipeline_mae": 23.657805047254005,
+      "persistence_mae": 31.117612464365056,
+      "split": "test",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 30.012753003877407,
+      "zone": "BE"
+    },
+    {
+      "hours": 13152,
+      "max_target_rounding_difference_eur_mwh": 1.464843751364242e-05,
+      "partner_pipeline_mae": 22.08931593418386,
+      "persistence_mae": 32.44253898736366,
+      "split": "test",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 34.826143191684885,
+      "zone": "FR"
+    },
+    {
+      "hours": 13152,
+      "max_target_rounding_difference_eur_mwh": 2.4414062522737368e-05,
+      "partner_pipeline_mae": 23.104271001365333,
+      "persistence_mae": 31.03666538671499,
+      "split": "test",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 30.676239833137924,
+      "zone": "NL"
+    },
+    {
+      "hours": 13152,
+      "max_target_rounding_difference_eur_mwh": 2.929687502728484e-05,
+      "partner_pipeline_mae": 24.584315237946463,
+      "persistence_mae": 33.90980664919538,
+      "split": "test",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 32.3377700197511,
+      "zone": "DE_LU"
+    },
+    {
+      "hours": 13152,
+      "max_target_rounding_difference_eur_mwh": 2.6855468718167685e-05,
+      "partner_pipeline_mae": 20.038290512931432,
+      "persistence_mae": 27.244877333581446,
+      "split": "test",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 26.23540246217779,
+      "zone": "AT"
+    },
+    {
+      "hours": 13152,
+      "max_target_rounding_difference_eur_mwh": 1.3427734359083843e-05,
+      "partner_pipeline_mae": 18.21790968164261,
+      "persistence_mae": 25.769767523590044,
+      "split": "test",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 26.823607037035895,
+      "zone": "ES"
+    },
+    {
+      "hours": 13152,
+      "max_target_rounding_difference_eur_mwh": 1.3427734359083843e-05,
+      "partner_pipeline_mae": 17.917809245928108,
+      "persistence_mae": 25.977539908695498,
+      "split": "test",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 26.56868489650732,
+      "zone": "PT"
+    },
+    {
+      "hours": 13152,
+      "max_target_rounding_difference_eur_mwh": 2.6855468718167685e-05,
+      "partner_pipeline_mae": 25.074202616087362,
+      "persistence_mae": 33.24019143355855,
+      "split": "test",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 30.514330863552672,
+      "zone": "PL"
+    },
+    {
+      "hours": 13152,
+      "max_target_rounding_difference_eur_mwh": 2.929687502728484e-05,
+      "partner_pipeline_mae": 22.316169579592042,
+      "persistence_mae": 29.399694678982264,
+      "split": "test",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 28.602873466729267,
+      "zone": "CZ"
+    },
+    {
+      "hours": 13152,
+      "max_target_rounding_difference_eur_mwh": 1.464843751364242e-05,
+      "partner_pipeline_mae": 14.66302493247595,
+      "persistence_mae": 21.325227396343745,
+      "split": "test",
+      "target_masks_match": true,
+      "target_prices_match_within_float32_rounding": true,
+      "weekly_only_asinh_l1_mae": 21.513991072183593,
+      "zone": "CH"
+    }
+  ],
+  "scope": "Matched ten-country comparison of saved predictions; no additional model fitting or test prediction"
+}

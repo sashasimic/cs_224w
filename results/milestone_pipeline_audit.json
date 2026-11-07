@@ -1,0 +1,90 @@
+{
+  "claims": {
+    "not_supported": [
+      "No causal attribution or universal feature ranking",
+      "No strict historical availability certification for ERA5/load forecasts",
+      "No demonstrated GNN improvement over a strong recent-price baseline",
+      "No blind confirmatory test claim after earlier exploratory test inspection"
+    ],
+    "supported": [
+      "Recent prior-day auction price is the dominant measured feature addition in the prespecified France sequence",
+      "Partner hyperparameters alone do not explain its advantage",
+      "Evaluation targets/masks match, with only float rounding",
+      "Removing future-effective weather changes little in this diagnostic"
+    ]
+  },
+  "france_diagnostic_fingerprint": "543a551ca557013472cc4609dec1ed04d3896f34a7b11e648e6eb44751f72376",
+  "france_load_source_audit": {
+    "availability_verified_rows": 0,
+    "interpretation": "Update/valid-time fields are not original publication timestamps; no historical-vintage availability claim.",
+    "price_input_filled_rows": 0,
+    "price_invalid_rows": 0,
+    "rows": 94967,
+    "source": "entsoe_load_forecast@v1.2, France",
+    "upstream_input_filled_rows": 0
+  },
+  "france_table_control": {
+    "absolute_difference": 5.095551429690204e-07,
+    "audited_mae": 36.31760828824413,
+    "legacy_mae": 36.31760777868899
+  },
+  "matched_ten_country_scores": [
+    {
+      "hours": 87600,
+      "mae": 31.238496004566205,
+      "model": "Weekly persistence",
+      "split": "val",
+      "zones": 10
+    },
+    {
+      "hours": 87600,
+      "mae": 29.650764005272574,
+      "model": "Raw-price squared-error XGBoost",
+      "split": "val",
+      "zones": 10
+    },
+    {
+      "hours": 87600,
+      "mae": 29.439272022843426,
+      "model": "Asinh/L1 weekly XGBoost",
+      "split": "val",
+      "zones": 10
+    },
+    {
+      "hours": 87600,
+      "mae": 21.04008745817349,
+      "model": "Full partner pipeline",
+      "split": "val",
+      "zones": 10
+    },
+    {
+      "hours": 131520,
+      "mae": 29.146392164689782,
+      "model": "Weekly persistence",
+      "split": "test",
+      "zones": 10
+    },
+    {
+      "hours": 131520,
+      "mae": 29.593087486805125,
+      "model": "Raw-price squared-error XGBoost",
+      "split": "test",
+      "zones": 10
+    },
+    {
+      "hours": 131520,
+      "mae": 28.811179584663787,
+      "model": "Asinh/L1 weekly XGBoost",
+      "split": "test",
+      "zones": 10
+    },
+    {
+      "hours": 131520,
+      "mae": 21.166311378940716,
+      "model": "Full partner pipeline",
+      "split": "test",
+      "zones": 10
+    }
+  ],
+  "price24_test_mae_reduction_percent": 30.827791900236424
+}

@@ -20,6 +20,18 @@ The [ten-country comparison](docs/boosting_countries.md) runs separate models wi
 The [constraint-summary experiment](docs/boosting_constraints.md) adds historical
 JAO features for the seven countries with source coverage:
 `python -m epgnn.boosting_batch --config configs/experiments/c1_xgb_countries_weekly_jao48_conditional.json`.
+The [France temperature experiments](docs/temperature_experiments.md) compare
+current-temperature and perfect-weather diagnostics. These notes also correct
+the overly conservative interpretation of price-lag delivery timestamps: price
+publication time, not physical delivery completion, determines availability.
+The [asinh/L1 country comparison](docs/boosting_target_transform.md) applies the
+partner's target transformation and loss to the same audited weekly-price inputs:
+`python -m epgnn.boosting_batch --config configs/experiments/c1_xgb_countries_weekly_asinh_l1_conditional.json`.
+The [partner-pipeline reproduction](docs/partner_pipeline_reproduction.md) runs
+the pinned `c1_xgb_zone` source unchanged and reports errors by country and zone.
+The [pipeline comparison](docs/pipeline_comparison.md) adds fixed-learner France
+diagnostics and a [two-page milestone draft](reports/milestone/milestone.pdf),
+with source, saved metrics and reproduction commands.
 
 A spatio-temporal graph model of European day-ahead electricity markets. Stanford CS224W, Fall 2026, Project 1.
 

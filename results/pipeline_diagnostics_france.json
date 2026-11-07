@@ -1,0 +1,497 @@
+{
+  "artifact_directory": "/srv/cs224w/Project/arsen/cs_224w/runs/pipeline_diagnostics_france/543a551ca557013472cc4609dec1ed04d3896f34a7b11e648e6eb44751f72376",
+  "config": {
+    "audited_data_directory": "staging/forecast_dataset_v1.0/current",
+    "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+    "early_stopping_rounds": 50,
+    "evaluation_splits": [
+      "val",
+      "test"
+    ],
+    "fit_splits": [
+      "pretrain",
+      "train"
+    ],
+    "legacy_path": "datasets/zone_nodes_hourly_v1.0.parquet",
+    "name": "pipeline_diagnostics_france",
+    "params": {
+      "colsample_bytree": 0.8,
+      "device": "cpu",
+      "eval_metric": "mae",
+      "learning_rate": 0.05,
+      "max_depth": 6,
+      "min_child_weight": 1,
+      "n_estimators": 600,
+      "n_jobs": 4,
+      "objective": "reg:absoluteerror",
+      "random_state": 0,
+      "reg_lambda": 1.0,
+      "subsample": 0.8,
+      "tree_method": "hist"
+    },
+    "partner_commit": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
+    "partner_reference": "results/partner_c1_xgb_zone_by_country.json",
+    "profiles": [
+      "weekly_flags",
+      "weekly_calendar",
+      "recent_price",
+      "load",
+      "flows",
+      "weather_past24",
+      "weather48",
+      "weather_all24"
+    ],
+    "validation_split": "val",
+    "zone": "FR"
+  },
+  "fingerprint": "543a551ca557013472cc4609dec1ed04d3896f34a7b11e648e6eb44751f72376",
+  "fitted_targets": 72310,
+  "inputs": {
+    "code": "d5ab890bac685bd1b74618f0b62c6b8933f0b49d1756a2c522e76150e86dded9",
+    "config": {
+      "audited_data_directory": "staging/forecast_dataset_v1.0/current",
+      "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+      "early_stopping_rounds": 50,
+      "evaluation_splits": [
+        "val",
+        "test"
+      ],
+      "fit_splits": [
+        "pretrain",
+        "train"
+      ],
+      "legacy_path": "datasets/zone_nodes_hourly_v1.0.parquet",
+      "name": "pipeline_diagnostics_france",
+      "params": {
+        "colsample_bytree": 0.8,
+        "device": "cpu",
+        "eval_metric": "mae",
+        "learning_rate": 0.05,
+        "max_depth": 6,
+        "min_child_weight": 1,
+        "n_estimators": 600,
+        "n_jobs": 4,
+        "objective": "reg:absoluteerror",
+        "random_state": 0,
+        "reg_lambda": 1.0,
+        "subsample": 0.8,
+        "tree_method": "hist"
+      },
+      "partner_commit": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
+      "partner_reference": "results/partner_c1_xgb_zone_by_country.json",
+      "profiles": [
+        "weekly_flags",
+        "weekly_calendar",
+        "recent_price",
+        "load",
+        "flows",
+        "weather_past24",
+        "weather48",
+        "weather_all24"
+      ],
+      "validation_split": "val",
+      "zone": "FR"
+    },
+    "legacy_sha256": "589d3d5739397d76a86d0f2d669195c2156e481e40ea23463250046f24cb7a67",
+    "numpy": "2.5.4",
+    "pandas": "3.1.1",
+    "weather_sha256": "ce44b58d872836c59f4b1eb78f34b5e067c4d515d2c13ca1d1b6b22bab4082cb",
+    "xgboost": "3.4.1"
+  },
+  "limitations": [
+    "Sequential one-seed feature additions are order-dependent, not causal effects",
+    "Past effective time does not establish publication availability; reanalysis and load vintages are unverified",
+    "Test has been examined across earlier exploratory runs; these are milestone diagnostics, not a fresh confirmatory holdout",
+    "Legacy features retain original input fills and source geography; evaluation target rows are never filtered by feature availability"
+  ],
+  "rows": [
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "hour_local",
+        "dow",
+        "month",
+        "utc_offset_hours",
+        "audit_in_cwe",
+        "audit_in_core",
+        "price_lag168"
+      ],
+      "hours": 8760,
+      "mae": 34.66860484240989,
+      "persistence_mae": 33.15231391382021,
+      "profile": "weekly_flags",
+      "rmse": 43.67001115209878,
+      "selected_rounds": 236,
+      "split": "val"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "hour_local",
+        "dow",
+        "month",
+        "utc_offset_hours",
+        "audit_in_cwe",
+        "audit_in_core",
+        "price_lag168"
+      ],
+      "hours": 13152,
+      "mae": 36.31760777868899,
+      "persistence_mae": 32.44253898736366,
+      "profile": "weekly_flags",
+      "rmse": 45.84871689641572,
+      "selected_rounds": 236,
+      "split": "test"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "price_lag168",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 8760,
+      "mae": 31.550976757952075,
+      "persistence_mae": 33.15231391382021,
+      "profile": "weekly_calendar",
+      "rmse": 40.921126429176496,
+      "selected_rounds": 99,
+      "split": "val"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "price_lag168",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 13152,
+      "mae": 32.09212705124505,
+      "persistence_mae": 32.44253898736366,
+      "profile": "weekly_calendar",
+      "rmse": 42.12472480766718,
+      "selected_rounds": 99,
+      "split": "test"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "price_lag24_guarded",
+        "price_lag168",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 8760,
+      "mae": 20.38669632218,
+      "persistence_mae": 33.15231391382021,
+      "profile": "recent_price",
+      "rmse": 27.1808038754869,
+      "selected_rounds": 356,
+      "split": "val"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "price_lag24_guarded",
+        "price_lag168",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 13152,
+      "mae": 22.19883290752775,
+      "persistence_mae": 32.44253898736366,
+      "profile": "recent_price",
+      "rmse": 31.159285531531545,
+      "selected_rounds": 356,
+      "split": "test"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "price_lag24_guarded",
+        "price_lag168",
+        "load_fc",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 8760,
+      "mae": 20.390247654472798,
+      "persistence_mae": 33.15231391382021,
+      "profile": "load",
+      "rmse": 26.96353152726243,
+      "selected_rounds": 418,
+      "split": "val"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "price_lag24_guarded",
+        "price_lag168",
+        "load_fc",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 13152,
+      "mae": 22.211521295358892,
+      "persistence_mae": 32.44253898736366,
+      "profile": "load",
+      "rmse": 30.9377562861841,
+      "selected_rounds": 418,
+      "split": "test"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "price_lag24_guarded",
+        "price_lag168",
+        "load_fc",
+        "net_import_lag48",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 8760,
+      "mae": 20.470898747034838,
+      "persistence_mae": 33.15231391382021,
+      "profile": "flows",
+      "rmse": 27.039432988011583,
+      "selected_rounds": 366,
+      "split": "val"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "price_lag24_guarded",
+        "price_lag168",
+        "load_fc",
+        "net_import_lag48",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 13152,
+      "mae": 22.13938778112372,
+      "persistence_mae": 32.44253898736366,
+      "profile": "flows",
+      "rmse": 30.818691828341496,
+      "selected_rounds": 366,
+      "split": "test"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "price_lag24_guarded",
+        "price_lag168",
+        "load_fc",
+        "temp_pw_lag24_past",
+        "temp_anom_lag24_past",
+        "wind_cf_lag24_past",
+        "solar_cf_lag24_past",
+        "net_import_lag48",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 8760,
+      "mae": 20.366737969415517,
+      "persistence_mae": 33.15231391382021,
+      "profile": "weather_past24",
+      "rmse": 27.043133895169795,
+      "selected_rounds": 466,
+      "split": "val"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "price_lag24_guarded",
+        "price_lag168",
+        "load_fc",
+        "temp_pw_lag24_past",
+        "temp_anom_lag24_past",
+        "wind_cf_lag24_past",
+        "solar_cf_lag24_past",
+        "net_import_lag48",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 13152,
+      "mae": 22.059441268950476,
+      "persistence_mae": 32.44253898736366,
+      "profile": "weather_past24",
+      "rmse": 30.72919039962824,
+      "selected_rounds": 466,
+      "split": "test"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "price_lag24_guarded",
+        "price_lag168",
+        "load_fc",
+        "temp_pw_lag48",
+        "temp_anom_lag48",
+        "wind_cf_lag48",
+        "solar_cf_lag48",
+        "net_import_lag48",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 8760,
+      "mae": 20.246291607663355,
+      "persistence_mae": 33.15231391382021,
+      "profile": "weather48",
+      "rmse": 26.77777896139955,
+      "selected_rounds": 488,
+      "split": "val"
+    },
+    {
+      "availability": "effective-time restrictions applied where relevant; historical vintages still unverified",
+      "features": [
+        "price_lag24_guarded",
+        "price_lag168",
+        "load_fc",
+        "temp_pw_lag48",
+        "temp_anom_lag48",
+        "wind_cf_lag48",
+        "solar_cf_lag48",
+        "net_import_lag48",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 13152,
+      "mae": 22.119126207257697,
+      "persistence_mae": 32.44253898736366,
+      "profile": "weather48",
+      "rmse": 30.648184312085956,
+      "selected_rounds": 488,
+      "split": "test"
+    },
+    {
+      "availability": "retrospective weather includes future effective hours",
+      "features": [
+        "price_lag24_guarded",
+        "price_lag168",
+        "load_fc",
+        "temp_pw_lag24",
+        "temp_anom_lag24",
+        "wind_cf_lag24",
+        "solar_cf_lag24",
+        "net_import_lag48",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 8760,
+      "mae": 20.409917196158027,
+      "persistence_mae": 33.15231391382021,
+      "profile": "weather_all24",
+      "rmse": 27.090679396565175,
+      "selected_rounds": 408,
+      "split": "val"
+    },
+    {
+      "availability": "retrospective weather includes future effective hours",
+      "features": [
+        "price_lag24_guarded",
+        "price_lag168",
+        "load_fc",
+        "temp_pw_lag24",
+        "temp_anom_lag24",
+        "wind_cf_lag24",
+        "solar_cf_lag24",
+        "net_import_lag48",
+        "hour_local",
+        "dow",
+        "month"
+      ],
+      "hours": 13152,
+      "mae": 22.04140877026303,
+      "persistence_mae": 32.44253898736366,
+      "profile": "weather_all24",
+      "rmse": 30.763337812121517,
+      "selected_rounds": 408,
+      "split": "test"
+    }
+  ],
+  "timing_audit": {
+    "pretrain": {
+      "price24_same_delivery_day": 6,
+      "valid_targets": 56422,
+      "weather24_post_origin_intervals": 28211
+    },
+    "test": {
+      "price24_same_delivery_day": 1,
+      "valid_targets": 13152,
+      "weather24_post_origin_intervals": 6576
+    },
+    "train": {
+      "price24_same_delivery_day": 2,
+      "valid_targets": 15888,
+      "weather24_post_origin_intervals": 7944
+    },
+    "val": {
+      "price24_same_delivery_day": 1,
+      "valid_targets": 8760,
+      "weather24_post_origin_intervals": 4380
+    }
+  },
+  "validation_week_block_bootstrap": {
+    "flows_to_weather_past24": {
+      "bootstrap_repetitions": 2000,
+      "calendar_week_blocks": 53,
+      "ci95_lower": -0.0018005206986200604,
+      "ci95_upper": 0.2107554072670508,
+      "interpretation": "descriptive paired validation-loss uncertainty conditional on fitted models; no retraining or causal attribution",
+      "mean_mae_improvement": 0.10416077761932119
+    },
+    "load_to_flows": {
+      "bootstrap_repetitions": 2000,
+      "calendar_week_blocks": 53,
+      "ci95_lower": -0.2322094058539703,
+      "ci95_upper": 0.07041301132895927,
+      "interpretation": "descriptive paired validation-loss uncertainty conditional on fitted models; no retraining or causal attribution",
+      "mean_mae_improvement": -0.080651092562042
+    },
+    "recent_price_to_load": {
+      "bootstrap_repetitions": 2000,
+      "calendar_week_blocks": 53,
+      "ci95_lower": -0.23662119444552854,
+      "ci95_upper": 0.23616819604978137,
+      "interpretation": "descriptive paired validation-loss uncertainty conditional on fitted models; no retraining or causal attribution",
+      "mean_mae_improvement": -0.0035513322927976307
+    },
+    "weather48_to_weather_all24": {
+      "bootstrap_repetitions": 2000,
+      "calendar_week_blocks": 53,
+      "ci95_lower": -0.381920547256118,
+      "ci95_upper": 0.042793643955344476,
+      "interpretation": "descriptive paired validation-loss uncertainty conditional on fitted models; no retraining or causal attribution",
+      "mean_mae_improvement": -0.1636255884946686
+    },
+    "weather_past24_to_weather_all24": {
+      "bootstrap_repetitions": 2000,
+      "calendar_week_blocks": 53,
+      "ci95_lower": -0.15242814603936802,
+      "ci95_upper": 0.06157037632675023,
+      "interpretation": "descriptive paired validation-loss uncertainty conditional on fitted models; no retraining or causal attribution",
+      "mean_mae_improvement": -0.04317922674250756
+    },
+    "weekly_calendar_to_recent_price": {
+      "bootstrap_repetitions": 2000,
+      "calendar_week_blocks": 53,
+      "ci95_lower": 8.552847638561937,
+      "ci95_upper": 14.130500508554261,
+      "interpretation": "descriptive paired validation-loss uncertainty conditional on fitted models; no retraining or causal attribution",
+      "mean_mae_improvement": 11.164280435772078
+    }
+  }
+}

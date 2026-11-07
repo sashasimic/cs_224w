@@ -32,6 +32,8 @@ JAO_LAG_FEATURES = {
     "min_ram_ratio_lag48": "min_ram_ratio",
     "jao_domain_present_lag48": "jao_domain_present",
 }
+TEMPERATURE_CURRENT = "temp_pw_current_origin"
+TEMPERATURE_PERFECT = "temp_pw_perfect"
 
 
 def experiment_registry(registry):
@@ -43,6 +45,17 @@ def experiment_registry(registry):
             rows.append({**by_name[source], "feature": name, "admission": "conditional",
                 "transformation": f"exact zone/UTC join of {source} at t-48h; regional members only; NaNs retained",
                 "timing_rule": "source domain hour and interval completion precede forecast origin; historical publication time unverified"})
+    if "temp_pw" in by_name:
+        definitions = {
+            TEMPERATURE_CURRENT: ("conditional", "exact zone/time lookup at forecast_origin_utc minus 1h, frozen across the delivery day",
+                "previous calendar date at 11:00 Brussels; hourly interval ends at origin; ERA5 publication vintages unverified"),
+            TEMPERATURE_PERFECT: ("excluded", "exact zone/delivery-hour lookup of actual reanalysis temperature",
+                "future weather intentionally supplied; explicit oracle-only diagnostic, never a realistic forecasting input"),
+        }
+        for name, (status, transform, timing) in definitions.items():
+            if name not in by_name:
+                rows.append({**by_name["temp_pw"], "feature": name, "admission": status,
+                    "transformation": transform, "timing_rule": timing})
     return rows
 
 
@@ -51,17 +64,22 @@ def _path(value):
     return p if p.is_absolute() else ROOT / p
 
 
-def check_features(features, registry, conditional_features=()):
+def check_features(features, registry, conditional_features=(), oracle_features=()):
     if not features or len(features) != len(set(features)):
         raise ValueError("Select a nonempty, unique feature list")
     conditional = set(conditional_features)
     if (len(conditional) != len(conditional_features) or not conditional <= set(features)
-            or not conditional <= {"price_lag168", *JAO_LAG_FEATURES}):
-        raise ValueError("Conditional opt-in supports weekly price history and explicit lagged JAO summaries only")
+            or not conditional <= {"price_lag168", *JAO_LAG_FEATURES, TEMPERATURE_CURRENT}):
+        raise ValueError("Unsupported conditional feature opt-in")
+    oracle = set(oracle_features)
+    if (len(oracle) != len(oracle_features) or not oracle <= set(features)
+            or not oracle <= {TEMPERATURE_PERFECT} or conditional & oracle):
+        raise ValueError("Oracle opt-in supports only the explicit perfect-temperature diagnostic")
     registry = experiment_registry(registry)
     admission = {r["feature"]: r["admission"] for r in registry if r["table"] == "node"}
     bad = {f: admission.get(f, "unregistered") for f in features
-           if admission.get(f) != "admitted" and not (f in conditional and admission.get(f) == "conditional")}
+           if admission.get(f) != "admitted" and not (f in conditional and admission.get(f) == "conditional")
+           and not (f in oracle and f == TEMPERATURE_PERFECT and admission.get(f) == "excluded")}
     if bad:
         raise ValueError(f"Strict experiment rejects non-admitted inputs: {bad}")
 
@@ -91,6 +109,17 @@ def masks(frame, cfg):
     if test.any() and frame.loc[val, "delivery_date"].max() >= frame.loc[test, "delivery_date"].min():
         raise ValueError("Validation must precede test chronologically")
     return fit, val
+
+
+def transform_target(values, kind="identity", scale=50.0, *, inverse=False):
+    """Partner's fixed asinh(price/50) transform; no fitted target statistics."""
+    values = np.asarray(values, dtype="float64")
+    if kind == "identity":
+        return values
+    if kind != "asinh" or not np.isfinite(scale) or scale <= 0:
+        raise ValueError("Target transform must be identity or asinh with a positive finite scale")
+    with np.errstate(over="raise", invalid="raise"):
+        return scale * np.sinh(values) if inverse else np.arcsinh(values / scale)
 
 
 def errors(y, prediction, mask):
@@ -171,10 +200,11 @@ def load_strict(directory, cfg, registry):
 def load_inputs(directory, cfg, registry):
     """Opt-in lag values keep their conditional status; strict artifacts stay intact."""
     conditional = cfg.get("conditional_features", [])
-    check_features(cfg["features"], registry, conditional)
-    strict_cfg = {**cfg, "features": [f for f in cfg["features"] if f not in conditional]}
+    oracle = cfg.get("oracle_features", [])
+    check_features(cfg["features"], registry, conditional, oracle)
+    strict_cfg = {**cfg, "features": [f for f in cfg["features"] if f not in conditional + oracle]}
     frame = load_strict(directory, strict_cfg, registry)
-    if not conditional:
+    if not conditional and not oracle:
         return frame
     lagged_prices = [f for f in conditional if f == "price_lag168"]
     jao = [f for f in conditional if f in JAO_LAG_FEATURES]
@@ -201,7 +231,38 @@ def load_inputs(directory, cfg, registry):
             filter=ds.field("zone") == cfg["zone"]).to_pandas()
         source = extend_constraint_history(directory, cfg["zone"], source, frame.ts_utc.min())
         frame = join_constraint_history(frame, source, jao)
+    temperature = [f for f in conditional + oracle if f in [TEMPERATURE_CURRENT, TEMPERATURE_PERFECT]]
+    if temperature:
+        manifest = json.loads((directory / "source_manifest.json").read_text())
+        info = manifest["weather_hourly"]
+        if digest(info["path"])["sha256"] != info["sha256"]:
+            raise ValueError("Original weather history checksum mismatch")
+        source = ds.dataset(info["path"]).to_table(columns=["zone", "time_utc", "temp_pw"],
+            filter=ds.field("zone") == cfg["zone"]).to_pandas().rename(columns={"time_utc": "ts_utc"})
+        # Original weather starts in 2010, allowing lookup before the output window.
+        source["ts_utc"] = utc(source.ts_utc)
+        frame = join_temperature_history(frame, source, temperature)
     return frame
+
+
+def join_temperature_history(frame, source, features):
+    """Exact lookups; no nearest-time substitution, interpolation or future fallback."""
+    if not set(features) <= {TEMPERATURE_CURRENT, TEMPERATURE_PERFECT}:
+        raise ValueError("Unknown temperature feature")
+    unique(source, NODE_KEYS, "Temperature history")
+    values = source.set_index(NODE_KEYS).temp_pw
+    out = frame.copy()
+    for feature in features:
+        stamp = out.ts_utc if feature == TEMPERATURE_PERFECT else out.forecast_origin_utc - pd.Timedelta(hours=1)
+        key = pd.MultiIndex.from_arrays([out.zone, stamp], names=NODE_KEYS)
+        out[feature] = values.reindex(key).to_numpy(dtype="float64")
+        out[feature + "_source_utc"] = stamp
+        if feature == TEMPERATURE_CURRENT:
+            present = out[feature].notna()
+            if not ((stamp[present] < out.loc[present, "forecast_origin_utc"]) &
+                    (stamp[present] + pd.Timedelta(hours=1) <= out.loc[present, "forecast_origin_utc"])).all():
+                raise ValueError("Current-temperature source interval is after forecast origin")
+    return out
 
 
 def extend_constraint_history(directory, zone, source, first_target):
@@ -271,14 +332,19 @@ def run(config_path):
     hashes = _check_artifacts(directory, complete, ["strict", "feature_registry.json", "construction_config.json", "build_fingerprint.json"])
     registry = experiment_registry(json.loads((directory / "feature_registry.json").read_text()))
     conditional = cfg.get("conditional_features", [])
-    check_features(cfg["features"], registry, conditional)
-    if conditional:
+    oracle = cfg.get("oracle_features", [])
+    check_features(cfg["features"], registry, conditional, oracle)
+    if conditional or oracle:
         hashes.update(_check_artifacts(directory, complete, ["nodes"]))
     if set(conditional) & set(JAO_LAG_FEATURES):
         hashes.update(_check_artifacts(directory, complete, ["source_manifest.json"]))
         source_manifest = json.loads((directory / "source_manifest.json").read_text())
         for name in ["jao_hourly", "jao_metadata/coverage.csv"]:
             hashes[f"original_history/{name}"] = source_manifest[name]["sha256"]
+    if TEMPERATURE_CURRENT in conditional or TEMPERATURE_PERFECT in oracle:
+        hashes.update(_check_artifacts(directory, complete, ["source_manifest.json"]))
+        source_manifest = json.loads((directory / "source_manifest.json").read_text())
+        hashes["original_history/weather_hourly"] = source_manifest["weather_hourly"]["sha256"]
     versions = {"python": sys.version.split()[0], "numpy": np.__version__, "pandas": pd.__version__,
                 "pyarrow": pyarrow.__version__, "xgboost": xgb.__version__}
     code_sha = digest(Path(__file__))["sha256"]
@@ -305,12 +371,17 @@ def run(config_path):
         raise ValueError("Infinite feature values are not supported")
     y = frame.price.to_numpy(dtype="float64")
     params = cfg["params"]
-    if params.get("eval_metric") != "mae" or params.get("objective") != "reg:squarederror":
-        raise ValueError("This experiment uses raw-price squared-error boosting with validation MAE")
+    target_kind = cfg.get("target_transform", "identity")
+    target_scale = cfg.get("target_scale_eur_mwh", 50.0)
+    if params.get("eval_metric") != "mae" or params.get("objective") not in {"reg:squarederror", "reg:absoluteerror"}:
+        raise ValueError("Supported objectives are squared/absolute error with validation MAE")
+    transformed_y = transform_target(y, target_kind, target_scale)
+    if not np.isfinite(transformed_y[fit | val]).all():
+        raise ValueError("Transformed fit/validation labels must be finite")
     model = xgb.XGBRegressor(**params, early_stopping_rounds=cfg["early_stopping_rounds"])
     print(f"Fit one XGBoost model: zone={cfg['zone']}, features={cfg['features']}, train={int(fit.sum())}, val={int(val.sum())}", flush=True)
     # Test data is never supplied to fit, early stopping, or any transform.
-    model.fit(x.loc[fit], y[fit], eval_set=[(x.loc[val], y[val])], verbose=100)
+    model.fit(x.loc[fit], transformed_y[fit], eval_set=[(x.loc[val], transformed_y[val])], verbose=100)
     print(f"Selected {model.best_iteration + 1} rounds using validation MAE only", flush=True)
     # The conditional comparator is read only after model fitting is finished.
     hashes.update(_check_artifacts(directory, complete, ["nodes"]))
@@ -326,7 +397,8 @@ def run(config_path):
             if not selected.any():
                 raise ValueError(f"No evaluation rows for {split}")
             block = frame.loc[selected].reset_index(drop=True)
-            prediction = model.predict(x.loc[selected])  # automatically uses best_iteration
+            transformed_prediction = model.predict(x.loc[selected])  # automatically uses best_iteration
+            prediction = transform_target(transformed_prediction, target_kind, target_scale, inverse=True)
             weekly = history.loc[selected, "price_lag168"].to_numpy(dtype="float64")
             metrics[split] = score(block, prediction, weekly)
             # Fixed, descriptive evaluation slices; no tuning or distribution plots.
@@ -338,9 +410,13 @@ def run(config_path):
                 for name, mask in slice_defs.items() if mask.any()}
             output = block[NODE_KEYS + ["delivery_date", "forecast_origin_utc", "split", "price", "target_valid"]].copy()
             output["prediction"] = prediction
+            if target_kind != "identity":
+                output["prediction_transformed"] = transformed_prediction
             output["weekly_persistence_conditional"] = weekly
-            for feature in conditional:
+            for feature in conditional + oracle:
                 output[feature] = block[feature]
+                if feature + "_source_utc" in block:
+                    output[feature + "_source_utc"] = block[feature + "_source_utc"]
             if "jao_source_domain_utc" in block:
                 output["jao_source_domain_utc"] = block.jao_source_domain_utc
             output["common_comparison_mask"] = output.target_valid & np.isfinite(weekly)
@@ -359,19 +435,26 @@ def run(config_path):
             "experiment_fingerprint": identity, "dataset_fingerprint": complete["fingerprint"],
             "runner_sha256": code_sha, "versions": versions, "git_commit": git, "git_dirty": bool(dirty),
             "normalization": "none", "feature_missingness": "NaNs retained; native XGBoost missing-value handling",
-            "target_transform": "none; EUR/MWh including negative prices", "fit_rows": int(fit.sum()),
+            "target_transform": f"asinh(price/{target_scale:g}); inverse {target_scale:g}*sinh(prediction)"
+                if target_kind == "asinh" else "none; EUR/MWh including negative prices",
+            "target_scale_eur_mwh": target_scale if target_kind == "asinh" else None,
+            "early_stopping_metric_units": "asinh(price/scale) units" if target_kind == "asinh" else "EUR/MWh",
+            "prediction_units": "EUR/MWh after inverse transformation", "fit_rows": int(fit.sum()),
             "validation_rows": int(val.sum()), "early_stopping_split": cfg["validation_split"],
             "best_iteration_zero_based": model.best_iteration, "selected_rounds": model.best_iteration + 1,
             "best_validation_mae": model.best_score, "elapsed_seconds": time.monotonic() - started,
             "feature_importance_gain_normalized": dict(zip(cfg["features"], map(float, model.feature_importances_))),
-            "feature_policy": "conditional" if conditional else "strict",
+            "feature_policy": "oracle_perfect_weather" if oracle else "conditional" if conditional else "strict",
             "conditional_features": conditional,
+            "oracle_features": oracle,
             "missing_feature_rows_by_split": {str(split): {feature: int(g[feature].isna().sum())
                 for feature in cfg["features"]} for split, g in frame.groupby("split")},
             "unassigned_rows_not_used": int(frame.split.eq("unassigned").sum()),
             "forecast_contract": "12:00 Europe/Brussels on previous calendar date; " +
-                ("explicit conditional historical inputs" if conditional else "strict admitted features only"),
-            "input_availability_limitation": "Historical price/domain interval timing checked; publication vintages unverified"
+                ("deliberate future-temperature oracle diagnostic" if oracle else
+                 "explicit conditional historical inputs" if conditional else "strict admitted features only"),
+            "input_availability_limitation": "Future delivery-hour reanalysis temperature intentionally supplied; not a deployable forecast"
+                if oracle else "Historical price/domain/temperature interval timing checked; publication vintages unverified"
                 if conditional else None,
             "comparison_limitation": "Weekly persistence is a conditional archived-price benchmark, not a certified strict feature set",
             "ran_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}

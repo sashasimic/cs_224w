@@ -100,10 +100,15 @@ def run(config_path):
         if (record["dataset_fingerprint"] != base["dataset_fingerprint"] or
                 record["config"]["params"] != base["params"] or
                 record["config"]["features"] != base["features"] or
-                record["config"]["fit_splits"] != base["fit_splits"]):
+                record["config"]["fit_splits"] != base["fit_splits"] or
+                record["config"].get("target_transform", "identity") != base.get("target_transform", "identity") or
+                record["config"].get("target_scale_eur_mwh", 50.0) != base.get("target_scale_eur_mwh", 50.0)):
             raise ValueError("Country experiment definitions do not match")
     summary = {"name": batch["name"], "config": batch, "dataset_fingerprint": base["dataset_fingerprint"],
         "feature_policy": "conditional", "features": base["features"],
+        "target_transform": base.get("target_transform", "identity"),
+        "target_scale_eur_mwh": base.get("target_scale_eur_mwh", 50.0),
+        "early_stopping_metric_units": records[0]["early_stopping_metric_units"],
         "parameters": base["params"], "training": "pretrain + train; 2016-01-01 through 2024-03-31 where structurally available",
         "validation": "2024-04-01 through 2025-03-31; early stopping only",
         "test": "2025-04-01 through 2026-09-30; one evaluation per new country model",

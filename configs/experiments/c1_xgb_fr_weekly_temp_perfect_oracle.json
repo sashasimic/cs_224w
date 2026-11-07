@@ -1,0 +1,47 @@
+{
+  "conditional_features": [
+    "price_lag168"
+  ],
+  "dataset_directory": "staging/forecast_dataset_v1.0/current",
+  "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+  "early_stopping_rounds": 50,
+  "evaluation_splits": [
+    "val",
+    "test"
+  ],
+  "features": [
+    "hour_local",
+    "dow",
+    "month",
+    "utc_offset_hours",
+    "in_cwe",
+    "in_core",
+    "price_lag168",
+    "temp_pw_perfect"
+  ],
+  "fit_splits": [
+    "pretrain",
+    "train"
+  ],
+  "name": "c1_xgb_fr_weekly_temp_perfect_oracle",
+  "oracle_features": [
+    "temp_pw_perfect"
+  ],
+  "params": {
+    "colsample_bytree": 1.0,
+    "device": "cpu",
+    "eval_metric": "mae",
+    "learning_rate": 0.05,
+    "max_depth": 5,
+    "min_child_weight": 20,
+    "n_estimators": 1000,
+    "n_jobs": 4,
+    "objective": "reg:squarederror",
+    "random_state": 224,
+    "reg_lambda": 5.0,
+    "subsample": 0.8,
+    "tree_method": "hist"
+  },
+  "validation_split": "val",
+  "zone": "FR"
+}
