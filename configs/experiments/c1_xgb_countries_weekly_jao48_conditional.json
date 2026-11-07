@@ -1,0 +1,13 @@
+{
+  "base_config": "configs/experiments/c1_xgb_be_weekly_jao48_conditional.json",
+  "name": "c1_xgb_countries_weekly_jao48_conditional",
+  "zones": [
+    "BE",
+    "FR",
+    "NL",
+    "DE_LU",
+    "AT",
+    "PL",
+    "CZ"
+  ]
+}

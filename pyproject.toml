@@ -12,6 +12,12 @@ dependencies = [
 # Model stack: same core as the course Colabs (torch + PyTorch Geometric), without their course-only
 # extras (deepsnap, ogb, torch_scatter/torch_sparse), plus XGBoost for the non-graph baselines.
 [project.optional-dependencies]
+inspection = [
+  "nbformat",
+  "nbclient",
+  "ipykernel",
+  "matplotlib",
+]
 model = [
   "torch>=2.7",
   "torch_geometric>=2.6",

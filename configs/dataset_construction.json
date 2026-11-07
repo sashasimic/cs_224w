@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "build_version": "v1.0",
+  "output_directory": "staging/forecast_dataset_v1.0",
+  "splits_file": "configs/splits.json",
+  "sources": {
+    "entsoe_prices": {
+      "path": "staging/forecast_sources/entsoe_prices_v1.2.parquet",
+      "version": "v1.2",
+      "md5": "b/P5uhqjw38oKYqMyUoJhw==",
+      "checksum_authority": "provided_archive",
+      "archive": "entsoe",
+      "archive_member": "entsoe/entsoe_prices_v1.2.parquet",
+      "archive_member_crc32": "7f418dce",
+      "version_identity": "explicit_release_filename"
+    },
+    "entsoe_load_forecast": {
+      "path": "staging/forecast_sources/entsoe_load_forecast_v1.2.parquet",
+      "version": "v1.2",
+      "md5": "WDNjm7PA8IHcw1lEPHWZMA==",
+      "checksum_authority": "provided_archive",
+      "archive": "entsoe",
+      "archive_member": "entsoe/entsoe_load_forecast_v1.2.parquet",
+      "archive_member_crc32": "af16939f",
+      "version_identity": "explicit_release_filename"
+    },
+    "entsoe_physical_flows": {
+      "path": "staging/forecast_sources/entsoe_physical_flows_v1.2.parquet",
+      "version": "v1.2",
+      "md5": "/KvYtuoN4B2akaT3ZOOq4g==",
+      "checksum_authority": "provided_archive",
+      "archive": "entsoe",
+      "archive_member": "entsoe/entsoe_physical_flows_v1.2.parquet",
+      "archive_member_crc32": "90a2bf50",
+      "version_identity": "explicit_release_filename"
+    },
+    "weather_hourly": {
+      "path": "staging/forecast_sources/weather_hourly_bzone_2010_2026.parquet",
+      "version": "v1.1",
+      "md5": "Kyib4+sscdL9mxhRIuD2mg==",
+      "checksum_authority": "provided_archive",
+      "archive": "weather",
+      "archive_member": "weather data/weather_hourly_bzone_2010_2026.parquet",
+      "archive_member_crc32": "49bd2c31",
+      "version_identity": "unverified_unversioned_archive_member"
+    }
+  },
+  "archives": {
+    "entsoe": "../../raw_data/entsoe-20261107T135022Z-1-001.zip",
+    "weather": "../../raw_data/weather data-20261107T135027Z-1-001.zip"
+  },
+  "jao_directory": "../initial/jao_analysis_bundle/jao_analysis_output/combined_views",
+  "references": {
+    "nodes": "datasets/zone_nodes_hourly_v1.0.parquet",
+    "edges": "datasets/zone_edges_hourly_v1.0.parquet"
+  },
+  "price_publication": {
+    "column": null,
+    "evidence": null
+  },
+  "batch_size": 131072,
+  "download_timeout_seconds": 40
+}

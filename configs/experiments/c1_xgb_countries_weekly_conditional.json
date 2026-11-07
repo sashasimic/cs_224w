@@ -1,0 +1,5 @@
+{
+  "name": "c1_xgb_countries_weekly_conditional",
+  "base_config": "configs/experiments/c1_xgb_be_weekly_conditional.json",
+  "zones": ["BE", "FR", "NL", "DE_LU", "AT", "ES", "PT", "PL", "CZ", "CH"]
+}

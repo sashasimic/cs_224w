@@ -1,0 +1,349 @@
+{
+  "best_iteration_zero_based": 33,
+  "best_validation_mae": 31.53316680786272,
+  "comparison_limitation": "Weekly persistence is a conditional archived-price benchmark, not a certified strict feature set",
+  "conditional_features": [
+    "price_lag168",
+    "n_presolved_lag48",
+    "min_ram_ratio_lag48",
+    "jao_domain_present_lag48"
+  ],
+  "config": {
+    "conditional_features": [
+      "price_lag168",
+      "n_presolved_lag48",
+      "min_ram_ratio_lag48",
+      "jao_domain_present_lag48"
+    ],
+    "dataset_directory": "staging/forecast_dataset_v1.0/current",
+    "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+    "early_stopping_rounds": 50,
+    "evaluation_splits": [
+      "val",
+      "test"
+    ],
+    "features": [
+      "hour_local",
+      "dow",
+      "month",
+      "utc_offset_hours",
+      "in_cwe",
+      "in_core",
+      "price_lag168",
+      "n_presolved_lag48",
+      "min_ram_ratio_lag48",
+      "jao_domain_present_lag48"
+    ],
+    "fit_splits": [
+      "pretrain",
+      "train"
+    ],
+    "name": "c1_xgb_nl_weekly_jao48_conditional",
+    "params": {
+      "colsample_bytree": 1.0,
+      "device": "cpu",
+      "eval_metric": "mae",
+      "learning_rate": 0.05,
+      "max_depth": 5,
+      "min_child_weight": 20,
+      "n_estimators": 1000,
+      "n_jobs": 4,
+      "objective": "reg:squarederror",
+      "random_state": 224,
+      "reg_lambda": 5.0,
+      "subsample": 0.8,
+      "tree_method": "hist"
+    },
+    "validation_split": "val",
+    "zone": "NL"
+  },
+  "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+  "early_stopping_split": "val",
+  "elapsed_seconds": 1.0479380630422384,
+  "experiment_fingerprint": "d18113932bb7b8de712f360ff50383a77d91296fbb5ed9098c130d7ffc2f3b29",
+  "feature_importance_gain_normalized": {
+    "dow": 0.022503763437271118,
+    "hour_local": 0.019976681098341942,
+    "in_core": 0.0,
+    "in_cwe": 0.04272746294736862,
+    "jao_domain_present_lag48": 0.0,
+    "min_ram_ratio_lag48": 0.015421134419739246,
+    "month": 0.04174751788377762,
+    "n_presolved_lag48": 0.021379495039582253,
+    "price_lag168": 0.8134505152702332,
+    "utc_offset_hours": 0.022793419659137726
+  },
+  "feature_missingness": "NaNs retained; native XGBoost missing-value handling",
+  "feature_policy": "conditional",
+  "fit_rows": 72310,
+  "forecast_contract": "12:00 Europe/Brussels on previous calendar date; explicit conditional historical inputs",
+  "git_commit": "94f12da8b673cefcc0cacff7eed07490b0ba94f9",
+  "git_dirty": true,
+  "input_availability_limitation": "Historical price/domain interval timing checked; publication vintages unverified",
+  "metrics": {
+    "test": {
+      "missing_targets": 0,
+      "model": {
+        "mae": 30.868692070248645,
+        "n_hours": 13152,
+        "rmse": 46.01524661636928
+      },
+      "rows": 13152,
+      "slices": {
+        "post_2025_10": {
+          "missing_targets": 0,
+          "model": {
+            "mae": 32.140680372229454,
+            "n_hours": 8760,
+            "rmse": 47.36468144301335
+          },
+          "rows": 8760,
+          "valid_targets": 8760,
+          "weekly_persistence_conditional_common_hours": {
+            "admission": "conditional; historical publication vintages unverified",
+            "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+            "model": {
+              "mae": 32.140680372229454,
+              "n_hours": 8760,
+              "rmse": 47.36468144301335
+            },
+            "persistence": {
+              "mae": 33.670326769406394,
+              "n_hours": 8760,
+              "rmse": 53.045152937250286
+            },
+            "relative_mae": 0.9545698974752211,
+            "valid_targets_without_persistence": 0
+          }
+        },
+        "pre_2025_10": {
+          "missing_targets": 0,
+          "model": {
+            "mae": 28.331666222035558,
+            "n_hours": 4392,
+            "rmse": 43.19804679645513
+          },
+          "rows": 4392,
+          "valid_targets": 4392,
+          "weekly_persistence_conditional_common_hours": {
+            "admission": "conditional; historical publication vintages unverified",
+            "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+            "model": {
+              "mae": 28.331666222035558,
+              "n_hours": 4392,
+              "rmse": 43.19804679645513
+            },
+            "persistence": {
+              "mae": 25.783734061930783,
+              "n_hours": 4392,
+              "rmse": 42.13659557399583
+            },
+            "relative_mae": 1.0988193623927711,
+            "valid_targets_without_persistence": 0
+          }
+        },
+        "summer": {
+          "missing_targets": 0,
+          "model": {
+            "mae": 31.158420406873674,
+            "n_hours": 4416,
+            "rmse": 46.887752243906164
+          },
+          "rows": 4416,
+          "valid_targets": 4416,
+          "weekly_persistence_conditional_common_hours": {
+            "admission": "conditional; historical publication vintages unverified",
+            "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+            "model": {
+              "mae": 31.158420406873674,
+              "n_hours": 4416,
+              "rmse": 46.887752243906164
+            },
+            "persistence": {
+              "mae": 27.712391870471016,
+              "n_hours": 4416,
+              "rmse": 48.15026014490965
+            },
+            "relative_mae": 1.1243497332352095,
+            "valid_targets_without_persistence": 0
+          }
+        }
+      },
+      "valid_targets": 13152,
+      "weekly_persistence_conditional_common_hours": {
+        "admission": "conditional; historical publication vintages unverified",
+        "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+        "model": {
+          "mae": 30.868692070248645,
+          "n_hours": 13152,
+          "rmse": 46.01524661636928
+        },
+        "persistence": {
+          "mae": 31.03666533607056,
+          "n_hours": 13152,
+          "rmse": 49.66948924945611
+        },
+        "relative_mae": 0.9945879087201196,
+        "valid_targets_without_persistence": 0
+      }
+    },
+    "val": {
+      "missing_targets": 0,
+      "model": {
+        "mae": 31.533166790531112,
+        "n_hours": 8760,
+        "rmse": 47.29511011306592
+      },
+      "rows": 8760,
+      "slices": {
+        "pre_2025_10": {
+          "missing_targets": 0,
+          "model": {
+            "mae": 31.533166790531112,
+            "n_hours": 8760,
+            "rmse": 47.29511011306592
+          },
+          "rows": 8760,
+          "valid_targets": 8760,
+          "weekly_persistence_conditional_common_hours": {
+            "admission": "conditional; historical publication vintages unverified",
+            "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+            "model": {
+              "mae": 31.533166790531112,
+              "n_hours": 8760,
+              "rmse": 47.29511011306592
+            },
+            "persistence": {
+              "mae": 34.51216095890411,
+              "n_hours": 8760,
+              "rmse": 53.52780293452849
+            },
+            "relative_mae": 0.9136827690413161,
+            "valid_targets_without_persistence": 0
+          }
+        },
+        "summer": {
+          "missing_targets": 0,
+          "model": {
+            "mae": 29.10616894321165,
+            "n_hours": 2208,
+            "rmse": 40.19926971806715
+          },
+          "rows": 2208,
+          "valid_targets": 2208,
+          "weekly_persistence_conditional_common_hours": {
+            "admission": "conditional; historical publication vintages unverified",
+            "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+            "model": {
+              "mae": 29.10616894321165,
+              "n_hours": 2208,
+              "rmse": 40.19926971806715
+            },
+            "persistence": {
+              "mae": 28.232409420289855,
+              "n_hours": 2208,
+              "rmse": 39.156257144302295
+            },
+            "relative_mae": 1.0309488116977308,
+            "valid_targets_without_persistence": 0
+          }
+        }
+      },
+      "valid_targets": 8760,
+      "weekly_persistence_conditional_common_hours": {
+        "admission": "conditional; historical publication vintages unverified",
+        "mask": "target_valid AND finite(model) AND finite(price_lag168), exact UTC/zone keys",
+        "model": {
+          "mae": 31.533166790531112,
+          "n_hours": 8760,
+          "rmse": 47.29511011306592
+        },
+        "persistence": {
+          "mae": 34.51216095890411,
+          "n_hours": 8760,
+          "rmse": 53.52780293452849
+        },
+        "relative_mae": 0.9136827690413161,
+        "valid_targets_without_persistence": 0
+      }
+    }
+  },
+  "missing_feature_rows_by_split": {
+    "pretrain": {
+      "dow": 0,
+      "hour_local": 0,
+      "in_core": 0,
+      "in_cwe": 0,
+      "jao_domain_present_lag48": 0,
+      "min_ram_ratio_lag48": 43,
+      "month": 0,
+      "n_presolved_lag48": 0,
+      "price_lag168": 168,
+      "utc_offset_hours": 0
+    },
+    "test": {
+      "dow": 0,
+      "hour_local": 0,
+      "in_core": 0,
+      "in_cwe": 0,
+      "jao_domain_present_lag48": 0,
+      "min_ram_ratio_lag48": 144,
+      "month": 0,
+      "n_presolved_lag48": 120,
+      "price_lag168": 0,
+      "utc_offset_hours": 0
+    },
+    "train": {
+      "dow": 0,
+      "hour_local": 0,
+      "in_core": 0,
+      "in_cwe": 0,
+      "jao_domain_present_lag48": 0,
+      "min_ram_ratio_lag48": 9,
+      "month": 0,
+      "n_presolved_lag48": 0,
+      "price_lag168": 0,
+      "utc_offset_hours": 0
+    },
+    "unassigned": {
+      "dow": 0,
+      "hour_local": 0,
+      "in_core": 0,
+      "in_cwe": 0,
+      "jao_domain_present_lag48": 0,
+      "min_ram_ratio_lag48": 2,
+      "month": 0,
+      "n_presolved_lag48": 2,
+      "price_lag168": 0,
+      "utc_offset_hours": 0
+    },
+    "val": {
+      "dow": 0,
+      "hour_local": 0,
+      "in_core": 0,
+      "in_cwe": 0,
+      "jao_domain_present_lag48": 0,
+      "min_ram_ratio_lag48": 25,
+      "month": 0,
+      "n_presolved_lag48": 0,
+      "price_lag168": 0,
+      "utc_offset_hours": 0
+    }
+  },
+  "name": "c1_xgb_nl_weekly_jao48_conditional",
+  "normalization": "none",
+  "ran_at": "2026-11-07T21:12:03+00:00",
+  "runner_sha256": "5cb37a8c9c3fce989f9eb79242ca090bcbcdaf8090cbacd3d9aeb19d5d3c9cb9",
+  "selected_rounds": 34,
+  "target_transform": "none; EUR/MWh including negative prices",
+  "unassigned_rows_not_used": 745,
+  "validation_rows": 8760,
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "3.1.1",
+    "pyarrow": "26.0.1",
+    "python": "3.14.8",
+    "xgboost": "3.4.1"
+  },
+  "zone": "NL"
+}

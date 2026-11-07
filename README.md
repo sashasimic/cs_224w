@@ -1,5 +1,26 @@
 # Weather, Interconnections, and Energy Prices
 
+The auditable construction workflow on `arsen_test` is documented in
+[docs/forecast_dataset.md](docs/forecast_dataset.md), with configuration in
+[configs/dataset_construction.json](configs/dataset_construction.json) and a thin
+[inspection notebook](notebooks/forecast_dataset_inspection.ipynb). It preserves
+DE_AT_LU separately, constructs literal Brussels-noon forecast origins, and keeps
+unverified source vintages conditional. Its staging artifacts are independent of
+the existing model tables and loaders described below; audit findings identify
+modelling blockers in that existing path.
+
+The first strict BE boosting run uses this audited dataset directly:
+`python -m epgnn.boosting --config configs/experiments/c1_xgb_be_strict.json`.
+See [the run notes](docs/boosting_baseline.md) for features, evaluation rules,
+results and saved model artifacts.
+The follow-up conditional experiment adds weekly price history:
+`python -m epgnn.boosting --config configs/experiments/c1_xgb_be_weekly_conditional.json`.
+The [ten-country comparison](docs/boosting_countries.md) runs separate models with
+`python -m epgnn.boosting_batch --config configs/experiments/c1_xgb_countries_weekly_conditional.json`.
+The [constraint-summary experiment](docs/boosting_constraints.md) adds historical
+JAO features for the seven countries with source coverage:
+`python -m epgnn.boosting_batch --config configs/experiments/c1_xgb_countries_weekly_jao48_conditional.json`.
+
 A spatio-temporal graph model of European day-ahead electricity markets. Stanford CS224W, Fall 2026, Project 1.
 
 **Task.** Predict the next day's 24 hourly day-ahead prices for European bidding zones using only information available at noon the day before (gate closure). The graph has two node types: **zones** (price, load-forecast and weather history), connected by **interconnector edges** (physical flows), and **transmission constraints** from the JAO flow-based domain, each connected to the zones that load it with the PTDF as edge weight. Hypotheses: H1 the graph beats neighbours-as-features; H2 published constraints improve cross-border spread forecasts; H3 heat stress raises prices and spreads most under stress.
