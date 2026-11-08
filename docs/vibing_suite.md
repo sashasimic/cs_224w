@@ -9,8 +9,14 @@ see [verified full results](vibing_suite_results.md).
 
 From the host terminal where `scripts/check_rocm.py` passes:
 
+Code refactoring changes fingerprints. To inspect the completed evaluation without
+starting a new run, use `status --saved`. Before training the current code, rerun
+`gpu-smoke` and `france`; historical preflights are not silently reused.
+
 ```bash
 cd /srv/cs224w/Project/arsen/cs_224w
+.venv/bin/python -m epgnn.experiment_suite gpu-smoke
+.venv/bin/python -m epgnn.experiment_suite france
 # Runs in a separate persistent session and returns immediately.
 tmux new-session -d -s vibing-full './scripts/experiments/run_vibing_suite.sh'
 
@@ -19,6 +25,9 @@ tail -f runs/vibing_suite_launch/full.log
 
 # Inspect the current generation and phase status.
 .venv/bin/python -m epgnn.experiment_suite status
+
+# Inspect the completed historical run referenced by the saved full summary.
+.venv/bin/python -m epgnn.experiment_suite status --saved
 
 # Attach; detach with Ctrl-b then d. Ctrl-C while attached stops the job.
 tmux attach -t vibing-full
@@ -95,7 +104,7 @@ preserves global in/out degrees and forbids duplicates and self-loops; lifetime
 masking can change the effective hourly degrees. GAT adds its own self-loops.
 
 Native NaNs remain for XGBoost. Neural median imputation, mean and standard
- deviation are fitted on active training-period feature rows only and then frozen;
+deviation are fitted on active training-period feature rows only and then frozen;
 missingness indicators accompany every feature. Entirely absent training features
 use an explicit zero fallback with a missingness indicator. Targets are never
 imputed, and losses index valid labels **before** subtraction, including spread
@@ -155,6 +164,7 @@ persistence compared on the common finite-history subset. RMSE pools squared
 errors rather than averaging regional RMSEs. Existing repeated test inspection
 means these remain exploratory, single-seed experiments.
 
-Full summaries are saved to `results/` automatically, but the training process
-never runs Git commands. Implementation and smoke results are committed before
-launch; the full results can be reviewed and committed afterwards.
+Full summaries are saved to `results/` automatically; the training process does
+not run Git commands. The completed full results and verification are committed
+in `f50dc6e`. Read [the results report](vibing_suite_results.md) for the measured
+scores and runtime of that run.

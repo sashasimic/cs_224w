@@ -1,293 +1,109 @@
 # Weather, Interconnections, and Energy Prices
 
-The auditable construction workflow on `arsen_test` is documented in
-[docs/forecast_dataset.md](docs/forecast_dataset.md), with configuration in
-[configs/dataset_construction.json](configs/dataset_construction.json) and a thin
-[inspection notebook](notebooks/forecast_dataset_inspection.ipynb). It preserves
-DE_AT_LU separately, constructs literal Brussels-noon forecast origins, and keeps
-unverified source vintages conditional. Its staging artifacts are independent of
-the existing model tables and loaders described below; audit findings identify
-modelling blockers in that existing path.
+Stanford CS224W project on forecasting European day-ahead electricity prices.
+At **12:00 Europe/Brussels on D−1**, predict every hourly price for delivery day D,
+including 23- and 25-hour daylight-saving days.
 
-The first strict BE boosting run uses this audited dataset directly:
-`python -m epgnn.boosting --config configs/experiments/c1_xgb_be_strict.json`.
-See [the run notes](docs/boosting_baseline.md) for features, evaluation rules,
-results and saved model artifacts.
-The follow-up conditional experiment adds weekly price history:
-`python -m epgnn.boosting --config configs/experiments/c1_xgb_be_weekly_conditional.json`.
-The [ten-country comparison](docs/boosting_countries.md) runs separate models with
-`python -m epgnn.boosting_batch --config configs/experiments/c1_xgb_countries_weekly_conditional.json`.
-The [constraint-summary experiment](docs/boosting_constraints.md) adds historical
-JAO features for the seven countries with source coverage:
-`python -m epgnn.boosting_batch --config configs/experiments/c1_xgb_countries_weekly_jao48_conditional.json`.
-The [France temperature experiments](docs/temperature_experiments.md) compare
-current-temperature and perfect-weather diagnostics. These notes also correct
-the overly conservative interpretation of price-lag delivery timestamps: price
-publication time, not physical delivery completion, determines availability.
-The [asinh/L1 country comparison](docs/boosting_target_transform.md) applies the
-partner's target transformation and loss to the same audited weekly-price inputs:
-`python -m epgnn.boosting_batch --config configs/experiments/c1_xgb_countries_weekly_asinh_l1_conditional.json`.
-The [partner-pipeline reproduction](docs/partner_pipeline_reproduction.md) runs
-the pinned `c1_xgb_zone` source unchanged and reports errors by country and zone.
-The [pipeline comparison](docs/pipeline_comparison.md) adds fixed-learner France
-diagnostics and a [two-page milestone draft](reports/milestone/milestone.pdf),
-with source, saved metrics and reproduction commands.
+## Current results
 
-A spatio-temporal graph model of European day-ahead electricity markets. Stanford CS224W, Fall 2026, Project 1.
+The five-model suite has completed evaluation on **49 market identities**.
+Test MAE below uses the same 633,885 zone-hours with valid targets and weekly
+price history. Lower is better; units are EUR/MWh.
 
-**Task.** Predict the next day's 24 hourly day-ahead prices for European bidding zones using only information available at noon the day before (gate closure). The graph has two node types: **zones** (price, load-forecast and weather history), connected by **interconnector edges** (physical flows), and **transmission constraints** from the JAO flow-based domain, each connected to the zones that load it with the PTDF as edge weight. Hypotheses: H1 the graph beats neighbours-as-features; H2 published constraints improve cross-border spread forecasts; H3 heat stress raises prices and spreads most under stress.
+| Model | Test MAE |
+|---|---:|
+| Weekly persistence | 29.13 |
+| Recent-price XGBoost | 21.87 |
+| Richer XGBoost | 22.13 |
+| Neighbour XGBoost | 21.87 |
+| Real-graph GAT | **20.83** |
+| Shuffled-graph GAT | 21.54 |
 
-## Current state (6 Nov 2026)
+The real graph improves MAE by 3.32% over the shuffled control in this seed.
+These are **conditional, exploratory results**: historical load/weather/JAO
+publication vintages are unverified, and test results have been inspected before.
+The weather source is reanalysis, not archived weather forecasts.
 
-- **Data is in place.** ENTSO-E prices, load forecasts and physical flows (Jan 2016 – Oct 2026), per-zone PECD/ERA5 weather (to Sep 2026) and JAO flow-based constraints (CWE + Core, May 2015 – Oct 2026) are cleaned, documented and versioned in the bucket (see *Data*).
-- **Model tables.** `zone_nodes_hourly` and `zone_edges_hourly` are the per-(zone, hour) and per-(border, hour) inputs the model reads; `jao_cnec_hourly` supplies the constraint nodes. All three share the same zone codes (`DE_LU`, `NO_1`, `IT_NORD`, ...) and UTC hours.
-- **Split** ([configs/splits.json](configs/splits.json)): pretrain 2016-01-01 – 2022-06-08 (no Core constraints yet), train 2022-06-09 – 2024-03-31, validation 2024-04-01 – 2025-03-31, test 2025-04-01 – 2026-09-30 (two summers). Tables stay whole; loaders filter by date.
-- **Decided:** constraint nodes carry RAM and Fmax from the published JAO domain. Zone ids are the weather/JAO codes. Germany before Oct 2018 is the joint DE-AT-LU zone, reported under `DE_LU`.
-- **Open:** ENTSO-E wind/solar day-ahead forecasts and transfer capacities (NTC) are not pulled yet (weather capacity factors and JAO `maxbex` stand in); whether the detailed JAO domain is published before gate closure is unverified (fallback: use day D-1's constraints); whether to use CWE-era constraints in training or treat 2016-22 as constraint-free pretraining.
-- **Code:** the basic structure is in place and runs end to end with one super simple, non-trainable model: weekly persistence (`c1_persistence`, forecast = same hour last week). It exercises the whole chain (samples, cutoff, masks, metrics, results file) and sets the reference score (test MAE 29.0 EUR/MWh). No trained model exists yet: XGBoost, GATv2 and the hetero model are stubs with fixed interfaces, one per teammate (see *Experiments*).
+Read the [verified results](docs/vibing_suite_results.md) for validation scores,
+RMSE, runtimes and limitations. The [experiment guide](docs/vibing_suite.md)
+describes features, training and checkpointing.
 
-## Repository layout
+## Inspect or run experiments
 
-```
-cs_224w/
-├── configs/
-│   ├── datasets.json        # which dataset versions the code expects (tracked)
-│   ├── splits.json          # the chronological split: pretrain / train / val / test by delivery day
-│   └── experiments/         # one YAML per run: c1_persistence, c1_xgb_zone, c2_xgb_neighbours,
-│                            #   c3_gat_interconnects, c3_gat_shuffled, c4a_gat_jao_summaries,
-│                            #   c4b_hetero_constraints, c4b_hetero_heat
-├── epgnn/                   # the package ("electricity price GNN")
-│   ├── paths.py             # dataset_path(name, file): resolves datasets/<stem>_<version>.<ext>
-│   ├── splits.py            # reads configs/splits.json; split_of(delivery_day)
-│   ├── zones.py, jao.py     # zone codes, ENTSO-E mapping, JAO rules (used by the build scripts)
-│   ├── data/                # shared data layer: every model reads through here
-│   │   ├── tables.py        #   load the pinned tables, cached
-│   │   ├── features.py      #   named feature sets + the gate-closure rule (what day D may see)
-│   │   ├── samples.py       #   (zone, day) samples: 168 h history to the cutoff, day-D inputs, 24 targets + mask
-│   │   ├── scaling.py       #   asinh / residual-vs-last-week target, train-only z-scores
-│   │   └── graph.py         #   zone graph + edge features; constraint nodes + PTDF relations (4b)
-│   ├── models/              # one module per model family, same run(cfg, fit_splits, eval_splits) interface
-│   │   ├── persistence.py   #   1a  (done)
-│   │   ├── xgb.py           #   1b, 2
-│   │   ├── encoders.py      #   HistoryGRU shared by gat and hetero
-│   │   ├── gat.py           #   3, 3', 4a
-│   │   └── hetero.py        #   4b
-│   ├── train.py             # masked + spread loss, training loop for the torch models
-│   ├── metrics.py           # MAE, RMSE, rel-MAE vs persistence, spread MAE / F1, slices
-│   └── run.py               # python -m epgnn.run configs/experiments/<name>.yaml
-├── scripts/
-│   └── datasets/            # dataset tools, run by hand; nothing here is model code
-│       ├── datasets.py      #   pull / push / status / clean for versioned datasets
-│       ├── build_jao_cnec_hourly.py        #   JAO bundle -> constraint-node table (jao_cnec_hourly)
-│       ├── build_agg_zones_hourly.py       #   prices + load + weather -> one row per (zone, hour)
-│       └── build_agg_zone_edges_hourly.py  #   physical flows -> one row per (zone_from, zone_to, hour)
-├── results/                 # one JSON per run: metrics by split and slice, config, data versions, commit (tracked)
-├── runs/                    # predictions and checkpoints per run (gitignored)
-├── datasets/                # pulled from GCS: data files AND their docs,
-│                            #   e.g. zone_nodes_hourly_v1.0.parquet (gitignored), zone_nodes_hourly_v1.0.md (tracked)
-├── staging/                 # drop files here to push a new dataset version (gitignored)
-├── tmp/                     # local scratch (gitignored)
-└── lectures/                # course notes and the proposal (gitignored, course material)
-```
-
-## Setup
+Run commands from the repository root using its virtual environment. This
+machine uses the RX 9070 XT with ROCm; see [setup](docs/setup.md) for installation.
 
 ```bash
-# Python deps
-pip install -e ".[model]"            # pandas, pyarrow, GCS client, torch, torch_geometric, xgboost, ...
+# Inspect the completed run referenced by the saved full result.
+.venv/bin/python -m epgnn.experiment_suite status --saved
 
-# Google Cloud SDK, then log in with the Google account that has bucket access
-brew install --cask google-cloud-sdk          # macOS; cloud.google.com/sdk for others
-gcloud auth login
-gcloud auth application-default login         # credentials for the Python client
+# Before a fresh run: verify the GPU, then all five methods on France.
+.venv/bin/python -m epgnn.experiment_suite gpu-smoke
+.venv/bin/python -m epgnn.experiment_suite france
 
-# Fetch the data
-scripts/datasets/datasets.py pull
+# Full evaluation in a persistent host-terminal session.
+tmux new-session -d -s vibing-full './scripts/experiments/run_vibing_suite.sh'
+tail -f runs/vibing_suite_launch/full.log
 ```
 
-If `pull` fails with a permission error, your account has not been added to the bucket yet; ask Sasha.
+The suite runs three per-zone XGBoost variants and two pooled spatial GATs.
+The GATs have two layers and real/shuffled interconnector topology; they do not
+use a GRU or detailed constraint nodes. Configuration is in
+[configs/experiments/vibing_suite.json](configs/experiments/vibing_suite.json).
 
-### AMD GPU / ROCm (Linux)
+Runs are tied to code, configuration and source fingerprints. **Code cleanup
+creates a new fingerprint.** The completed evaluation remains attached to its
+original implementation at commit `a48d599`, with summaries saved in `f50dc6e`.
+`status --saved` reads that historical run explicitly; fresh training requires
+preflights for the current code. Existing results are never relabelled as new runs.
 
-For the local ROCm 7.2 machine, use the pinned AMD build instead of the default
-PyTorch package. The [ROCm requirements](requirements-rocm.txt) select the official
-PyTorch 2.14.1 + ROCm 7.2 wheel, including its matching `triton-rocm` dependency,
-and the project's model dependencies. Python 3.14 is supported by this wheel.
-Run these commands from the repository root with `uv` installed:
+## Data and evaluation
 
-```bash
-uv venv .venv                         # only when creating a new environment
-# When converting an existing NVIDIA environment, remove triton first: its files
-# overlap with triton-rocm. Skip this command for a fresh environment.
-uv pip uninstall --python .venv/bin/python triton
-uv pip install --python .venv/bin/python -r requirements-rocm.txt
-.venv/bin/python scripts/check_rocm.py
-```
+The audited master has 5,887,954 node rows over 62 price-area identities,
+January 2016–October 2026. It retains missing values and negative prices,
+keeps DE_AT_LU separate from DE_LU, and records structural absences and unresolved
+geography. Of these identities, 49 have valid fit/validation/test targets; the
+other 13 are reported separately. October 2026 stays unassigned.
 
-The check requires a ROCm build, visible GPU devices, and successful GPU matrix
-multiplication plus a GRU/GATv2 forward pass, masked loss, backward pass and Adam
-step. It exits nonzero on failure. Run it in a terminal with `/dev/kfd` and
-`/dev/dri/renderD*` access; a sandbox that hides these devices cannot verify GPU
-execution. If initialization fails, run `rocminfo` in that same terminal and
-check your user's device permissions. Containers must expose the GPU devices
-and allow their owning group, as described in
-[AMD's container instructions](https://rocmdocs.amd.com/en/latest/install/docker-containers.html).
-
-ROCm uses `torch.device("cuda")`, `.to("cuda")`, and `torch.cuda.is_available()`;
-`torch.version.hip` distinguishes the AMD build. See
-[PyTorch's HIP semantics](https://docs.pytorch.org/docs/main/notes/hip.html).
-Keep using the ROCm requirements when reinstalling this machine's environment so
-a generic PyTorch upgrade does not select a CUDA build. Other machines can use
-the standard setup above.
-
-This enables the PyTorch/PyG stack. The GAT/heterogeneous runners and shared
-training loop are still stubs. Existing XGBoost experiments explicitly use CPU;
-installing ROCm PyTorch does not change XGBoost's backend.
-
-## Experiments
-
-The structure is in place; only the non-trainable persistence reference runs today. A run is a config, not a branch. Every YAML in `configs/experiments/` names a model, a feature set and the splits; the checkpoints of the Methods doc are these files:
-
-| Config | Checkpoint | Model | Status |
-|---|---|---|---|
-| `c1_persistence` | 1a | price one week earlier | done |
-| `c1_xgb_zone` | 1b | per-zone XGBoost, own features | to do |
-| `c2_xgb_neighbours` | 2 | + neighbours' features | to do |
-| `c3_gat_interconnects` | 3 | GRU + GATv2 on the interconnector graph | to do |
-| `c3_gat_shuffled` | 3' | same, shuffled graph (control) | to do |
-| `c4a_gat_jao_summaries` | 4a | 3 + per-zone JAO summaries | to do |
-| `c4b_hetero_constraints` | 4b | + constraint nodes and PTDF relations | to do (needs `jao_cnec_hourly` with `cnec_id`) |
-| `c4b_hetero_heat` | 4b + H3 | + heat-stress features | to do |
-
-```bash
-python -m epgnn.run configs/experiments/c1_persistence.yaml
-# -> results/c1_persistence.json, runs/c1_persistence/pred_{val,test}.npy
-```
-
-Rules that keep the three model families comparable:
-
-- **Same samples, same score.** `epgnn/data/samples.py` defines the (zone, delivery day) samples per split and the targets; `epgnn/metrics.py` scores every run against weekly persistence on exactly those hours. Model code never builds its own test set.
-- **Leakage rule lives in one file.** `epgnn/data/features.py` lists which columns day D may see (lags, load forecast, calendar, JAO domain) and which are outcomes. Models ask for a feature set by name.
-- **Cutoff.** History windows end at D-1 10:00 UTC (noon CEST); day-D inputs are only the columns allowed by the feature set.
-- **Results are files.** `results/<run>.json` records metrics by split and slice, the config, the pinned dataset versions and the commit; report tables are generated from that folder.
-
-Ownership for the milestone: A owns `data/` + `metrics.py` + `models/xgb.py` (checkpoint 1); B `models/encoders.py` + `models/gat.py` + `train.py` (checkpoint 3); C `data/graph.py` constraint part + `models/hetero.py` (checkpoint 4b).
-
-## Data
-
-The parquet files live in `gs://cs224w-epgnn-datasets` (GCP project `cs224w-epgnn-2026`), versioned by path:
-
-```
-gs://cs224w-epgnn-datasets/<dataset>/<version>/<file>
-```
-
-A dataset version is its data file(s) **plus its doc**, `<dataset>.md`: schema, quality findings, caveats, version history. They are stored together and pulled together, so the doc you read always describes the data you have.
-
-The repo never commits the data files. It commits [configs/datasets.json](configs/datasets.json), which says which version of each dataset the code expects and the checksum of each file, and the docs (`datasets/*.md`) so they can be read on GitHub. **A commit pins a manifest; the manifest pins the data.** Old versions are never deleted, so checking out any commit and running `pull` reproduces the data that commit was built on.
-
-Locally the files are flat with the version appended, so `ls datasets/` shows which versions you have:
-
-```
-datasets/
-├── zone_nodes_hourly_v1.0.parquet   zone_nodes_hourly_v1.0.md
-└── zone_edges_hourly_v1.0.parquet   zone_edges_hourly_v1.0.md
-```
-
-Code never hardcodes these paths. It asks the manifest, using the version-free name:
-
-```python
-from epgnn.paths import dataset_path
-nodes = pd.read_parquet(dataset_path("zone_nodes_hourly", "zone_nodes_hourly.parquet"))
-# -> datasets/zone_nodes_hourly_v1.0.parquet
-```
-
-so bumping a version in the manifest is the only change needed. `dataset_path` raises if the file isn't pulled or isn't part of that dataset.
-
-| Dataset | Version | Contents | Doc |
-|---|---|---|---|
-| `zone_nodes_hourly` | v1.0 | per (zone, hour): day-ahead price (target), price lags, load forecast, weather (+ lags), net import, JAO Core summaries, `split`; 45 zones, Jan 2016 – Sep 2026 | [datasets/zone_nodes_hourly_v1.0.md](datasets/zone_nodes_hourly_v1.0.md) |
-| `zone_edges_hourly` | v1.0 | per (from, to, hour): physical flow + lags, JAO `maxbex` / scheduled flow, `split`; 180 directed interconnectors | [datasets/zone_edges_hourly_v1.0.md](datasets/zone_edges_hourly_v1.0.md) |
-
-These two are the model's zone-node and zone-edge tables (Sophie-An's build). Constraint nodes for the full hetero graph come from `jao_cnec_hourly` (below). The split is defined once in [configs/splits.json](configs/splits.json) (read by `epgnn/splits.py`); tables are kept whole and filtered by date, there are no per-split files.
-
-**Other datasets in the bucket, not pinned.** The sources and intermediate tables stay in `gs://cs224w-epgnn-datasets` but are not pulled by default. Pull one explicitly with `scripts/datasets/datasets.py pull NAME@VERSION` (add `--pin` to put it in the manifest so `dataset_path` and the build scripts can use it); `status` lists them.
-
-| Dataset | Latest | Contents |
+| Partition | Brussels delivery dates | Role |
 |---|---|---|
-| `entsoe_prices` | v1.2 | hourly day-ahead prices, 62 areas, Jan 2016 – Oct 2026 |
-| `entsoe_load_forecast` | v1.2 | hourly day-ahead load forecast, 68 areas, Jan 2016 – Oct 2026 |
-| `entsoe_physical_flows` | v1.2 | hourly cross-border flows, 426 directed pairs, Jan 2016 – Oct 2026 |
-| `weather_hourly` | v1.1 | PECD/ERA5 hourly weather per bidding zone, 45 zones, 2010 – Sep 2026 |
-| `jao_cnec_hourly` | v1.0 | JAO physical constraints per hour with RAM, Fmax and PTDF per zone (constraint nodes), May 2015 – Oct 2026; built from Arsen's raw bundle by [scripts/datasets/build_jao_cnec_hourly.py](scripts/datasets/build_jao_cnec_hourly.py) |
-| `agg_zones_hourly` | v1.0 | our own join of prices + load + weather per (zone, hour), 44 zones; built by `scripts/datasets/build_agg_zones_hourly.py` (cross-check for `zone_nodes_hourly`) |
-| `agg_zone_edges_hourly` | v1.0 | our own flows per (zone_from, zone_to, hour), 174 directed pairs; built by `scripts/datasets/build_agg_zone_edges_hourly.py` (cross-check for `zone_edges_hourly`) |
+| Pretrain | 2016-01-01–2022-06-08 | Fit |
+| Train | 2022-06-09–2024-03-31 | Fit |
+| Validation | 2024-04-01–2025-03-31 | Early stopping |
+| Test | 2025-04-01–2026-09-30 | Exploratory evaluation |
 
-Each has a doc next to it in the bucket (`<dataset>.md`), pulled with the data; the docs are the reference for schema, cleaning rules, known gaps and how the tables were derived from each other.
+Price lags use explicit UTC/zone joins. Weekly persistence copies the same zone's
+price 168 elapsed hours earlier. Model scores retain all valid targets, with
+persistence comparisons using common finite-history hours. Targets are never
+filled; neural preprocessing fits training data only.
 
-### Pulling data
+See [dataset construction](docs/forecast_dataset.md), the
+[price-publication clarification](docs/temperature_experiments.md), and
+[inspection notebook](notebooks/forecast_dataset_inspection.ipynb).
 
-```bash
-scripts/datasets/datasets.py pull                  # every dataset at the version the manifest pins
-scripts/datasets/datasets.py pull zone_nodes_hourly   # one dataset, pinned version
-scripts/datasets/datasets.py pull entsoe_prices@v1.2  # any dataset in the bucket, exact version; manifest untouched
-scripts/datasets/datasets.py pull entsoe_prices@v1.2 --pin  # ...and pin it, so dataset_path() can resolve it
-scripts/datasets/datasets.py pull --latest         # newest version in the bucket (may be newer than pinned)
-scripts/datasets/datasets.py pull --latest --pin   # ...and write those versions into the manifest
-scripts/datasets/datasets.py pull --prune          # also delete local copies of other versions
-scripts/datasets/datasets.py clean                 # delete datasets/ files not at a pinned version, and staging dirs already pushed (-n to preview)
-scripts/datasets/datasets.py status                # local vs manifest vs bucket
-```
+## Repository map
 
-`pull` never re-downloads a file that is already on disk with the expected size, so it costs nothing to run after every `git pull`: if someone bumped a version in the manifest you get the new file, otherwise it's a no-op. Pass `--verify` to MD5-check local files too (slow, reads every file). Downloads are always MD5-checked.
+| Location | Purpose |
+|---|---|
+| `epgnn/dataset_build/` | Audit, construct and validate the canonical dataset |
+| `epgnn/experiment_suite/` | Active five-model suite: data, neural models, GPU checks, scoring and orchestration |
+| `epgnn/boosting.py`, `boosting_batch.py` | Earlier audited boosting experiments |
+| `epgnn/data/`, `models/`, `run.py` | Original pipeline and scaffold; see [legacy notes](docs/legacy_pipeline.md) |
+| `configs/` | Source pins, split dates and experiment configurations |
+| `scripts/experiments/` | Host launcher, partner reproduction, diagnostics and report generation |
+| `results/` | Tracked metric summaries; see [results index](results/README.md) |
+| `runs/` | Local predictions, models, checkpoints and logs; ignored by Git |
+| `staging/` | Local audited generations and tensor caches; ignored by Git |
+| `datasets/` | Original downloaded tables and tracked schema documentation |
+| `docs/`, `reports/`, `notebooks/` | Guides, milestone PDF/source and inspection workflow |
 
-Only one version of each dataset is pulled at a time. Pulling a different version adds a second local file (`zone_nodes_hourly_v1.1.parquet` next to `_v1.0`). `clean` deletes every local file that isn't at the manifest's pinned version; `pull --prune` does the same for just the dataset being pulled.
-
-### Pushing a new version
-
-When you have a new build of a dataset, for example a rebuilt node table:
-
-```bash
-# 1. stage the data file(s) and the doc, with unversioned names
-staging/zone_nodes_hourly/
-├── zone_nodes_hourly.parquet
-└── zone_nodes_hourly.md  # start from datasets/zone_nodes_hourly_v1.0.md; add a version-history row:
-                          #   | v1.1 | <what changed> |
-# 2. push
-scripts/datasets/datasets.py push zone_nodes_hourly v1.1
-# 3. commit the manifest and the versioned doc copy that push wrote
-git add configs/datasets.json datasets/zone_nodes_hourly_v1.1.md
-git commit -m "zone_nodes_hourly v1.1: <what changed>"
-git push
-```
-
-What `push` does:
-
-1. **Refuses unless `staging/zone_nodes_hourly/zone_nodes_hourly.md` exists and has a history row for the new version.** This is the only thing you write by hand: one line saying what changed. Without it the push stops before uploading anything. For a brand-new dataset it prints a doc template to start from.
-2. Rewrites the mechanical header lines of the doc (version, bucket path, local filenames) so they can't go stale.
-3. Uploads everything in `staging/zone_nodes_hourly/` to `zone_nodes_hourly/v1.1/`. It won't overwrite a version that already exists (`--force` to override; object versioning on the bucket means even that is recoverable).
-4. Updates `configs/datasets.json` with the new version, checksums and sizes.
-5. Copies the staged files into `datasets/` under their versioned names, so you don't re-download what you just uploaded. The data file is gitignored; the doc copy (`datasets/zone_nodes_hourly_v1.1.md`) is tracked, so commit it with the manifest. `scripts/datasets/datasets.py clean` then removes `staging/zone_nodes_hourly/`, since its files now match the pinned version; a staging dir that hasn't been pushed is never deleted.
-6. Teammates get the new data and doc on their next `git pull && scripts/datasets/datasets.py pull`.
-
-Conventions:
-
-- Files are named after their dataset: `<dataset>.md` for the doc, `<dataset>.parquet` for the main data file (granularity goes in the dataset id, e.g. `weather_hourly`). Names in the bucket, manifest and staging carry no version; `pull` appends it locally (`weather_hourly_v1.1.parquet`). Code goes through `dataset_path`, so bumping a version never changes a line of code.
-- Version strings are `vMAJOR.MINOR`. Bump MINOR for fixes to the same source (masking, patching); bump MAJOR for a change in scope or schema (new zones, new columns, different time range).
-- The doc is named `<dataset id>.md` and is part of every version: a header (maintained by `push`), a version-history table (maintained by you, cumulative), then schema, quality findings and caveats.
-- Pushing needs `roles/storage.objectAdmin` on the bucket; pulling needs `roles/storage.objectViewer`.
-
-### Giving someone access
-
-Bucket owner, once per person:
+## Checks
 
 ```bash
-gcloud storage buckets add-iam-policy-binding gs://cs224w-epgnn-datasets \
-  --member=user:THEIR_EMAIL --role=roles/storage.objectViewer     # or objectAdmin to allow push
+.venv/bin/python -m unittest discover -s tests -p 'test_*.py'
+.venv/bin/python -m unittest discover -s tests/dataset_build -p 'test_*.py'
 ```
 
-## ROCm experiment suite (`vibing`)
-
-The [five-experiment suite](docs/vibing_suite.md) compares recent-price, richer
-and neighbour XGBoost against real/shuffled hourly GAT models on the audited grid.
-GPU and France preflights are complete; see the guide for a persistent `tmux`
-launch, status, checkpoint resume, conditional feature admission and results.
+[Documentation index](docs/README.md) · [Code walkthrough](docs/code_structure.md) ·
+[Experiment configuration index](configs/experiments/README.md) ·
+[Earlier milestone draft](reports/milestone/milestone.pdf)
