@@ -2,6 +2,9 @@
   "full_suite_fingerprint": "fd694619ba8ce3bc23ebb2db54b50b559fb6fdff37ddc79799ca98544b4655f8",
   "france_diagnostic_fingerprint": "543a551ca557013472cc4609dec1ed04d3896f34a7b11e648e6eb44751f72376",
   "inputs_sha256": {
+    "reports/milestone/controlled_sources.json": "ee8ab0c1ee22cabb222bcf8b94e6d30f101f1fe205cc943f0d459fce17bd37e8",
+    "results/controlled_study_full.json": "006a9ddb603e80f0b06f5f8d699087262308d5449a8e4d02f93675e684e05734",
+    "reports/milestone/controlled_study.tex": "850ad036094d4fc287b408fa43fc5692e87206c44b2402693a743fd85e52f2f6",
     "results/vibing_suite_full.json": "f71a054f6b1d2374ecf30eeab5f9a8eff8231857f9eb478c3571b3f54ad3f4ae",
     "results/vibing_suite_full_verification.json": "8a15c7d6e63f02a60db74b517e659f4dc99f2a3083cff3ed24f0b04cadd404ff",
     "results/pipeline_diagnostics_france.json": "8a25bc2165886ae764c04756af0ba911893bfa0a6ac0480380811e46bccbbefd",

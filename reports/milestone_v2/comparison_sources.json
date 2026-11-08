@@ -1,0 +1,28 @@
+{
+  "study_fingerprint": "fd19205863b9d81b0f5d46535d9c970579838565b4b782d2b1550c79fdb1dff6",
+  "summary_sha256": "006a9ddb603e80f0b06f5f8d699087262308d5449a8e4d02f93675e684e05734",
+  "verification": {
+    "passed": true,
+    "phase": "full",
+    "fingerprint": "fd19205863b9d81b0f5d46535d9c970579838565b4b782d2b1550c79fdb1dff6",
+    "job_count": 100,
+    "summary_sha256": "006a9ddb603e80f0b06f5f8d699087262308d5449a8e4d02f93675e684e05734",
+    "checks": [
+      "artifact hashes",
+      "unique identical keys/targets/masks",
+      "finite predictions",
+      "recomputed MAE/RMSE/paired MAE",
+      "matching current GPU preflight"
+    ]
+  },
+  "v1_source_commit": "efe0e66",
+  "v1_pdf_sha256": "697c5f0c9d0cc707a4455d762b25d9ba02bc696a0d455277d0a38036550b4295",
+  "comparison_inputs_sha256": {
+    "results/controlled_study_full.json": "006a9ddb603e80f0b06f5f8d699087262308d5449a8e4d02f93675e684e05734",
+    "results/controlled_study_full_by_zone.csv": "12144580adb1ddbb23d42db882e35368d61278c5495b8c106fdabdc3cd8ed164",
+    "results/controlled_study_full_regimes.csv": "c69f4d06dc65ab98c0dcf64bcaeace6d5be47528022ddce6ae928231c0f82685",
+    "results/vibing_suite_full.json": "f71a054f6b1d2374ecf30eeab5f9a8eff8231857f9eb478c3571b3f54ad3f4ae",
+    "results/pipeline_diagnostics_france.json": "8a25bc2165886ae764c04756af0ba911893bfa0a6ac0480380811e46bccbbefd",
+    "results/partner_c1_xgb_zone_by_country.json": "9928b78b70df1fdd06b45f272b002f120856ad3fe66579b6c06b501528ce5dc6"
+  }
+}

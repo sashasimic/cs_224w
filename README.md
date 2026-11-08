@@ -4,7 +4,15 @@ Stanford CS224W project on forecasting European day-ahead electricity prices.
 At **12:00 Europe/Brussels on D−1**, predict every hourly price for delivery day D,
 including 23- and 25-hour daylight-saving days.
 
-## Current results
+## Latest controlled study
+
+All 100 five-seed jobs completed. On matched test hours, richer real GAT averages
+20.97 MAE versus pooled MLP 21.19 and pooled XGBoost 21.06. Gains are modest and
+vary by market; the GRU variants performed worse. See the
+[full comparison](docs/controlled_study_comparison.md) and
+[milestone v2](reports/milestone_v2/milestone.pdf).
+
+## First full suite (single seed)
 
 The five-model suite has completed evaluation on **49 market identities**.
 Test MAE below uses the same 633,885 zone-hours with valid targets and weekly

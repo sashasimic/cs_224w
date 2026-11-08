@@ -1,0 +1,24 @@
+\def\ControlledStudyComplete{1}
+\newcommand{\ControlledAbstract}{Across five seeds and 49 market identities, a pooled MLP scores 21.19 EUR/MWh test MAE versus 20.97 for real-graph GAT. Self-loop GAT and pooled XGBoost each score 21.06. Graph gains are smaller after controlling for pooled learning. Feature effects are mixed and GRU histories worsen scores. These are conditional exploratory results with unresolved publication vintages.}
+\newcommand{\ControlledMethods}{\paragraph{Controlled models.} The prespecified study has 100 experiment/seed/topology combinations: four tabular references; MLP and real GAT with recent-price/calendar inputs, plus load alone, weather alone, JAO alone, or all groups; self-loop GAT and three fixed degree-preserving shuffled graphs; and GRU--MLP/GAT temporal pairs. Seeds are 224--228. MLP has two ELU/dropout layers, with width selected by parameter count only (96 for richer inputs, versus GAT's 64 channels/four heads). Models have no zone embeddings. Neural heads share training-only preprocessing, asinh(price/50), L1 loss, Adam 0.001, maximum 30 epochs and validation patience five. Histories contain 168 same-identity completed price intervals ending at Brussels noon, with explicit missingness. GRU has 32 units; both temporal heads share its inputs. XGBoost retains the prior depth-6/600-tree settings.}
+\newcommand{\ControlledResults}{\paragraph{Multi-seed comparison.} The richer-input controls use 428,213 validation and 633,885 test zone-hours with valid targets and finite weekly history. Values are mean $\pm$ sample standard deviation across five seeds, not prediction ensembles. Other feature sets, per-zone/country results, training-defined price-tail/season slices and rewiring variability are in the generated study appendix.
+\begin{table}[!ht]\centering\small
+\begin{tabular}{lrr}
+\toprule
+Model (richer inputs) & Validation MAE & Test MAE \\
+\midrule
+Pooled XGBoost & 20.74 $\pm$ 0.01 & 21.06 $\pm$ 0.01 \\
+Pooled MLP & 21.44 $\pm$ 0.23 & 21.19 $\pm$ 0.21 \\
+Self-loop GAT & 21.27 $\pm$ 0.09 & 21.06 $\pm$ 0.08 \\
+Real-graph GAT & 20.98 $\pm$ 0.11 & 20.97 $\pm$ 0.13 \\
+GRU + MLP & 24.37 $\pm$ 1.65 & 24.50 $\pm$ 1.22 \\
+GRU + real GAT & 23.62 $\pm$ 0.52 & 23.59 $\pm$ 0.51 \\
+Shuffled GAT (3 graphs) & 21.21 $\pm$ 0.05 & 21.45 $\pm$ 0.07 \\
+\bottomrule
+\end{tabular}
+\caption{Matched MAE (EUR/MWh), five seeds. Lower is better.}\end{table}
+\paragraph{Graph contribution.} Real GAT improves test MAE by 0.21 (1.00\%) against MLP, but only 0.09 against self-loop GAT and 0.08 against pooled XGBoost. Pooled XGBoost has the best validation score among richer-input controls; the small test advantage does not justify selecting GAT retrospectively. MLP-to-GAT validation improvement is 0.46 (95\% paired week interval [0.20, 0.86]). Weeks are shared across countries, conditional on fitted models. Real GAT beats all three shuffled means on test; one shuffled-control validation interval includes zero.
+\paragraph{Comparison with earlier experiments.} The earlier single-seed GAT/shuffled scores of 20.83/21.54 become 20.97/21.45 across seeds and rewirings. Pooled richer XGBoost scores 21.06 versus 22.11 for the new per-zone reference, supporting the need for sharing controls. Gains vary by market: France GAT scores 25.48 versus MLP's 22.00. France's earlier 32.09-to-22.20 recent-price gain is a separate input diagnostic.\paragraph{Feature and temporal extensions.} Weather-only GAT has test MAE 20.90, but richer GAT has better validation MAE (20.98 versus 21.06). Load and JAO additions are mixed. GRU--MLP/GAT score 24.50/23.59, worse than static controls; graph messaging still helps within the GRU pair. These fixed settings do not establish that temporal models or detailed constraints are generally unhelpful.
+\paragraph{Timing and limitations.} Previous-day prices are normally auctioned on $D-2$ \cite{auction}; delivery is not publication time. DST guards exclude lag-24 target-day prices. Load, weather and JAO revision/publication vintages remain unverified, including retrospective ERA5 \cite{era5}. No observation after the noon origin enters temporal histories. Training-only topology is static and need not reconstruct historical commissioning dates. Models use identical target keys/masks, retain missing features and never fill targets. Test has been inspected previously: these are conditional exploratory comparisons, not a fresh confirmatory holdout. Multiple feature comparisons do not establish causal effects.
+\section{Future work} Validate conclusions on a genuinely new chronological period and archived operational forecasts. Investigate detailed JAO constraint nodes and edge attributes after assessing the pooled, topology, feature and temporal controls, keeping physical flow, scheduled exchanges and MaxBex distinct.
+}

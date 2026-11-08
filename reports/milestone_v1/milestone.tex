@@ -1,0 +1,145 @@
+\documentclass{article}
+\usepackage[final,nonatbib]{neurips_2019}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,booktabs,microtype}
+\usepackage[hidelinks]{hyperref}
+\input{numbers}
+\input{suite_numbers}
+\IfFileExists{controlled_study.tex}{\input{controlled_study}}{}
+\title{Weather, Interconnections, and Energy Prices\\
+  \small\normalfont Stanford CS224W Project Milestone --- Draft, November 8, 2026}
+\author{Project team\\\small Author details to be completed}
+\begin{document}
+\maketitle
+\begin{abstract}
+\ifdefined\ControlledStudyComplete
+\ControlledAbstract
+\else
+We build an auditable European electricity-price dataset and evaluate three
+XGBoost variants and real/shuffled graph attention models across 49 market
+identities. Real-graph GAT achieves \SuiteGraphTest\ EUR/MWh test MAE, improving
+\SuiteShuffleGain\% over its shuffled control and \SuiteXgbGain\% over recent-price
+XGBoost. Results are exploratory and conditional on unverified historical
+publication vintages.
+\fi
+\end{abstract}
+
+\section{Approach}
+At 12:00 Europe/Brussels on calendar day $D-1$, predict every hourly day-ahead
+price of delivery day $D$, including 23/25-hour daylight-saving days. We implement
+an independent dataset builder, per-zone XGBoost \cite{chen}, and pooled hourly
+GATv2 models \cite{gat}. Directed graph edges are physical pairs observed during
+training; historical node lifetimes mask inactive identities. A shuffled control
+rewires non-self edges, preserving static in/out degrees without duplicates.
+Both GATs add self-loops, testing real topology under the same neural learner.
+
+\section{Experiments}
+\paragraph{Exact data and partitions.}
+The master contains 5,887,954 zone-hours for 62 price-area identities, January
+2016--October 2026. ENTSO-E prices, load forecasts and physical flows use releases
+v1.2. Additional sources are PECD/ERA5 temperature, anomaly and wind/solar capacity
+factors (2010--September 2026), and original CWE/CORE JAO exports
+(May 2015--October 2026). Weather is reanalysis, not archived forecasts; its
+requested v1.1 release identity is unverified. Missing values and negative prices
+are retained, and DE\_AT\_LU remains separate from DE\_LU. Forty-nine identities
+have valid targets in fit, validation and test; the other 13 remain explicitly
+unscored, while all 62 can provide dated graph context.
+
+Fit on January 1, 2016--March 31, 2024 (pretrain + train); validate on April 1,
+2024--March 31, 2025; test on April 1, 2025--September 30, 2026, using Brussels
+delivery dates. October stays unassigned. MAE and RMSE are measured after inverse
+transformation, in EUR/MWh. Weekly persistence copies the same identity's price
+168 elapsed hours earlier. Targets are never filled or filtered for feature
+completeness; neural preprocessing is fitted on training-period features only.
+
+\ifdefined\ControlledStudyComplete
+\ControlledMethods
+\else
+\paragraph{Five models.}
+Recent-price XGBoost uses local hour, weekday, month and guarded 24/168-hour
+price lags. Richer XGBoost adds load forecast, four realised weather features
+at lag 48, and three lag-48 JAO summaries: presolved constraint count, minimum
+RAM ratio and domain presence. Neighbour XGBoost adds incoming neighbours'
+recent-price means and finite-value counts. Both GATs use the richer node inputs;
+they share parameters across zones, whereas XGBoost fits per zone. Missing inputs
+remain NaN for trees; neural models use training medians/scaling and missingness
+indicators. No same-day realised flow or target price is supplied as a predictor.
+
+All models fit $z=\operatorname{asinh}(p/50)$ with L1 loss and invert predictions
+as $50\sinh(\hat z)$. XGBoost uses depth 6, at most 600 trees, learning rate 0.05,
+row/column sampling 0.8 and 50-round validation patience. GAT uses two layers,
+64 hidden channels, four heads, dropout 0.1, Adam at 0.001, batch size 64,
+at most 30 epochs and patience five. Seed is 224; stopping uses transformed
+validation MAE. CPU XGBoost and ROCm GAT runs completed in about six minutes total.
+\fi
+
+\newpage
+\ifdefined\ControlledStudyComplete
+\ControlledResults
+\else
+\paragraph{Full evaluation.}
+Table~\ref{tab:suite} uses identical \SuiteValHours\ validation and
+\SuiteTestHours\ test zone-hours with valid targets and finite weekly history.
+Country summaries pool bidding-zone errors, rather than creating national average
+prices. Combined markets and unresolved ENTSO-E identifiers remain distinct.
+\begin{table}[!ht]
+\centering\small\input{suite_results}
+\caption{Matched MAE (EUR/MWh), lower is better. One seed, 49 market identities.}
+\label{tab:suite}
+\end{table}
+
+Real-graph GAT improves test MAE by \SuiteShuffleGain\% over shuffled GAT,
+\SuiteXgbGain\% over recent-price XGBoost, and \SuitePersistenceGain\% over
+persistence. The richer feature bundle does not improve aggregate XGBoost test
+MAE; neighbour inputs improve validation but nearly match the recent-price test
+baseline. These group additions do not isolate individual weather/load/JAO effects.
+The full target population, including hours without persistence, has
+\SuiteAllValHours\ validation and \SuiteAllTestHours\ test hours. On all test
+targets, real GAT RMSE is \SuiteGraphRmse\ versus \SuiteRecentRmse\ for recent-price
+XGBoost. Real GAT selects epoch 28 of 30; shuffled GAT selects epoch 21 and
+stops at 26. Both real and shuffled runs use about 0.185 GiB peak tensor allocation,
+excluding ROCm context. All saved predictions have unique keys and matching target
+masks; independent recomputation agrees with reported MAE.
+
+\paragraph{Earlier pipeline diagnostics.}
+We reproduced a teammate's richer XGBoost pipeline at commit \texttt{757da793}:
+43-zone test MAE 21.25 versus published 21.24. Its legacy table, geography and
+inputs differ, so this is a separate cohort from Table~\ref{tab:suite}. In a fixed
+France learner, adding prior-day auction prices reduces test MAE from
+\WeeklyCalendarTest\ to \RecentPriceTest\ (30.8\%). Validation improvement is
+11.16 EUR/MWh (95\% paired calendar-week bootstrap interval
+[\PriceBootstrapLower, \PriceBootstrapUpper], 2,000 resamples conditional on the
+fitted models). Masking post-origin realised weather gives \PastWeatherTest\ test
+MAE versus \AllWeatherTest\ when supplied; such weather does not explain most
+of that France gain. These diagnostics motivated the stronger recent-price baseline.
+
+\paragraph{Timing and limitations.}
+Previous-day auction prices are normally published on $D-2$ \cite{auction};
+delivery time is not publication time. We guard elapsed lag 24 against reaching
+the target delivery date on the autumn transition. Weather, load and JAO historical
+revision/publication vintages remain unverified: lag 48 alone cannot establish
+availability, especially for retrospective ERA5 \cite{era5}. Scores are conditional
+benchmarks, not certified operational forecasts. Training-period topology is static;
+dated lifetime masks do not reconstruct every commissioning date. One seed and
+previous exploratory test inspection prevent a confirmatory significance claim.
+Real/shuffled GAT is the matched topology control; GAT versus per-zone XGBoost
+also changes parameter sharing. We have not evaluated detailed constraint nodes.
+
+\section{Future work}
+Repeat across seeds and assess paired loss uncertainty; compare pooled tabular
+models to separate topology gains from parameter sharing. Obtain archived weather
+forecasts and publication-aware load/JAO inputs. Then evaluate temporal encoders
+and detailed constraint nodes against the established recent-price and graph
+baselines, keeping physical flows, scheduled exchanges and MaxBex distinct.
+\fi
+
+\begin{thebibliography}{4}\small
+\bibitem{chen} T. Chen and C. Guestrin. XGBoost: A scalable tree boosting system.
+\emph{KDD}, 2016. \href{https://arxiv.org/abs/1603.02754}{arXiv:1603.02754}.
+\bibitem{gat} S. Brody, U. Alon and E. Yahav. How attentive are graph attention
+networks? \emph{ICLR}, 2022. \href{https://arxiv.org/abs/2105.14491}{arXiv:2105.14491}.
+\bibitem{auction} Nord Pool. \href{https://www.nordpoolgroup.com/en/the-power-market/Day-ahead-market/}{Day-ahead auction timeline}. Accessed November 2026.
+\bibitem{era5} ECMWF. \href{https://www.ecmwf.int/en/forecasts/datasets/complete-era5-global-atmospheric-reanalysis}{ERA5 global atmospheric reanalysis}. Accessed November 2026.
+\end{thebibliography}
+\end{document}

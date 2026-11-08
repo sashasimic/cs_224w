@@ -9,6 +9,8 @@ Start with the root [README](../README.md), then choose the relevant workflow.
 | [Setup](setup.md) | Virtual environment, ROCm, source locations and checks |
 | [Five-model suite](vibing_suite.md) | Features, splits, GPU gates, tmux, checkpoint resume and outputs |
 | [Expanded controlled study](controlled_study.md) | MLP/pooled controls, five seeds, three rewired graphs, feature and GRU experiments; separate 100-job launch |
+| [Controlled-study comparison](controlled_study_comparison.md) | Completed 100-job evidence, earlier experiments, market/regime breakdowns and limitations |
+| [Milestone v2](../reports/milestone_v2/README.md) | Revised two-page interpretation, with frozen v1 preserved separately |
 | [Full results](vibing_suite_results.md) | Verified 49-market comparison, runtime and limitations |
 | [Two-page milestone](../reports/milestone/README.md) | Full-suite results combined with the earlier France diagnostics; PDF, source and build command |
 | [Code walkthrough](code_structure.md) | Active entry points and responsibilities |
