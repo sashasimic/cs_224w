@@ -6,18 +6,23 @@
 \usepackage[hidelinks]{hyperref}
 \input{numbers}
 \input{suite_numbers}
+\IfFileExists{controlled_study.tex}{\input{controlled_study}}{}
 \title{Weather, Interconnections, and Energy Prices\\
   \small\normalfont Stanford CS224W Project Milestone --- Draft, November 8, 2026}
 \author{Project team\\\small Author details to be completed}
 \begin{document}
 \maketitle
 \begin{abstract}
+\ifdefined\ControlledStudyComplete
+\ControlledAbstract
+\else
 We build an auditable European electricity-price dataset and evaluate three
 XGBoost variants and real/shuffled graph attention models across 49 market
 identities. Real-graph GAT achieves \SuiteGraphTest\ EUR/MWh test MAE, improving
 \SuiteShuffleGain\% over its shuffled control and \SuiteXgbGain\% over recent-price
 XGBoost. Results are exploratory and conditional on unverified historical
 publication vintages.
+\fi
 \end{abstract}
 
 \section{Approach}
@@ -48,6 +53,9 @@ transformation, in EUR/MWh. Weekly persistence copies the same identity's price
 168 elapsed hours earlier. Targets are never filled or filtered for feature
 completeness; neural preprocessing is fitted on training-period features only.
 
+\ifdefined\ControlledStudyComplete
+\ControlledMethods
+\else
 \paragraph{Five models.}
 Recent-price XGBoost uses local hour, weekday, month and guarded 24/168-hour
 price lags. Richer XGBoost adds load forecast, four realised weather features
@@ -64,8 +72,12 @@ row/column sampling 0.8 and 50-round validation patience. GAT uses two layers,
 64 hidden channels, four heads, dropout 0.1, Adam at 0.001, batch size 64,
 at most 30 epochs and patience five. Seed is 224; stopping uses transformed
 validation MAE. CPU XGBoost and ROCm GAT runs completed in about six minutes total.
+\fi
 
 \newpage
+\ifdefined\ControlledStudyComplete
+\ControlledResults
+\else
 \paragraph{Full evaluation.}
 Table~\ref{tab:suite} uses identical \SuiteValHours\ validation and
 \SuiteTestHours\ test zone-hours with valid targets and finite weekly history.
@@ -120,6 +132,7 @@ models to separate topology gains from parameter sharing. Obtain archived weathe
 forecasts and publication-aware load/JAO inputs. Then evaluate temporal encoders
 and detailed constraint nodes against the established recent-price and graph
 baselines, keeping physical flows, scheduled exchanges and MaxBex distinct.
+\fi
 
 \begin{thebibliography}{4}\small
 \bibitem{chen} T. Chen and C. Guestrin. XGBoost: A scalable tree boosting system.

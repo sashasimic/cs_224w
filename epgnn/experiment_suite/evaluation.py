@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 from epgnn.boosting import score
+from . import data
 
 
 def evaluate(predictions, arrays, meta, zones, experiment, split, directory):

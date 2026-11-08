@@ -30,3 +30,9 @@ control by 3.32% and recent-price XGBoost by 4.75% on common test hours in one s
 The paired MAE table and all-target RMSE use explicitly different populations.
 Historical publication vintages, multiple-seed confirmation, temporal encoders
 and detailed constraint nodes remain open. Author details are still placeholders.
+
+The expanded controlled study replaces this report's primary comparison only
+after all 100 jobs complete. Its publisher writes `controlled_study.tex` and a
+matching source manifest; the builder validates the completed summary before
+including the multi-seed MLP, graph and temporal comparison. Until then the PDF
+continues to show the verified five-model evaluation above.

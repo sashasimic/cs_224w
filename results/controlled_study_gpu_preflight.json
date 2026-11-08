@@ -1,0 +1,122 @@
+{
+  "passed": true,
+  "gpu": "AMD Radeon RX 9070 XT",
+  "hip": "7.2.53211",
+  "config": {
+    "name": "controlled_study_v1",
+    "dataset_directory": "staging/forecast_dataset_v1.0/current",
+    "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+    "seeds": [
+      224,
+      225,
+      226,
+      227,
+      228
+    ],
+    "rewiring_seeds": [
+      901,
+      902,
+      903
+    ],
+    "neural": {
+      "epochs": 30,
+      "patience": 5,
+      "lr": 0.001,
+      "batch_size": 64,
+      "history_hours": 168,
+      "history_hidden": 32
+    },
+    "smoke": {
+      "training_days": 90,
+      "validation_days": 14,
+      "epochs": 3
+    },
+    "bootstrap": {
+      "repetitions": 2000,
+      "seed": 224
+    },
+    "xgb": {
+      "objective": "reg:absoluteerror",
+      "eval_metric": "mae",
+      "tree_method": "hist",
+      "device": "cpu",
+      "max_depth": 6,
+      "n_estimators": 600,
+      "learning_rate": 0.05,
+      "subsample": 0.8,
+      "colsample_bytree": 0.8,
+      "min_child_weight": 1,
+      "reg_lambda": 1.0,
+      "n_jobs": 4
+    }
+  },
+  "source_hashes": {
+    "epgnn/controlled_study/models.py": "b1f2708bc653122df51b586366d0d01d35e038e5c9edbbcdad2cad790ebbb999",
+    "epgnn/controlled_study/history.py": "ddf1c00b079c83c4787df60ef4379a2b00d06df45a823b55ca22e3fe3cadcdbf",
+    "epgnn/controlled_study/training.py": "1545a9beeea6820d6f692c0a5917171eec0d3a79ad95889bd52e323dd4c7ee87",
+    "epgnn/controlled_study/preflight.py": "016782391d6d0fe134063a0a7b453facfce10d6a240042e1c39affc26e79324f",
+    "epgnn/experiment_suite/neural.py": "6f1a89c8134642efc7cf0b3bba82e993fe5a1c16a9537f6985ae701439371144",
+    "epgnn/train.py": "377f71a5d6622e169089c70e74fc11522387b1530cffa0d4d7e3799aff06edc5"
+  },
+  "batch_sizes": {
+    "static": 64,
+    "temporal": 64
+  },
+  "checks": [
+    {
+      "model": "mlp",
+      "graph": "none",
+      "batch_size": 64,
+      "parameters": 12001,
+      "head_width": 96,
+      "warm_step_seconds": 0.0022607399951084517,
+      "peak_vram_gib": 0.1568140983581543
+    },
+    {
+      "model": "gat",
+      "graph": "real",
+      "batch_size": 64,
+      "parameters": 12097,
+      "head_width": 64,
+      "warm_step_seconds": 0.007759315001749201,
+      "peak_vram_gib": 0.23091983795166016
+    },
+    {
+      "model": "gat",
+      "graph": "self",
+      "batch_size": 64,
+      "parameters": 12097,
+      "head_width": 64,
+      "warm_step_seconds": 0.00448734599922318,
+      "peak_vram_gib": 0.16109085083007812
+    },
+    {
+      "model": "gat",
+      "graph": "shuffled",
+      "batch_size": 64,
+      "parameters": 12097,
+      "head_width": 64,
+      "warm_step_seconds": 0.007663073505682405,
+      "peak_vram_gib": 0.2307729721069336
+    },
+    {
+      "model": "gru_mlp",
+      "graph": "none",
+      "batch_size": 64,
+      "parameters": 19557,
+      "head_width": 100,
+      "warm_step_seconds": 0.15452318900133832,
+      "peak_vram_gib": 1.3595666885375977
+    },
+    {
+      "model": "gru_gat",
+      "graph": "real",
+      "batch_size": 64,
+      "parameters": 19649,
+      "head_width": 64,
+      "warm_step_seconds": 0.11720821849667118,
+      "peak_vram_gib": 1.3595805168151855
+    }
+  ],
+  "epoch_resume_verified": true
+}

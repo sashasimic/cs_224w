@@ -2,6 +2,11 @@
 
 ## Current suite
 
+[`controlled_study.json`](controlled_study.json) defines the expanded 100-job
+multi-seed study. Use `python -m epgnn.controlled_study dry-run`, `smoke`, `full`
+or `status`. See [the study guide](../../docs/controlled_study.md) for its separate
+tmux launcher and GPU gates.
+
 [`vibing_suite.json`](vibing_suite.json) configures the active five-model suite:
 recent-price, richer and neighbour XGBoost, plus real/shuffled hourly GAT.
 

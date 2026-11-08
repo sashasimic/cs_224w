@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "phase": "smoke",
+  "fingerprint": "fd19205863b9d81b0f5d46535d9c970579838565b4b782d2b1550c79fdb1dff6",
+  "job_count": 20,
+  "summary_sha256": "1a8c84c4703becaccd588fdd2c7de0dc3164e6dab9fd6c05e8ab420f0ca75e24",
+  "checks": [
+    "artifact hashes",
+    "unique identical keys/targets/masks",
+    "finite predictions",
+    "recomputed MAE/RMSE/paired MAE",
+    "matching current GPU preflight"
+  ]
+}

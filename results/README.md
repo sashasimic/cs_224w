@@ -5,6 +5,10 @@ checkpoints are kept under the ignored `runs/` directory.
 
 ## Latest full evaluation
 
+`controlled_study_smoke*` files are preflight evidence for the expanded study;
+its five-seed full summaries will be written as `controlled_study_full*` after
+all 100 jobs complete. The established full evaluation below is preserved.
+
 | File | Contents |
 |---|---|
 | [vibing_suite_full.json](vibing_suite_full.json) | All five methods, feature lists, per-zone scores, curves and aggregates |

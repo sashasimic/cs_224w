@@ -1,0 +1,412 @@
+{
+  "fingerprint": "fd19205863b9d81b0f5d46535d9c970579838565b4b782d2b1550c79fdb1dff6",
+  "maximum_epoch_extrapolation_hours": 16.769765067725654,
+  "planning_range_hours": [
+    10.061859040635392,
+    30.185577121906178
+  ],
+  "jobs": [
+    {
+      "job": "xgb_recent_none_seed224",
+      "estimated_seconds": 25.215375353036507
+    },
+    {
+      "job": "xgb_rich_none_seed224",
+      "estimated_seconds": 47.45191884315864
+    },
+    {
+      "job": "xgb_neighbours_none_seed224",
+      "estimated_seconds": 29.17464130690496
+    },
+    {
+      "job": "pooled_xgb_rich_none_seed224",
+      "estimated_seconds": 47.51323861883429
+    },
+    {
+      "job": "mlp_recent_none_seed224",
+      "estimated_seconds": 80.68714134897002
+    },
+    {
+      "job": "gat_recent_real_seed224",
+      "estimated_seconds": 264.23963195829856
+    },
+    {
+      "job": "mlp_load_none_seed224",
+      "estimated_seconds": 81.30843062969052
+    },
+    {
+      "job": "gat_load_real_seed224",
+      "estimated_seconds": 264.2522186983042
+    },
+    {
+      "job": "mlp_weather_none_seed224",
+      "estimated_seconds": 83.96384936653845
+    },
+    {
+      "job": "gat_weather_real_seed224",
+      "estimated_seconds": 264.2657059822959
+    },
+    {
+      "job": "mlp_jao_none_seed224",
+      "estimated_seconds": 82.95874435456477
+    },
+    {
+      "job": "gat_jao_real_seed224",
+      "estimated_seconds": 264.2620148743008
+    },
+    {
+      "job": "mlp_rich_none_seed224",
+      "estimated_seconds": 83.21017412036993
+    },
+    {
+      "job": "gat_rich_real_seed224",
+      "estimated_seconds": 264.29206984330085
+    },
+    {
+      "job": "gat_rich_self_seed224",
+      "estimated_seconds": 172.87216073048504
+    },
+    {
+      "job": "gat_rich_shuffled_rewire901_seed224",
+      "estimated_seconds": 261.1042210776359
+    },
+    {
+      "job": "gat_rich_shuffled_rewire902_seed224",
+      "estimated_seconds": 261.1078966956338
+    },
+    {
+      "job": "gat_rich_shuffled_rewire903_seed224",
+      "estimated_seconds": 261.1153238236293
+    },
+    {
+      "job": "gru_mlp_rich_none_seed224",
+      "estimated_seconds": 5249.899649470368
+    },
+    {
+      "job": "gru_gat_rich_real_seed224",
+      "estimated_seconds": 3985.3364416661498
+    },
+    {
+      "job": "xgb_recent_none_seed225",
+      "estimated_seconds": 25.215375353036507
+    },
+    {
+      "job": "xgb_rich_none_seed225",
+      "estimated_seconds": 47.45191884315864
+    },
+    {
+      "job": "xgb_neighbours_none_seed225",
+      "estimated_seconds": 29.17464130690496
+    },
+    {
+      "job": "pooled_xgb_rich_none_seed225",
+      "estimated_seconds": 47.51323861883429
+    },
+    {
+      "job": "mlp_recent_none_seed225",
+      "estimated_seconds": 80.68714134897002
+    },
+    {
+      "job": "gat_recent_real_seed225",
+      "estimated_seconds": 264.23963195829856
+    },
+    {
+      "job": "mlp_load_none_seed225",
+      "estimated_seconds": 81.30843062969052
+    },
+    {
+      "job": "gat_load_real_seed225",
+      "estimated_seconds": 264.2522186983042
+    },
+    {
+      "job": "mlp_weather_none_seed225",
+      "estimated_seconds": 83.96384936653845
+    },
+    {
+      "job": "gat_weather_real_seed225",
+      "estimated_seconds": 264.2657059822959
+    },
+    {
+      "job": "mlp_jao_none_seed225",
+      "estimated_seconds": 82.95874435456477
+    },
+    {
+      "job": "gat_jao_real_seed225",
+      "estimated_seconds": 264.2620148743008
+    },
+    {
+      "job": "mlp_rich_none_seed225",
+      "estimated_seconds": 83.21017412036993
+    },
+    {
+      "job": "gat_rich_real_seed225",
+      "estimated_seconds": 264.29206984330085
+    },
+    {
+      "job": "gat_rich_self_seed225",
+      "estimated_seconds": 172.87216073048504
+    },
+    {
+      "job": "gat_rich_shuffled_rewire901_seed225",
+      "estimated_seconds": 261.1042210776359
+    },
+    {
+      "job": "gat_rich_shuffled_rewire902_seed225",
+      "estimated_seconds": 261.1078966956338
+    },
+    {
+      "job": "gat_rich_shuffled_rewire903_seed225",
+      "estimated_seconds": 261.1153238236293
+    },
+    {
+      "job": "gru_mlp_rich_none_seed225",
+      "estimated_seconds": 5249.899649470368
+    },
+    {
+      "job": "gru_gat_rich_real_seed225",
+      "estimated_seconds": 3985.3364416661498
+    },
+    {
+      "job": "xgb_recent_none_seed226",
+      "estimated_seconds": 25.215375353036507
+    },
+    {
+      "job": "xgb_rich_none_seed226",
+      "estimated_seconds": 47.45191884315864
+    },
+    {
+      "job": "xgb_neighbours_none_seed226",
+      "estimated_seconds": 29.17464130690496
+    },
+    {
+      "job": "pooled_xgb_rich_none_seed226",
+      "estimated_seconds": 47.51323861883429
+    },
+    {
+      "job": "mlp_recent_none_seed226",
+      "estimated_seconds": 80.68714134897002
+    },
+    {
+      "job": "gat_recent_real_seed226",
+      "estimated_seconds": 264.23963195829856
+    },
+    {
+      "job": "mlp_load_none_seed226",
+      "estimated_seconds": 81.30843062969052
+    },
+    {
+      "job": "gat_load_real_seed226",
+      "estimated_seconds": 264.2522186983042
+    },
+    {
+      "job": "mlp_weather_none_seed226",
+      "estimated_seconds": 83.96384936653845
+    },
+    {
+      "job": "gat_weather_real_seed226",
+      "estimated_seconds": 264.2657059822959
+    },
+    {
+      "job": "mlp_jao_none_seed226",
+      "estimated_seconds": 82.95874435456477
+    },
+    {
+      "job": "gat_jao_real_seed226",
+      "estimated_seconds": 264.2620148743008
+    },
+    {
+      "job": "mlp_rich_none_seed226",
+      "estimated_seconds": 83.21017412036993
+    },
+    {
+      "job": "gat_rich_real_seed226",
+      "estimated_seconds": 264.29206984330085
+    },
+    {
+      "job": "gat_rich_self_seed226",
+      "estimated_seconds": 172.87216073048504
+    },
+    {
+      "job": "gat_rich_shuffled_rewire901_seed226",
+      "estimated_seconds": 261.1042210776359
+    },
+    {
+      "job": "gat_rich_shuffled_rewire902_seed226",
+      "estimated_seconds": 261.1078966956338
+    },
+    {
+      "job": "gat_rich_shuffled_rewire903_seed226",
+      "estimated_seconds": 261.1153238236293
+    },
+    {
+      "job": "gru_mlp_rich_none_seed226",
+      "estimated_seconds": 5249.899649470368
+    },
+    {
+      "job": "gru_gat_rich_real_seed226",
+      "estimated_seconds": 3985.3364416661498
+    },
+    {
+      "job": "xgb_recent_none_seed227",
+      "estimated_seconds": 25.215375353036507
+    },
+    {
+      "job": "xgb_rich_none_seed227",
+      "estimated_seconds": 47.45191884315864
+    },
+    {
+      "job": "xgb_neighbours_none_seed227",
+      "estimated_seconds": 29.17464130690496
+    },
+    {
+      "job": "pooled_xgb_rich_none_seed227",
+      "estimated_seconds": 47.51323861883429
+    },
+    {
+      "job": "mlp_recent_none_seed227",
+      "estimated_seconds": 80.68714134897002
+    },
+    {
+      "job": "gat_recent_real_seed227",
+      "estimated_seconds": 264.23963195829856
+    },
+    {
+      "job": "mlp_load_none_seed227",
+      "estimated_seconds": 81.30843062969052
+    },
+    {
+      "job": "gat_load_real_seed227",
+      "estimated_seconds": 264.2522186983042
+    },
+    {
+      "job": "mlp_weather_none_seed227",
+      "estimated_seconds": 83.96384936653845
+    },
+    {
+      "job": "gat_weather_real_seed227",
+      "estimated_seconds": 264.2657059822959
+    },
+    {
+      "job": "mlp_jao_none_seed227",
+      "estimated_seconds": 82.95874435456477
+    },
+    {
+      "job": "gat_jao_real_seed227",
+      "estimated_seconds": 264.2620148743008
+    },
+    {
+      "job": "mlp_rich_none_seed227",
+      "estimated_seconds": 83.21017412036993
+    },
+    {
+      "job": "gat_rich_real_seed227",
+      "estimated_seconds": 264.29206984330085
+    },
+    {
+      "job": "gat_rich_self_seed227",
+      "estimated_seconds": 172.87216073048504
+    },
+    {
+      "job": "gat_rich_shuffled_rewire901_seed227",
+      "estimated_seconds": 261.1042210776359
+    },
+    {
+      "job": "gat_rich_shuffled_rewire902_seed227",
+      "estimated_seconds": 261.1078966956338
+    },
+    {
+      "job": "gat_rich_shuffled_rewire903_seed227",
+      "estimated_seconds": 261.1153238236293
+    },
+    {
+      "job": "gru_mlp_rich_none_seed227",
+      "estimated_seconds": 5249.899649470368
+    },
+    {
+      "job": "gru_gat_rich_real_seed227",
+      "estimated_seconds": 3985.3364416661498
+    },
+    {
+      "job": "xgb_recent_none_seed228",
+      "estimated_seconds": 25.215375353036507
+    },
+    {
+      "job": "xgb_rich_none_seed228",
+      "estimated_seconds": 47.45191884315864
+    },
+    {
+      "job": "xgb_neighbours_none_seed228",
+      "estimated_seconds": 29.17464130690496
+    },
+    {
+      "job": "pooled_xgb_rich_none_seed228",
+      "estimated_seconds": 47.51323861883429
+    },
+    {
+      "job": "mlp_recent_none_seed228",
+      "estimated_seconds": 80.68714134897002
+    },
+    {
+      "job": "gat_recent_real_seed228",
+      "estimated_seconds": 264.23963195829856
+    },
+    {
+      "job": "mlp_load_none_seed228",
+      "estimated_seconds": 81.30843062969052
+    },
+    {
+      "job": "gat_load_real_seed228",
+      "estimated_seconds": 264.2522186983042
+    },
+    {
+      "job": "mlp_weather_none_seed228",
+      "estimated_seconds": 83.96384936653845
+    },
+    {
+      "job": "gat_weather_real_seed228",
+      "estimated_seconds": 264.2657059822959
+    },
+    {
+      "job": "mlp_jao_none_seed228",
+      "estimated_seconds": 82.95874435456477
+    },
+    {
+      "job": "gat_jao_real_seed228",
+      "estimated_seconds": 264.2620148743008
+    },
+    {
+      "job": "mlp_rich_none_seed228",
+      "estimated_seconds": 83.21017412036993
+    },
+    {
+      "job": "gat_rich_real_seed228",
+      "estimated_seconds": 264.29206984330085
+    },
+    {
+      "job": "gat_rich_self_seed228",
+      "estimated_seconds": 172.87216073048504
+    },
+    {
+      "job": "gat_rich_shuffled_rewire901_seed228",
+      "estimated_seconds": 261.1042210776359
+    },
+    {
+      "job": "gat_rich_shuffled_rewire902_seed228",
+      "estimated_seconds": 261.1078966956338
+    },
+    {
+      "job": "gat_rich_shuffled_rewire903_seed228",
+      "estimated_seconds": 261.1153238236293
+    },
+    {
+      "job": "gru_mlp_rich_none_seed228",
+      "estimated_seconds": 5249.899649470368
+    },
+    {
+      "job": "gru_gat_rich_real_seed228",
+      "estimated_seconds": 3985.3364416661498
+    }
+  ],
+  "method": "France warm epochs plus worst-case full-node GPU batches; all jobs sequential",
+  "caveats": "Not a guarantee. Early stopping reduces work; pooled XGBoost/data I/O can scale differently."
+}

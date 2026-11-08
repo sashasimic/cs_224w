@@ -28,6 +28,11 @@ Read the [verified results](docs/vibing_suite_results.md) for validation scores,
 RMSE, runtimes and limitations. The [experiment guide](docs/vibing_suite.md)
 describes features, training and checkpointing.
 
+The [expanded controlled study](docs/controlled_study.md) adds a parameter-matched
+pooled MLP, pooled XGBoost, self-loop and multiple shuffled graphs, feature
+ablations, and GRU temporal controls across five seeds (100 jobs). Its full run
+is launched separately; smoke evidence does not replace the results above.
+
 ## Inspect or run experiments
 
 Run commands from the repository root using its virtual environment. This

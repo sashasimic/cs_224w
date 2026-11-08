@@ -114,6 +114,26 @@ def build_suite_assets():
 
 
 def main():
+    controlled = REPORT / "controlled_study.tex"
+    if controlled.exists():
+        controlled_manifest = load("reports/milestone/controlled_sources.json")
+        controlled_summary = load("results/controlled_study_full.json")
+        if (
+            controlled_manifest["summary_sha256"]
+            != SOURCE_HASHES["results/controlled_study_full.json"]
+        ):
+            raise ValueError("Controlled-study milestone input is stale")
+        if (
+            controlled_summary["phase"] != "full"
+            or controlled_summary["job_count"] != 100
+            or controlled_manifest["fingerprint"] != controlled_summary["fingerprint"]
+        ):
+            raise ValueError(
+                "Controlled study is incomplete or has a different fingerprint"
+            )
+        SOURCE_HASHES["reports/milestone/controlled_study.tex"] = hashlib.sha256(
+            controlled.read_bytes()
+        ).hexdigest()
     suite = build_suite_assets()
     diagnostic = load("results/pipeline_diagnostics_france.json")
     audit = load("results/milestone_pipeline_audit.json")
