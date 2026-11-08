@@ -1,0 +1,19 @@
+{
+  "executed": true,
+  "cwd": "/srv/cs224w/Project/arsen/cs_224w",
+  "local_details": true,
+  "code_cells": 12,
+  "figures": 20,
+  "python": "3.14.8 (main, Oct 13 2026, 10:43:33) [GCC 16.2.1 20260810]",
+  "artifacts": {
+    "notebooks/forecasting_results_investigation.ipynb": "233394a07d9e50b10310e8a72d251cef8f79829f1c729e54f208ec08622ae354",
+    "reports/investigation/forecasting_results.html": "0dfe4da7ed1c92d17856c34e1bb11ffbf29981a35237c3737dcc066ce1f384a7",
+    "scripts/reports/build_investigation.py": "1c017d2ca1433ee509927ca82a436d7065a12f606183b9f6a306c8cf216ff92c",
+    "epgnn/reporting/investigation.py": "d299c2ce1137394436fc2513c11b642f5c70d411fc29ea8b2730ab40488abca3",
+    "scripts/reports/static_report.html.j2": "e4263ca796a20c7b93e568d58a77d7199106c90104ca4c9a2b8d10b800e185d4"
+  },
+  "study_fingerprints": {
+    "controlled": "fd19205863b9d81b0f5d46535d9c970579838565b4b782d2b1550c79fdb1dff6",
+    "airport": "8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b"
+  }
+}

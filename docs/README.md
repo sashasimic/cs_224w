@@ -48,3 +48,6 @@ The [airport temperature experiment](airport_temperature.md) defines the new
 45-fit observation comparison and its source, timing, ROCm and smoke gates.
 The [completed airport results](airport_temperature_results.md) include the
 five-seed comparison, country scores and a review of indirect pooled-model gains.
+
+The [guided investigation](../reports/investigation/README.md) brings the data,
+pipeline, model and weather evidence together in an executed notebook and HTML.

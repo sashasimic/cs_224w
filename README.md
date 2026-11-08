@@ -137,3 +137,10 @@ spatial proxies and missingness are explicit. Previous results are preserved.
 All 45 airport fits completed and passed verification. See the
 [reviewed results](docs/airport_temperature_results.md): gains are small and vary
 by market; most of pooled XGBoost's headline gain comes from an unmapped market.
+
+## Guided report notebook
+
+Read the [illustrated project investigation](reports/investigation/forecasting_results.html)
+or open the [executed notebook](notebooks/forecasting_results_investigation.ipynb).
+It covers data, model comparisons, graphs, weather and editable validation-week
+diagnostics. [Usage and reproduction](reports/investigation/README.md).

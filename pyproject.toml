@@ -15,6 +15,7 @@ dependencies = [
 inspection = [
   "nbformat",
   "nbclient",
+  "nbconvert",
   "ipykernel",
   "matplotlib",
 ]
