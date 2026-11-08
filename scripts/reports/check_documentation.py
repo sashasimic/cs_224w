@@ -55,12 +55,19 @@ def main():
                 checked += 1
                 if unquote(parsed.fragment) not in identifiers:
                     failures.append(f"{path.relative_to(ROOT)} -> {target}")
-    manifest = json.loads((ROOT / "reports/experiments/sources.json").read_text())
-    for group in ["sources", "artifacts"]:
-        for name, expected in manifest[group].items():
-            actual = hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
-            if actual != expected:
-                failures.append("Changed consolidated-report input/output: " + name)
+    for location in [
+        "reports/experiments/sources.json",
+        "reports/milestone_v3/sources.json",
+    ]:
+        path = ROOT / location
+        if not path.exists():
+            continue
+        manifest = json.loads(path.read_text())
+        for group in ["sources", "artifacts", "preserved_milestones"]:
+            for name, expected in manifest.get(group, {}).items():
+                actual = hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
+                if actual != expected:
+                    failures.append("Changed report input/output: " + name)
     if failures:
         raise ValueError("\n".join(failures))
     print(

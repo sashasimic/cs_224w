@@ -1,0 +1,133 @@
+\documentclass{article}
+\usepackage[final,nonatbib]{neurips_2019}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,booktabs,microtype}
+\usepackage[hidelinks]{hyperref}
+\input{numbers}
+\title{Weather, Interconnections, and Energy Prices\\
+  \small\normalfont Stanford CS224W Project Milestone v3 --- Draft, November 9, 2026}
+\author{Project team\\\small Author details to be completed}
+\begin{document}
+\maketitle
+\begin{abstract}
+Across 49 European market identities, we compare persistence, independent/pooled
+XGBoost, static/GRU MLP and self-loop/real GAT. Pooled XGBoost, static MLP and real
+GAT achieve \PooledTest, \MlpTest\ and \GatTest\ EUR/MWh matched test MAE;
+the verified residual GRU achieves \GruTest\ in one seed. Graph gains are modest
+after controlling for pooled learning. A numerical audit invalidates the earlier
+negative GRU interpretation. These are exploratory retrospective benchmarks with
+unresolved source vintages.
+\end{abstract}
+
+\section{Approach}
+At 12:00 Europe/Brussels on calendar day $D-1$, predict every hourly day-ahead
+price of delivery day $D$, including 23/25-hour daylight-saving days. Weekly
+persistence copies the same market's price 168 elapsed hours earlier.
+Independent and pooled XGBoost \cite{chen} distinguish shared learning from
+cross-market graph messages. A pooled MLP provides a classical neural reference.
+Self-loop GATv2 \cite{gat} retains the architecture without cross-market messages;
+real GAT adds physical pairs observed during training. These GATs share features
+and training settings. Node-lifetime masks preserve historical geography.
+JAO constraints enter as flat summaries, not extra graph nodes.
+
+\section{Experiments}
+\paragraph{Data and partitions.}
+The canonical master contains 5,887,954 zone-hours over 62 historical price-area
+identities, January 2016--October 2026. ENTSO-E prices/load/flows use pinned v1.2
+releases; other sources are an ERA5-lineage weather export and original CWE/CORE
+JAO observations. Weather's requested v1.1 release identity is unverified.
+Missing values, negative prices and separate DE\_AT\_LU/DE\_LU identities are
+preserved; 49 identities have labels in all required partitions. Targets are
+never filled or filtered for feature completeness. Fit uses January 2016--March
+2024, validation April 2024--March 2025, and test April 2025--September 2026 by
+Brussels delivery date. October stays unassigned.
+
+\paragraph{Static controls.}
+All five static learned controls use identical richer inputs: local
+hour/weekday/month, guarded 24/168-hour prices, load forecast, four lag-48 weather
+variables and three lag-48 JAO summaries (constraint count, minimum RAM ratio,
+domain presence). Trees retain NaNs; neural imputation/scaling fits training
+features only and includes missingness indicators. Models fit
+$z=\operatorname{asinh}(p/50)$ with L1 loss and invert with $50\sinh(\hat z)$.
+Trees use depth six, at most 600 rounds and 50-round validation patience.
+MLP has two ELU hidden layers matched by parameter count to GAT; GAT has two
+layers, 64 channels and four heads. Both use Adam 0.001, dropout 0.1, at most
+30 epochs and patience five. All five controls use seeds 224--228.
+
+\paragraph{Partner-inspired temporal model.}
+The GRU--MLP adapts Sasha's recipe on our canonical targets, rather than importing
+his separate 43-zone score. A 64-unit GRU encodes 168 completed hours of price
+lags, load, derived net inflow and four weather channels. Two 128-unit ReLU MLP
+layers combine its state with 11 day inputs. The target is
+$r=z-\operatorname{asinh}(b/50)$, with weekly-price base $b$, else guarded daily
+price, else zero; this fallback reconstructs predictions only. Residual L1 is
+augmented by 0.5 times connected-zone residual-contrast L1. Day weather uses
+lag 48. Seed 0, 16-day batches, Adam 0.001 and patience eight select epoch
+\GruBestEpoch\ of \GruEpochs. This is a different recipe and one seed,
+not a controlled GRU or weather ablation.
+
+\paragraph{Metrics.}
+MAE/RMSE are EUR/MWh after inversion. Relative MAE divides model MAE by
+persistence MAE on identical hours: 0.72 means 28\% less error, not 28\% of the
+price. Table~\ref{tab:main} uses \ValPaired\ validation and \TestPaired\
+test labels with weekly history. Full scoring retains all \ValAll\ validation
+and \TestAll\ test labels, including unavailable histories. Validation selects
+checkpoints; no best test seed is chosen.
+
+\begin{table}[!ht]
+\centering\small
+\input{results}
+\caption{Same 49-market cohort and matched hours. Static learned rows: five-seed
+mean $\pm$ sample SD, not ensembles. $\dagger$: one verified seed, different
+inputs/target/loss. Bold denotes the smallest reported mean, not significance
+or a controlled GRU advantage. Lower is better.}
+\label{tab:main}
+\end{table}
+
+\paragraph{Results.}
+Pooling reduces XGBoost test MAE from \ZoneTest\ to \PooledTest.
+Real GAT improves test MAE by \MlpGatDifference\ versus static MLP and
+\SelfGatDifference\ versus self-loop GAT. Corresponding validation-week
+improvement intervals are [\MlpCiLower, \MlpCiUpper] and
+[\SelfCiLower, \SelfCiUpper] EUR/MWh (2,000 shared-week resamples, conditional
+on fitted models). Pooled XGBoost has better validation MAE than real GAT;
+their small test gap does not justify retrospective model choice.
+The GRU has similar matched MAE but all-target test RMSE \GruRmse{} versus
+\GatRmse\ for real GAT. Gains vary by market; graph superiority is not universal.
+
+\paragraph{Numerical audit.}
+The original controlled GRU--MLP/GAT runs are omitted: all ten checkpoints
+disagree with CPU on sampled shuffled training-shaped inputs under fused ROCm,
+despite replaying saved consecutive inference batches. Native GPU agrees with
+CPU; the negative temporal conclusion is withdrawn. The accepted partner-inspired
+run uses native GPU operations and passes sampled CPU float64, checkpoint-replay,
+target-signature and saved-score checks. This is not an exhaustive backend proof.
+
+\paragraph{Availability and limitations.}
+ERA5 is retrospective reanalysis with roughly five-day release latency
+\cite{era5}, incompatible with recent lag-48 inputs. Load/JAO/price revision
+vintages remain unresolved. Exact timestamp joins and autumn-DST guards prevent
+lag24 from reaching the target delivery day, but cannot reconstruct publication
+records. Scores are conditional, not certified operational forecasts. Test data
+were previously explored; intervals are not confirmatory evidence.
+
+\section{Future work}
+Retrain our original temporal controls with native GPU operations; repeat the
+residual GRU across seeds and ablate its residual target and contrast loss.
+Build a daily service that records inputs, versions and predictions before
+Brussels noon, then scores auction outcomes. Start with persistence and
+price-only pooled XGBoost; monitor rolling rMAE, coverage, deadline failures and
+fallbacks. Add timely weather observations/archived forecasts and graph challengers
+after establishing this prospective baseline.
+
+\begin{thebibliography}{3}\small
+\bibitem{chen} T. Chen and C. Guestrin. XGBoost: A scalable tree boosting system.
+\emph{KDD}, 2016. \href{https://arxiv.org/abs/1603.02754}{arXiv:1603.02754}.
+\bibitem{gat} S. Brody et al. How attentive are graph attention
+networks? \emph{ICLR}, 2022. \href{https://arxiv.org/abs/2105.14491}{arXiv:2105.14491}.
+\bibitem{era5} ECMWF.
+\href{https://www.ecmwf.int/en/forecasts/datasets/era5-hourly-time-series-data-single-levels-1940-present}{ERA5 hourly time-series product description}.
+Accessed November 9, 2026.
+\end{thebibliography}
+\end{document}

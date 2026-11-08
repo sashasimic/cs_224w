@@ -411,3 +411,8 @@ evidence. Original Parquets, tensor caches, models and training code are unchang
 The original milestone PDFs remain snapshots; the old negative GRU conclusion
 is superseded by this backend audit. The existing investigation notebook retains
 the archived numbers with the same warning.
+
+[Milestone v3](../reports/milestone_v3/README.md) is the current two-page summary,
+using persistence, per-zone/pooled richer XGBoost, static/residual-GRU MLP and
+self-loop/real GAT. It preserves the common cohort and labels the GRU's one seed
+and different recipe; the original affected temporal runs are excluded.

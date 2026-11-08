@@ -2,6 +2,8 @@
 
 [Read in a browser](experiments.html) · [Markdown document](../../docs/experiments.md)
 
+For a concise seven-method report, read [milestone v3](../milestone_v3/README.md).
+
 This is the current all-programme report. It covers the 100-job controlled
 study, 45-job airport study, first five-model suite, accepted residual GRU,
 earlier country/France diagnostics and rejected or affected runs. Cohorts,

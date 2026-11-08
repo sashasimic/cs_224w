@@ -1,0 +1,75 @@
+{
+  "selection": "Requested model families; common richer static controls, verified partner-inspired GRU. No test-minimum variant or seed selection.",
+  "rows": [
+    {
+      "variant": "weekly_persistence",
+      "label": "Weekly persistence",
+      "seeds": 0,
+      "val": 30.182190734782704,
+      "val_sd": null,
+      "test": 29.13343418892601,
+      "test_sd": null,
+      "test_rmae": 1.0
+    },
+    {
+      "variant": "xgb_rich_none",
+      "label": "Per-zone XGBoost",
+      "seeds": 5,
+      "val": 21.234793190981527,
+      "val_sd": 0.053491806978737635,
+      "test": 22.109588676599003,
+      "test_sd": 0.027943497556055255,
+      "test_rmae": 0.7589077392394453
+    },
+    {
+      "variant": "pooled_xgb_rich_none",
+      "label": "Pooled XGBoost",
+      "seeds": 5,
+      "val": 20.73617734585681,
+      "val_sd": 0.014454089272129692,
+      "test": 21.058399256725146,
+      "test_sd": 0.013465503383820184,
+      "test_rmae": 0.722825847449516
+    },
+    {
+      "variant": "mlp_rich_none",
+      "label": "Static pooled MLP",
+      "seeds": 5,
+      "val": 21.44287751422288,
+      "val_sd": 0.2252602512260887,
+      "test": 21.185250580949152,
+      "test_sd": 0.2058601698841668,
+      "test_rmae": 0.7271799968230981
+    },
+    {
+      "variant": "partner_residual_gru_conditional",
+      "label": "GRU + MLP (partner)$^\\dagger$",
+      "seeds": 1,
+      "val": 20.31916505269252,
+      "val_sd": null,
+      "test": 20.981713371982153,
+      "test_sd": null,
+      "test_rmae": 0.7201936179551935
+    },
+    {
+      "variant": "gat_rich_self",
+      "label": "Self-loop GAT",
+      "seeds": 5,
+      "val": 21.266823128966774,
+      "val_sd": 0.0908302716110206,
+      "test": 21.063744827740077,
+      "test_sd": 0.08053658588762203,
+      "test_rmae": 0.7230093332335903
+    },
+    {
+      "variant": "gat_rich_real",
+      "label": "Real-graph GAT",
+      "seeds": 5,
+      "val": 20.982991495772957,
+      "val_sd": 0.10740645891549114,
+      "test": 20.97371303714609,
+      "test_sd": 0.126508566504804,
+      "test_rmae": 0.7199190078702931
+    }
+  ]
+}

@@ -9,6 +9,9 @@ programmes, scores, negative results and numerical/availability caveats together
 The [documentation index](docs/README.md) separates current guidance from
 historical protocols and frozen milestones.
 
+The latest concise report is [milestone v3 (two-page PDF)](reports/milestone_v3/milestone.pdf),
+with [source, exact values and rebuild instructions](reports/milestone_v3/README.md).
+
 ## Current findings
 
 Strong recent-price inputs and pooled training close much of the initial gap

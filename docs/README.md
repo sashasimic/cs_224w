@@ -10,6 +10,7 @@ earlier diagnostics and the current status of both GRU families.
 | Document | Use |
 |---|---|
 | [Experiment record](experiments.md) | Main results, comparison populations, limitations and next work |
+| [Milestone v3](../reports/milestone_v3/README.md) | Current two-page report: persistence, two XGBoosts, static/residual-GRU MLP, self-loop/real GAT |
 | [Leakage audit](leakage_audit.md) | Source publication/vintage problems and verified timing/preprocessing checks |
 | [Metrics and daily deployment](metrics_and_live_forecasting.md) | Relative errors and a prospective forecasting service |
 | [Setup](setup.md) | Virtual environment, ROCm and source locations |
@@ -58,6 +59,7 @@ pipeline notes. Original model metrics and source hashes are not rewritten.
 
 | Snapshot | Status |
 |---|---|
+| [Milestone v3](../reports/milestone_v3/README.md) | Current seven-method comparison; verified partner-inspired GRU, affected original GRUs excluded |
 | [Milestone v1](../reports/milestone_v1/README.md) | Frozen first-suite/France report |
 | [Milestone draft](../reports/milestone/README.md) | Historical report/build workflow |
 | [Milestone v2](../reports/milestone_v2/README.md) | Five-seed report; its negative GRU interpretation is superseded by the backend audit |

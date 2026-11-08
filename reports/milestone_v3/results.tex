@@ -1,0 +1,16 @@
+\begin{tabular}{lrrrr}
+\toprule
+Forecasting method & Seeds & Val. MAE & Test MAE & Test rMAE \\
+\midrule
+Weekly persistence & -- & 30.18 & 29.13 & 1.0000 \\
+\midrule
+Per-zone XGBoost & 5 & 21.23 $\pm$ 0.05 & 22.11 $\pm$ 0.03 & 0.7589 \\
+Pooled XGBoost & 5 & 20.74 $\pm$ 0.01 & 21.06 $\pm$ 0.01 & 0.7228 \\
+\midrule
+Static pooled MLP & 5 & 21.44 $\pm$ 0.23 & 21.19 $\pm$ 0.21 & 0.7272 \\
+GRU + MLP (partner)$^\dagger$ & 1 & \textbf{20.32} & 20.98 & 0.7202 \\
+\midrule
+Self-loop GAT & 5 & 21.27 $\pm$ 0.09 & 21.06 $\pm$ 0.08 & 0.7230 \\
+Real-graph GAT & 5 & 20.98 $\pm$ 0.11 & \textbf{20.97 $\pm$ 0.13} & \textbf{0.7199} \\
+\bottomrule
+\end{tabular}
