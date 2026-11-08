@@ -46,3 +46,5 @@ time. Keeping the original build documentation intact preserves its audit trail.
 
 The [airport temperature experiment](airport_temperature.md) defines the new
 45-fit observation comparison and its source, timing, ROCm and smoke gates.
+The [completed airport results](airport_temperature_results.md) include the
+five-seed comparison, country scores and a review of indirect pooled-model gains.

@@ -117,3 +117,18 @@ Recheck or regenerate a completed full run with:
 A null result says this national-airport proxy did not help these models. It
 does not rule out regional heatwaves, population-weighted temperature or genuine
 archived weather forecasts.
+
+The tmux session ends when its command finishes. If `tmux ls` reports no server,
+check `runs/airport_temperature_launch/exit.json` and the final log lines;
+`exit_code: 0` and a completed report indicate success. The completed full run
+is reviewed in [the results report](airport_temperature_results.md).
+
+To reproduce the frozen result interpretation and geography/contribution tables
+after regenerating the base report:
+
+```bash
+.venv/bin/python scripts/experiments/review_airport_results.py
+```
+
+This review validates its aggregate scores and contribution sums against the
+verified full results. It does not fit models or change the primary cohort.

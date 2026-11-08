@@ -50,3 +50,7 @@ comparison and verification. The shared `airport_temperature_coverage.csv`,
 `source_findings.csv`, `geography.csv`, feature registry and source manifest
 make spatial proxies and missingness auditable. See the
 [experiment guide](../docs/airport_temperature.md).
+
+All 45 full airport fits completed with exit code 0 and verified predictions.
+The [reviewed report](../docs/airport_temperature_results.md) explains the
+geographic subgroup and market-contribution tables as post-hoc diagnostics.

@@ -133,3 +133,7 @@ with actual reports from each country's busiest airport. It compares price-only,
 latest temperature and temperature-history inputs for pooled XGBoost, MLP and
 GAT across five seeds. Publication/revision provenance remains conditional;
 spatial proxies and missingness are explicit. Previous results are preserved.
+
+All 45 airport fits completed and passed verification. See the
+[reviewed results](docs/airport_temperature_results.md): gains are small and vary
+by market; most of pooled XGBoost's headline gain comes from an unmapped market.

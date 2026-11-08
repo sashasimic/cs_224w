@@ -1,0 +1,22 @@
+{
+  "fingerprint": "8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b",
+  "all_aggregate_scores_and_contribution_sums_reconciled": true,
+  "reviewed_report_sha256": "ce6da553e206b644667c9a5bf03518772a3825f67604ffb6af1fe0fd3745e85f",
+  "training_rerun": false,
+  "analysis": "post-hoc descriptive geography/contribution review; no model selection",
+  "summary_sha256": "8312e05431465d4d22f4297ea9c4e67b11d5125f8353a73a4ecb4eec9a0a19a5",
+  "zone_scores_sha256": "8a74af68da0ca41ba5db2cb6f6f3e15e9df60d2eab9d845a92015c120f68e396",
+  "script_sha256": "76a589371c48d0cb578eac22b540d7324ab6e9f50ae7d8fda5c2a26dbe285352",
+  "unmapped_markets_all_local_temperature_inputs_missing": [
+    "ENTSOE:10Y1001A1001A885",
+    "ENTSOE:10Y1001A1001A893",
+    "ENTSOE:10Y1001C--000182",
+    "ENTSOE:10Y1001C--00100H",
+    "ENTSOE:10YAL-KESH-----5",
+    "ENTSOE:50Y0JVU59B4JWQCU"
+  ],
+  "largest_xgb_latest_test_contributor": "ENTSOE:10Y1001A1001A893",
+  "contribution_eur_mwh": 0.2977666449290804,
+  "overall_improvement_eur_mwh": 0.34103726753236785,
+  "share_of_overall_improvement": 0.8731205451052922
+}

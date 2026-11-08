@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "fingerprint": "8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b",
+  "gpu": "AMD Radeon RX 9070 XT",
+  "hip": "7.2.53211",
+  "checks": [
+    {
+      "model": "mlp",
+      "graph": "none",
+      "batch_size": 64,
+      "parameters": 12001,
+      "head_width": 96,
+      "warm_step_seconds": 0.002095664502121508,
+      "peak_vram_gib": 0.1568140983581543
+    },
+    {
+      "model": "gat",
+      "graph": "real",
+      "batch_size": 64,
+      "parameters": 12097,
+      "head_width": 64,
+      "warm_step_seconds": 0.006123369501437992,
+      "peak_vram_gib": 0.23091983795166016
+    }
+  ],
+  "epoch_resume_verified": true,
+  "batch_sizes": {
+    "static": 64
+  }
+}
