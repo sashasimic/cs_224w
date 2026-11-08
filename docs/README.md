@@ -54,3 +54,5 @@ pipeline, model and weather evidence together in an executed notebook and HTML.
 
 [Partner-inspired residual GRU](partner_gru.md): source/architecture differences,
 conditional ERA5 use, 49-market run commands, checkpointing and output locations.
+The [verified GRU comparison](partner_gru_comparison.md) compares its completed
+single-seed run with previous five-seed static models and records the limits.

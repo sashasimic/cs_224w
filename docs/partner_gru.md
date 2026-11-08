@@ -123,6 +123,8 @@ or a finding about every earlier GRU checkpoint. Reproduce with:
 
 The replacement generation is
 `9b5aaae786ce06f14abf0b82c96882638fa5a306f9a9ec064db16a2b23b235aa`.
-Its France smoke passed both checkpoint replay and actual-input CPU checks;
-the full fit runs in tmux session `partner-gru-native`. Full evaluation must pass
-the same checks before its scores are accepted.
+Its France smoke and full evaluation passed checkpoint replay and actual-input
+CPU checks. The full run finished on 9 November 2026 after 37 epochs, selecting
+epoch 29. See the [completed results](partner_gru_results.md) and
+[comparison with earlier experiments](partner_gru_comparison.md). The original
+rejected generation remains excluded.

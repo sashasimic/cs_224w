@@ -54,3 +54,13 @@ make spatial proxies and missingness auditable. See the
 All 45 full airport fits completed with exit code 0 and verified predictions.
 The [reviewed report](../docs/airport_temperature_results.md) explains the
 geographic subgroup and market-contribution tables as post-hoc diagnostics.
+
+## Partner-inspired residual GRU
+
+`partner_gru_full.json` and `_by_zone.csv` contain the verified single-seed
+49-market experiment. `_verification.json` records artifact, target and metric
+checks; `_comparison.csv` and `_review_sources.json` accompany the
+[comparison report](../docs/partner_gru_comparison.md). ERA5 inputs remain
+conditional retrospective reanalysis. `partner_gru_backend_audit.json` documents
+why the first fused-RNN run was rejected; published full scores use native GPU
+operations checked against CPU float64. Smoke files remain pipeline checks.

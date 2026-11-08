@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "fingerprint": "9b5aaae786ce06f14abf0b82c96882638fa5a306f9a9ec064db16a2b23b235aa",
+  "maximum_metric_error": 0.0,
+  "counts": {
+    "val": {
+      "valid_targets": 428427,
+      "paired_targets": 428213,
+      "prediction_rows": 429240,
+      "scored_zones": 49
+    },
+    "test": {
+      "valid_targets": 634578,
+      "paired_targets": 633885,
+      "prediction_rows": 644448,
+      "scored_zones": 49
+    }
+  },
+  "target_signatures": {
+    "val": "5f7f14124bc75bb477e3f73dfa4a42adfbcff859d76fd4993d704d49785263d1",
+    "test": "8f25df834188e934895f2e312a5366e8cf84abd1cd27393f2222911e57700f7b"
+  },
+  "cpu_reference_checks": {
+    "val": {
+      "max_absolute_eur_mwh": 4.748932279596829e-05,
+      "mean_absolute_eur_mwh": 1.7103258303402005e-06,
+      "max_allowed_eur_mwh": 0.01,
+      "mean_allowed_eur_mwh": 0.0001,
+      "observations": 18816,
+      "backend": "native GPU vs independent CPU float64"
+    },
+    "test": {
+      "max_absolute_eur_mwh": 7.48032341562066e-05,
+      "mean_absolute_eur_mwh": 2.1120084519761527e-06,
+      "max_allowed_eur_mwh": 0.01,
+      "mean_allowed_eur_mwh": 0.0001,
+      "observations": 18816,
+      "backend": "native GPU vs independent CPU float64"
+    }
+  },
+  "summary_sha256": "43bb77adaf73013b2d053951797d842f1431415a8fcf841cc5a1c00058185de7",
+  "completed_artifact_count": 7,
+  "checks": [
+    "completed artifact hashes",
+    "canonical unique target keys/values/masks",
+    "49-zone cohort",
+    "finite predictions",
+    "recomputed zone and overall metrics",
+    "recorded CPU float64 reference gates"
+  ]
+}
