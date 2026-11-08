@@ -1,0 +1,278 @@
+{
+  "mapping_sha256": "65f21db179672abfdbadbf7488a5c9884646da60e5a26c74cacc73a0fb80d795",
+  "files": [
+    {
+      "station": "LOWW",
+      "country": "AT",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LOWW&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "1d2dc9dc6bd78c618cc0e69dc68a522f1222e0426eecda02cdee0f0aabd7a7cb",
+      "rows": 188369,
+      "retrieved_utc": "2026-11-08T17:54:02.441756+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "EBBR",
+      "country": "BE",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EBBR&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "d5282d4c9ae259cd7d81e22183688e4bcef162ed5021821bdf89af71647d0676",
+      "rows": 188303,
+      "retrieved_utc": "2026-11-08T17:54:24.113323+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LBSF",
+      "country": "BG",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LBSF&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "7c7c36caa0b87b9f98d5b6545071ba47577eba976f3555d2ed3e10578e938095",
+      "rows": 188487,
+      "retrieved_utc": "2026-11-08T17:54:49.322387+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LSZH",
+      "country": "CH",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LSZH&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "7a06064baff3bc951738d50e78c2092cc2a4e14ff1dc141f5b587f3b35748ebc",
+      "rows": 186591,
+      "retrieved_utc": "2026-11-08T17:55:09.812845+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LKPR",
+      "country": "CZ",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LKPR&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "e62c7cc48674961179191e0bbbdb68ab2af1ede5e84ba9de9ea1c73ee524e9a6",
+      "rows": 202309,
+      "retrieved_utc": "2026-11-08T17:55:35.425652+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "EDDF",
+      "country": "DE",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EDDF&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "04ac3de5cf392443f16efa6c1740b0e18733e4bb8d928bf39fe6784c50578d01",
+      "rows": 188850,
+      "retrieved_utc": "2026-11-08T17:55:55.990035+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "EKCH",
+      "country": "DK",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EKCH&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "f0963e46bcd34ba3932e4003aedb91e96eccbc16f45256fb090ccb4ad25d9981",
+      "rows": 188287,
+      "retrieved_utc": "2026-11-08T17:56:22.217925+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "EETN",
+      "country": "EE",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EETN&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "f480120d3cf4fc95898741a7396f4f31e551bf631bb66d563944660224d3dfbb",
+      "rows": 188324,
+      "retrieved_utc": "2026-11-08T17:56:44.877424+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LEMD",
+      "country": "ES",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LEMD&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "73f9db2aca9a0d50a5decbb356e5a72be51bf8a679e262853c638112be0d7a6d",
+      "rows": 190172,
+      "retrieved_utc": "2026-11-08T17:57:04.877153+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "EFHK",
+      "country": "FI",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EFHK&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "d7213f9a7583685364184e2a0020916713fd4f9f4151c792fa2f084924949d1b",
+      "rows": 188390,
+      "retrieved_utc": "2026-11-08T17:57:25.783285+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LFPG",
+      "country": "FR",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LFPG&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "1c4c8582f2cab51a8b37492bb2ee02b840f8fb9b7ffa7031d1a7fb4fc50ca79b",
+      "rows": 188952,
+      "retrieved_utc": "2026-11-08T17:57:45.942773+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LGAV",
+      "country": "GR",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LGAV&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "5ea3f519f989213c774820c2e7ba429b4e25d97c7b2ea99cd651920bc2439691",
+      "rows": 187247,
+      "retrieved_utc": "2026-11-08T17:58:09.313884+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LDZA",
+      "country": "HR",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LDZA&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "ef0a7364bbd845995669299a3392280751350cf21cb45f974cf7c2bacf5c034b",
+      "rows": 188469,
+      "retrieved_utc": "2026-11-08T17:58:30.482106+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LHBP",
+      "country": "HU",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LHBP&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "f195ca17ffd0295baaf907e0d55e707b98bcfb3db5043041f18979a2c6277723",
+      "rows": 195028,
+      "retrieved_utc": "2026-11-08T17:58:51.969179+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "EIDW",
+      "country": "IE",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EIDW&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "1803e09241f159c9d456b0f0089db0008429f6ec39c4fb3360d95b7ed03bc9e4",
+      "rows": 188471,
+      "retrieved_utc": "2026-11-08T17:59:16.428957+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LIRF",
+      "country": "IT",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LIRF&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "ef30142d4f4ca8971c90536e8abf800ab866f75daa7394222b99e8881e365783",
+      "rows": 187494,
+      "retrieved_utc": "2026-11-08T17:59:36.943033+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "EYVI",
+      "country": "LT",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EYVI&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "fa0d9fbca2d32e8735e0e95065028893ef24b3cca8d4f4317b4d97e92c5d0d88",
+      "rows": 193114,
+      "retrieved_utc": "2026-11-08T17:59:58.424829+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "EVRA",
+      "country": "LV",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EVRA&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "be8c6108fa8b990057c92ff5e6bfa412f2475a7dc05fc241df7751a61e0e782d",
+      "rows": 188564,
+      "retrieved_utc": "2026-11-08T18:00:20.118744+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LYPG",
+      "country": "ME",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LYPG&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "192e0ba38df9f1b2f73437cdffb51f2d302d4f6e57737aa78e7ffcd79550c771",
+      "rows": 186570,
+      "retrieved_utc": "2026-11-08T18:00:41.490044+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LWSK",
+      "country": "MK",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LWSK&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "a959fb0c42a811862eeebe097fba093906fbb42426fec478214271958e194625",
+      "rows": 186483,
+      "retrieved_utc": "2026-11-08T18:01:02.244134+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "EHAM",
+      "country": "NL",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EHAM&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "b50824f97ccd565d657f10fd481333ff40007a6f8eb5ef76455a6b5275ba37a7",
+      "rows": 187962,
+      "retrieved_utc": "2026-11-08T18:01:21.217601+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "ENGM",
+      "country": "NO",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=ENGM&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "1881c2854a89cd4bc8e14cc26650e129cade347cb983dfa1ba11477248807d53",
+      "rows": 187084,
+      "retrieved_utc": "2026-11-08T18:01:44.719272+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "EPWA",
+      "country": "PL",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EPWA&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "0dda76317256e7861d4ec5cfe8be23b7170b32df067579bb6fa2f84de1e164c5",
+      "rows": 188461,
+      "retrieved_utc": "2026-11-08T18:02:02.959850+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LPPT",
+      "country": "PT",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LPPT&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "8c1f09906c03f3cf2c03ad63ef3728f01da537dbf6791a28e7ec8989693169ae",
+      "rows": 187817,
+      "retrieved_utc": "2026-11-08T18:02:29.278392+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LROP",
+      "country": "RO",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LROP&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "4eeafb21c452feeb02157c50644a583677279be8d155bad0f71935a2fdcf13a2",
+      "rows": 188523,
+      "retrieved_utc": "2026-11-08T18:02:50.141300+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LYBE",
+      "country": "RS",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LYBE&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "71a06a9ced88041424d3ff8b12dcf1a5baa031fd3bee888e46d8ceca5391fe73",
+      "rows": 188202,
+      "retrieved_utc": "2026-11-08T18:03:12.489720+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "ESSA",
+      "country": "SE",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=ESSA&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "02f4dd0a88b17c603c0255370547be6f3b62ed0db721f5afeaa7e3662e80ef5d",
+      "rows": 187950,
+      "retrieved_utc": "2026-11-08T18:03:36.458218+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LJLJ",
+      "country": "SI",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LJLJ&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "f5cbf3bfebddf4b20db0cfaeabb8dce31c2cdebb07a34cbf9922c995068f8ceb",
+      "rows": 188318,
+      "retrieved_utc": "2026-11-08T18:03:57.094265+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    },
+    {
+      "station": "LZIB",
+      "country": "SK",
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=LZIB&data=tmpf&data=metar&sts=2015-12-28T00%3A00%3A00Z&ets=2026-10-01T00%3A00%3A00Z&tz=UTC&format=onlycomma&latlon=yes&elev=yes&missing=M&report_type=3&report_type=4&direct=no",
+      "sha256": "f3a2deff498f97b0c2e7b6d6b6bbc7f8b077fac6167a4584a340ee9a0dd18758",
+      "rows": 191041,
+      "retrieved_utc": "2026-11-08T18:04:17.443839+00:00",
+      "availability": "conditional: original receipt/revision timestamps absent"
+    }
+  ],
+  "ranking_manifest": {
+    "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL",
+    "file": {
+      "sha256": "ee2601b9cca0890847e72fc1454678dd9c548a7131b085b1b251caa72ffe0d3d",
+      "md5": "fmT0mVATIktY34sQOIa/BA==",
+      "size": 51558
+    },
+    "mapping_sha256": "65f21db179672abfdbadbf7488a5c9884646da60e5a26c74cacc73a0fb80d795",
+    "year": 2023,
+    "rule": "largest annual passengers, ties by ICAO identifier",
+    "montenegro_source": "https://montenegroairports.com/novosti/finalne-brojke-tokom-2023-godine-opsluzeno-preko-dva-i-po-miliona-putnika/"
+  }
+}

@@ -1,0 +1,30 @@
+country,station,airport,passengers_2023,ranking_source
+AT,LOWW,WIEN-SCHWECHAT airport,29655358,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+BE,EBBR,BRUSSELS airport,22175229,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+BG,LBSF,SOFIA airport,7162356,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+CH,LSZH,ZURICH airport,28851002,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+CZ,LKPR,PRAHA/RUZYNE airport,13788756,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+DE,EDDF,FRANKFURT/MAIN airport,59260479,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+DK,EKCH,KOBENHAVN/KASTRUP airport,26698515,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+EE,EETN,LENNART MERI TALLINN airport,2946375,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+ES,LEMD,ADOLFO SUAREZ MADRID-BARAJAS airport,60140033,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+FI,EFHK,HELSINKI-VANTAA airport,15411790,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+FR,LFPG,PARIS-CHARLES DE GAULLE airport,67389708,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+GR,LGAV,ATHINAI/ELEFTHERIOS VENIZELOS airport,28175796,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+HR,LDZA,ZAGREB/FRANJO TUDJMAN airport,3696371,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+HU,LHBP,BUDAPEST/LISZT FERENC INTERNATIONAL airport,14608833,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+IE,EIDW,DUBLIN airport,33247603,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+IT,LIRF,ROMA/FIUMICINO airport,40312143,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+LT,EYVI,VILNIUS/INTERNATIONAL airport,4395632,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+LV,EVRA,RIGA airport,6618744,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+ME,LYPG,Podgorica,1657522,https://montenegroairports.com/novosti/finalne-brojke-tokom-2023-godine-opsluzeno-preko-dva-i-po-miliona-putnika/
+MK,LWSK,SKOPJE airport,2877450,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+NL,EHAM,AMSTERDAM/SCHIPHOL airport,61887628,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+NO,ENGM,OSLO/GARDERMOEN airport,25059066,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+PL,EPWA,WARSZAWA/CHOPINA airport,18460076,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+PT,LPPT,LISBOA airport,33636483,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+RO,LROP,BUCURESTI/HENRI COANDA airport,14620190,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+RS,LYBE,BEOGRAD/NIKOLA TESLA airport,7949353,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+SE,ESSA,STOCKHOLM/ARLANDA airport,21838137,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+SI,LJLJ,LJUBLJANA/BRNIK airport,1268352,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL
+SK,LZIB,BRATISLAVA/M.R.STEFANIK airport,1811002,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/avia_paoa?lang=en&time=2023&freq=A&unit=PAS&tra_meas=PAS_CRD&schedule=TOTAL&tra_cov=TOTAL

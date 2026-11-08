@@ -43,3 +43,6 @@ The dataset construction guide is part of an immutable build fingerprint. Its
 original conservative price-lag interpretation is corrected in the linked
 temperature and pipeline-comparison notes; publication time differs from delivery
 time. Keeping the original build documentation intact preserves its audit trail.
+
+The [airport temperature experiment](airport_temperature.md) defines the new
+45-fit observation comparison and its source, timing, ROCm and smoke gates.

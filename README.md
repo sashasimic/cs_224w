@@ -125,3 +125,11 @@ See [dataset construction](docs/forecast_dataset.md), the
 [Documentation index](docs/README.md) · [Code walkthrough](docs/code_structure.md) ·
 [Experiment configuration index](configs/experiments/README.md) ·
 [Updated milestone draft](reports/milestone/milestone.pdf)
+
+## Airport temperature observations
+
+The [airport experiment](docs/airport_temperature.md) replaces reanalysis inputs
+with actual reports from each country's busiest airport. It compares price-only,
+latest temperature and temperature-history inputs for pooled XGBoost, MLP and
+GAT across five seeds. Publication/revision provenance remains conditional;
+spatial proxies and missingness are explicit. Previous results are preserved.

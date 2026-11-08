@@ -1,0 +1,88 @@
+[
+  {
+    "feature": "hour_local",
+    "source": "canonical price/calendar cache",
+    "status": "admitted",
+    "rule": "deterministic delivery calendar"
+  },
+  {
+    "feature": "dow",
+    "source": "canonical price/calendar cache",
+    "status": "admitted",
+    "rule": "deterministic delivery calendar"
+  },
+  {
+    "feature": "month",
+    "source": "canonical price/calendar cache",
+    "status": "admitted",
+    "rule": "deterministic delivery calendar"
+  },
+  {
+    "feature": "price_lag24_guarded",
+    "source": "canonical price/calendar cache",
+    "status": "conditional",
+    "rule": "auction convention and historical identity guard; archive revisions unresolved"
+  },
+  {
+    "feature": "price_lag168",
+    "source": "canonical price/calendar cache",
+    "status": "conditional",
+    "rule": "auction convention and historical identity guard; archive revisions unresolved"
+  },
+  {
+    "feature": "airport_temp_c",
+    "source": "raw IEM METAR temperature observations",
+    "status": "conditional",
+    "geography": "fixed national airport proxy, not zone average",
+    "rule": "observed <= origin-2h; receipt <= origin when recorded; no original vintage proof",
+    "transformation": "Fahrenheit to Celsius; age; one report per hourly bin for 24h history",
+    "parameters": {
+      "reporting_buffer_hours": 2,
+      "max_observation_age_hours": 6,
+      "mean_window_hours": 24,
+      "mean_min_hours": 18
+    }
+  },
+  {
+    "feature": "airport_temp_age_h",
+    "source": "raw IEM METAR temperature observations",
+    "status": "conditional",
+    "geography": "fixed national airport proxy, not zone average",
+    "rule": "observed <= origin-2h; receipt <= origin when recorded; no original vintage proof",
+    "transformation": "Fahrenheit to Celsius; age; one report per hourly bin for 24h history",
+    "parameters": {
+      "reporting_buffer_hours": 2,
+      "max_observation_age_hours": 6,
+      "mean_window_hours": 24,
+      "mean_min_hours": 18
+    }
+  },
+  {
+    "feature": "airport_temp_mean24_c",
+    "source": "raw IEM METAR temperature observations",
+    "status": "conditional",
+    "geography": "fixed national airport proxy, not zone average",
+    "rule": "observed <= origin-2h; receipt <= origin when recorded; no original vintage proof",
+    "transformation": "Fahrenheit to Celsius; age; one report per hourly bin for 24h history",
+    "parameters": {
+      "reporting_buffer_hours": 2,
+      "max_observation_age_hours": 6,
+      "mean_window_hours": 24,
+      "mean_min_hours": 18
+    }
+  },
+  {
+    "feature": "airport_temp_hours24",
+    "source": "raw IEM METAR temperature observations",
+    "status": "conditional",
+    "geography": "fixed national airport proxy, not zone average",
+    "rule": "observed <= origin-2h; receipt <= origin when recorded; no original vintage proof",
+    "transformation": "Fahrenheit to Celsius; age; one report per hourly bin for 24h history",
+    "parameters": {
+      "reporting_buffer_hours": 2,
+      "max_observation_age_hours": 6,
+      "mean_window_hours": 24,
+      "mean_min_hours": 18
+    }
+  }
+]

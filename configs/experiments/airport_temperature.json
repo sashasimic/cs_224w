@@ -1,0 +1,24 @@
+{
+  "name": "airport_temperature_v1",
+  "dataset_directory": "staging/forecast_dataset_v1.0/current",
+  "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+  "source_directory": "staging/airport_observations_v1",
+  "airport_mapping": "configs/experiments/airport_stations_2023.csv",
+  "ranking_year": 2023,
+  "observation_start": "2015-12-28T00:00:00Z",
+  "observation_end": "2026-10-01T00:00:00Z",
+  "reporting_buffer_hours": 2,
+  "max_observation_age_hours": 6,
+  "mean_window_hours": 24,
+  "mean_min_hours": 18,
+  "seeds": [224, 225, 226, 227, 228],
+  "rewiring_seeds": [],
+  "neural": {"epochs": 30, "patience": 5, "lr": 0.001, "batch_size": 64, "history_hours": 168, "history_hidden": 32},
+  "smoke": {"training_days": 90, "validation_days": 14, "epochs": 3},
+  "bootstrap": {"repetitions": 2000, "seed": 224},
+  "xgb": {
+    "objective": "reg:absoluteerror", "eval_metric": "mae", "tree_method": "hist", "device": "cpu",
+    "max_depth": 6, "n_estimators": 600, "learning_rate": 0.05,
+    "subsample": 0.8, "colsample_bytree": 0.8, "min_child_weight": 1, "reg_lambda": 1.0, "n_jobs": 4
+  }
+}

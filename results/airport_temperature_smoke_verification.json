@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "fingerprint": "8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b",
+  "job_count": 9,
+  "maximum_metric_error": 0.0,
+  "target_signatures": {
+    "val": "91cebb19e595ad9b2dc0bfb926dcb8a96a7f9d246141b3c7a084dfca30699ed7",
+    "test": "534ae7ed60f1b2aab8662e7daa47e64ea8f5814d470bacff46a5ddcd4b3de241"
+  },
+  "checks": [
+    "artifact hashes",
+    "canonical unique target keys/values/masks",
+    "finite predictions",
+    "recomputed MAE/RMSE/paired MAE"
+  ]
+}

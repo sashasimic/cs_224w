@@ -41,3 +41,12 @@ windows and should not be compared as fully trained models.
 
 Existing filenames are preserved because scripts/configs and provenance refer
 to them. Compare runs using matched target populations, not merely similar names.
+
+## Airport observation study
+
+`airport_temperature_smoke*` files are short France correctness checks.
+`airport_temperature_full*` files are published only after the 45-job full
+comparison and verification. The shared `airport_temperature_coverage.csv`,
+`source_findings.csv`, `geography.csv`, feature registry and source manifest
+make spatial proxies and missingness auditable. See the
+[experiment guide](../docs/airport_temperature.md).
