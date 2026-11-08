@@ -6,11 +6,12 @@
   "figures": 20,
   "python": "3.14.8 (main, Oct 13 2026, 10:43:33) [GCC 16.2.1 20260810]",
   "artifacts": {
-    "notebooks/forecasting_results_investigation.ipynb": "233394a07d9e50b10310e8a72d251cef8f79829f1c729e54f208ec08622ae354",
-    "reports/investigation/forecasting_results.html": "0dfe4da7ed1c92d17856c34e1bb11ffbf29981a35237c3737dcc066ce1f384a7",
-    "scripts/reports/build_investigation.py": "1c017d2ca1433ee509927ca82a436d7065a12f606183b9f6a306c8cf216ff92c",
+    "notebooks/forecasting_results_investigation.ipynb": "4bf817d709dec003e1f702f9a9fc73c1271b1459f8d56d4411e737c7be2d8288",
+    "reports/investigation/forecasting_results.html": "0716c365145e832331ef375e453014bf99e96334c179e9516a5f7b0fdd29e086",
+    "scripts/reports/build_investigation.py": "aa334b0f912f63ebb3792bdca0615c9cdd0b9774a8229f6a4a4f403dac5d413a",
     "epgnn/reporting/investigation.py": "d299c2ce1137394436fc2513c11b642f5c70d411fc29ea8b2730ab40488abca3",
-    "scripts/reports/static_report.html.j2": "e4263ca796a20c7b93e568d58a77d7199106c90104ca4c9a2b8d10b800e185d4"
+    "scripts/reports/static_report.html.j2": "e4263ca796a20c7b93e568d58a77d7199106c90104ca4c9a2b8d10b800e185d4",
+    "results/controlled_gru_backend_audit.json": "b36fd5371cbf2ac0936ff2da8a7055a815cd5d45f5d7be6c5e4e7cec9d4a8a11"
   },
   "study_fingerprints": {
     "controlled": "fd19205863b9d81b0f5d46535d9c970579838565b4b782d2b1550c79fdb1dff6",

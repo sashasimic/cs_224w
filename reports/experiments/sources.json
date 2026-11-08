@@ -1,0 +1,38 @@
+{
+  "training_performed": false,
+  "gpu_used": false,
+  "controlled_jobs": 100,
+  "airport_jobs": 45,
+  "controlled_gru_checkpoints_audited": 10,
+  "sources": {
+    "epgnn/reporting/investigation.py": "d299c2ce1137394436fc2513c11b642f5c70d411fc29ea8b2730ab40488abca3",
+    "results/airport_temperature_full.json": "8312e05431465d4d22f4297ea9c4e67b11d5125f8353a73a4ecb4eec9a0a19a5",
+    "results/airport_temperature_full_by_zone.csv": "8a74af68da0ca41ba5db2cb6f6f3e15e9df60d2eab9d845a92015c120f68e396",
+    "results/airport_temperature_full_report_sources.json": "2c3a26f799df55c54eb08e6c7ee61979ba7a7a2784386aeef3abc9090705fc00",
+    "results/airport_temperature_full_review.json": "c68e42ae85c94bd17519ec5c0b2987ab5649bf5341f177ab380ab34aaf632738",
+    "results/airport_temperature_full_verification.json": "ccad210d7ae33c27846d8789b1191f92ac38baf06525cc8b67524cb70dfb9689",
+    "results/c1_persistence.json": "6abfc5c5de5fe5cf8bbcb6bcb07940b5564e26db1d75058d36571f67ed2d6bef",
+    "results/c1_xgb_be_strict.json": "be6951194630ef53ea6c8878c5285fe81c5f1e394e403c032ae8010f93fb3b10",
+    "results/c1_xgb_countries_jao48_incremental.csv": "065ebdb14483ff3f2b00297e470bcae76e94204d57d6596bbd5ed73948d0b745",
+    "results/c1_xgb_countries_weekly_asinh_l1_conditional.csv": "1c80298e7d6044a23e3aa5c8eaa2a6af9589dc707440611d82879ede4c0d5c01",
+    "results/c1_xgb_countries_weekly_conditional.csv": "5f646e5e945b56aabd8788613ea256076b90a61ac939a22ad46bad0e6f73c5aa",
+    "results/controlled_gru_backend_audit.json": "b36fd5371cbf2ac0936ff2da8a7055a815cd5d45f5d7be6c5e4e7cec9d4a8a11",
+    "results/controlled_study_full.json": "006a9ddb603e80f0b06f5f8d699087262308d5449a8e4d02f93675e684e05734",
+    "results/controlled_study_full_by_zone.csv": "12144580adb1ddbb23d42db882e35368d61278c5495b8c106fdabdc3cd8ed164",
+    "results/controlled_study_full_verification.json": "9c833ca011ad77319e2be6a4d9655d9035128ecec93a85e472e88b0ca22f6006",
+    "results/fr_temperature_experiments.csv": "66de196a4edea2fe73e9dce3f985bc9f4338a7e78231521228140b54de3cdcad",
+    "results/partner_c1_xgb_zone_by_country.json": "9928b78b70df1fdd06b45f272b002f120856ad3fe66579b6c06b501528ce5dc6",
+    "results/partner_gru_backend_audit.json": "cd8ede94da8ced11e8c77d45d84026008af290b7cd5e460cb239aee5a6588800",
+    "results/partner_gru_full.json": "43bb77adaf73013b2d053951797d842f1431415a8fcf841cc5a1c00058185de7",
+    "results/partner_gru_full_verification.json": "9a36dbc2771a51d931b5c53fc220323df9bab99366ed5a27e2099b8f4ab02d5a",
+    "results/partner_vs_audited_weekly_country_comparison.csv": "4cd8ec3c0b2c76a7638bedcda87ac76b7356413da44a629c4662177d4e4a84e8",
+    "results/pipeline_diagnostics_france.csv": "c8c95a7f537877a564fd7cad1a87a25281c836eb972bebc12b3614cac681e35d",
+    "results/vibing_suite_full_aggregate.csv": "d4cf440247a7fe7a82ebf08dddf14cb86ad06b7800e747bc522669b7dc341930",
+    "scripts/experiments/check_controlled_gru_backend.py": "46f98fae4cfc0144258ee27aa6961ed1a75de45447591b862ec9e466ae89400b",
+    "scripts/reports/build_experiment_summary.py": "3743b6af158d3c1f31d806a14ee5fc37082a8268181b0fdcebc15c5799d45a34"
+  },
+  "artifacts": {
+    "docs/experiments.md": "e0bd392013303ef78b0f1b1e2fd8487509cb3d5f71627803d81312695216159a",
+    "reports/experiments/experiments.html": "de0825356e9c0a92bf43f24ceaf1b8eef38cb37a65bc0819114e56bb94631483"
+  }
+}

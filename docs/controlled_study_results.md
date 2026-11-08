@@ -1,5 +1,11 @@
 # Controlled multi-seed study
 
+**Superseded GRU interpretation, November 9:** GRU rows and GRU-related intervals
+below are archived measurements from an affected fused training path. They do
+not establish a temporal-architecture disadvantage or GRU graph advantage. See
+the [current report and CPU audit](experiments.md#our-grus-versus-the-partner-inspired-gru).
+Static-model scores and original metric files remain unchanged.
+
 All 100 prespecified jobs completed. Scores are averaged across seeds, not ensembled predictions.
 
 | Variant | Validation paired MAE | Test paired MAE | Test SD |

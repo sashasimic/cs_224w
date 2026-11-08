@@ -1,5 +1,6 @@
 {
   "results/partner_gru_full.json": "43bb77adaf73013b2d053951797d842f1431415a8fcf841cc5a1c00058185de7",
+  "results/controlled_gru_backend_audit.json": "b36fd5371cbf2ac0936ff2da8a7055a815cd5d45f5d7be6c5e4e7cec9d4a8a11",
   "results/controlled_study_full_scores.csv": "c214234a90df319f3a8992f35436e279244abc7fd7d9c59ddcca6fc400485f6b",
   "results/airport_temperature_full_scores.csv": "1aeeeaae2a3fb0fbd13a9a485e25b25b2b59b52a0f4d655ffd63e87130953319"
 }

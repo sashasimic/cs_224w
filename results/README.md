@@ -1,5 +1,11 @@
 # Saved results
 
+For the current cross-experiment interpretation, read the
+[complete experiment record](../docs/experiments.md). The original controlled
+GRU scores are affected historical measurements: `controlled_gru_backend_audit.json`
+records failed fused-CPU checks on shuffled training inputs and passed native
+checks. Existing score files and model artifacts are preserved.
+
 Files here are tracked summaries. Large models, keyed predictions, logs and
 checkpoints are kept under the ignored `runs/` directory.
 

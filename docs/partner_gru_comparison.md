@@ -15,7 +15,7 @@ The GRU reduces matched test MAE versus weekly persistence by 28.0% (20.9817 ver
 
 Training stopped after 37 epochs; validation residual-plus-spread loss selected epoch 29. End-to-end fit/evaluation took 6.2 minutes. Test physical price-spread MAE is 16.1353 EUR/MWh across 92 training graph pairs. This physical metric differs from the transformed residual-contrast training loss.
 
-The partner's published 20.40 MAE uses a different 43-zone population and pipeline; it cannot be directly ranked here. Our earlier controlled GRU+MLP score (24.50 paired test MAE) used a different recipe and fused RNN backend. Those older GRU checkpoints require their own backend checks before drawing temporal-model conclusions. Static MLP/GAT and XGBoost do not use this RNN path.
+The partner's published 20.40 MAE uses a different 43-zone population and pipeline; it cannot be directly ranked here. Our earlier controlled GRU+MLP score (24.50 paired test MAE) used a different recipe and fused RNN backend. A separate audit of all ten earlier temporal checkpoints found CPU disagreement on shuffled training-shaped inputs, despite passing consecutive inference checks. Those affected scores cannot support temporal-architecture conclusions until corrected training. See results/controlled_gru_backend_audit.json and the consolidated experiment record. Static MLP/GAT and XGBoost do not use this RNN path.
 
 ERA5 is retrospective reanalysis, not archived weather forecasts. Load/flow vintages and anomaly climatology remain unresolved. This is a conditional experiment; it does not isolate a temperature benefit or certify deployment-time availability. Test results were previously explored, so this is not a fresh blind test.
 

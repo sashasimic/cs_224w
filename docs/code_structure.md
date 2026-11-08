@@ -1,6 +1,27 @@
 # Code walkthrough
 
-## Active five-model suite
+## Current packages
+
+The [experiment record](experiments.md) is the result overview. Training code is
+preserved under its recorded fingerprints; documentation/report maintenance
+does not relabel old checkpoints as new implementations.
+
+| Package | Responsibility |
+|---|---|
+| `epgnn/dataset_build/` | Audited source joins, historical geography and time contract |
+| `epgnn/experiment_suite/` | First five-model programme and shared data/scoring |
+| `epgnn/controlled_study/` | Five-seed static, graph and original temporal controls |
+| `epgnn/airport_study/` | Airport-observation variants |
+| `epgnn/partner_gru/` | Residual GRU with native GPU RNN operations and CPU checks |
+| `epgnn/reporting/` | Read-only result validation and notebook investigations |
+| `scripts/reports/` | Consolidated document and executed notebook builders |
+| `scripts/experiments/check_*gru_backend.py` | Read-only same-weight CPU/fused/native GPU comparisons |
+
+The original controlled GRU training path is affected by the fused backend on
+shuffled inputs. Its implementation is retained for reproduction; it should not
+be used for new scientific fits before a separately fingerprinted correction.
+
+## First five-model suite
 
 `python -m epgnn.experiment_suite` enters `__main__.py`. Commands are `gpu-smoke`,
 `france`, `full` and `status`; use `status --saved` for the completed historical run.

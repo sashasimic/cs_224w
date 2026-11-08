@@ -1,5 +1,10 @@
 # Classical neural, graph and temporal controls
 
+**Current status:** the static comparisons remain retrospective conditional
+evidence. The original GRU training path fails CPU agreement on shuffled
+training-shaped inputs; corrected temporal fits are needed. This design and
+its code are retained for reproduction. See the [consolidated report](experiments.md).
+
 This separate study implements the predefined 100-job matrix. It preserves the
 completed five-model suite, its predictions and its fingerprints. New full
 results are not available until the host run finishes; smoke results are pipeline

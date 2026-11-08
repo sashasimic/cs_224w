@@ -1,5 +1,11 @@
 # Milestone v2
 
+**Historical snapshot:** the negative GRU interpretation in this PDF is
+superseded by the November 9 training-shaped backend audit. The scores remain
+archived; corrected original-family training is pending. Read the
+[current experiment record](../../docs/experiments.md) for all programmes and
+the accepted residual-GRU result. The PDF is preserved unchanged.
+
 [Two-page PDF](milestone.pdf) · [LaTeX](milestone.tex) · [Frozen v1](../milestone_v1/milestone.pdf) · [Detailed comparison](../../docs/controlled_study_comparison.md)
 
 Rebuild with `.venv/bin/python scripts/experiments/build_milestone_v2.py`. All 100 jobs must pass artifact verification first. No models are fitted. Author details remain placeholders.

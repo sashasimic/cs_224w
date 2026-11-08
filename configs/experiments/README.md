@@ -1,5 +1,10 @@
 # Experiment configurations
 
+Read the [complete experiment record](../../docs/experiments.md) before choosing
+a recipe. The original controlled GRU path is affected by a fused-RNN backend
+discrepancy on shuffled inputs and needs a separately fingerprinted correction
+before new scientific fits. Static controls are outside that finding.
+
 ## Current suite
 
 [`controlled_study.json`](controlled_study.json) defines the expanded 100-job
@@ -43,3 +48,7 @@ remain stubs. These YAMLs do not run the active suite; see
 `partner_gru.json` configures the partner-inspired residual GRU adaptation to the
 audited data. Use `.venv/bin/python -m epgnn.partner_gru` with `gpu-smoke`, `audit`,
 `smoke`, `full` or `status`; see [the guide](../../docs/partner_gru.md).
+
+`airport_temperature.json` defines the nine-variant, five-seed airport study;
+see [the observation experiment](../../docs/airport_temperature.md). Its completed
+scores and the residual-GRU result are included in the consolidated record.

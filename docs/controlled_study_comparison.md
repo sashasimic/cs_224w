@@ -1,5 +1,11 @@
 # Multi-seed controls: comparison with earlier experiments
 
+**November 9 correction:** the original GRU families fail CPU agreement on
+shuffled training-shaped inputs with the fused ROCm backend. Their archived
+scores are numerically reproducible but no longer support temporal-model or
+GRU-graph conclusions. Static controls are outside this finding. See the
+[current experiment record](experiments.md#our-grus-versus-the-partner-inspired-gru).
+
 All 100 jobs completed and passed independent artifact, target-mask and score verification. Models use the same 49-market cohort and chronological splits. Scores below use common finite weekly-history hours, averaged across training seeds (not ensembled predictions).
 
 ## Main controls
@@ -32,7 +38,7 @@ All 100 jobs completed and passed independent artifact, target-mask and score ve
 - Real GAT has a modest advantage over the parameter-matched pooled MLP and self-loop GAT. Pooled XGBoost is nearly tied on test and has better validation MAE than richer GAT. These controls reduce the gap that can be attributed specifically to topology; the original report already identified pooling as a confound.
 - Real GAT beats the three shuffled graph means on test. One validation block-bootstrap interval against a shuffled graph spans zero; evidence is not uniformly decisive across rewiring controls.
 - Weather-only GAT has the smallest observed test MAE, but richer GAT is preferred by validation. Do not select the weather-only model retrospectively using test.
-- The specified GRUs degrade absolute scores. GRU-GAT improves on GRU-MLP, but neither beats the static controls; this does not rule out other temporal architectures/settings.
+- The specified GRU scores are retained as affected historical measurements. A backend discrepancy was found on shuffled training-shaped inputs; corrected training is required before interpreting either their static-model comparison or GRU-GAT versus GRU-MLP contrast.
 - Gains are not universal: France is substantially worse under richer GAT than MLP or pooled XGBoost. These market-level patterns warrant further validation, not per-country selection using test.
 
 ## Earlier cohorts and models

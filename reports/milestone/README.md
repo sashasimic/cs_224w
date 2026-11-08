@@ -1,5 +1,10 @@
 # CS224W milestone draft
 
+This is a historical report/build workflow. Use the
+[current experiment record](../../docs/experiments.md) for the full programme
+and the November 9 correction to the old GRU conclusions. The existing PDF is
+retained as a snapshot.
+
 [Read the two-page PDF](milestone.pdf), edit [the LaTeX source](milestone.tex), or
 see the [full results](../../docs/vibing_suite_results.md) and
 [pipeline comparison appendix](../../docs/pipeline_comparison.md).

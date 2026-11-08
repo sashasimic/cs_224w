@@ -1,151 +1,93 @@
 # Weather, Interconnections, and Energy Prices
 
-Stanford CS224W project on forecasting European day-ahead electricity prices.
-At **12:00 Europe/Brussels on D−1**, predict every hourly price for delivery day D,
-including 23- and 25-hour daylight-saving days.
+Stanford CS224W project on European day-ahead electricity prices. At
+**12:00 Europe/Brussels on D−1**, predict every hourly price of delivery day D.
 
-## Latest controlled study
+Start with the **[complete experiment record](docs/experiments.md)** or its
+[browser version](reports/experiments/experiments.html). It brings all completed
+programmes, scores, negative results and numerical/availability caveats together.
+The [documentation index](docs/README.md) separates current guidance from
+historical protocols and frozen milestones.
 
-**Availability audit:** the [leakage analysis](docs/leakage_audit.md) identifies
-an ERA5 publication-delay mismatch and unresolved load/JAO/price vintages. The
-scores below are retrospective conditional benchmarks, not certified operational
-noon forecasts; no direct target/scaler leakage was found in the reviewed paths.
+## Current findings
 
-All 100 five-seed jobs completed. On matched test hours, richer real GAT averages
-20.97 MAE versus pooled MLP 21.19 and pooled XGBoost 21.06. Gains are modest and
-vary by market; the GRU variants performed worse. See the
-[full comparison](docs/controlled_study_comparison.md) and
-[milestone v2](reports/milestone_v2/milestone.pdf).
+Strong recent-price inputs and pooled training close much of the initial gap
+between trees and graph models. In the five-seed controlled study, paired test
+MAE is 21.06 EUR/MWh for pooled richer XGBoost, 21.19 for pooled richer MLP and
+20.97 for richer real GAT, versus 29.13 for weekly persistence. Graph gains are
+modest and vary by market. Airport-temperature gains are small and inconsistent.
 
-## First full suite (single seed)
+**Temporal-model correction:** our original ten GRU checkpoints reproduce their
+saved inference scores, but fail CPU agreement on shuffled training-shaped
+batches with the fused ROCm backend. Their 24.50/23.59 GRU+MLP/GAT scores are
+affected historical results, not evidence that temporal learning hurts.
+The corrected partner-inspired residual GRU uses native GPU operations and
+passes CPU checks: one-seed test MAE 21.07, RMSE 47.02. See the
+[GRU comparison and audit](docs/experiments.md#our-grus-versus-the-partner-inspired-gru).
 
-The five-model suite has completed evaluation on **49 market identities**.
-Test MAE below uses the same 633,885 zone-hours with valid targets and weekly
-price history. Lower is better; units are EUR/MWh.
-
-| Model | Test MAE |
-|---|---:|
-| Weekly persistence | 29.13 |
-| Recent-price XGBoost | 21.87 |
-| Richer XGBoost | 22.13 |
-| Neighbour XGBoost | 21.87 |
-| Real-graph GAT | **20.83** |
-| Shuffled-graph GAT | 21.54 |
-
-The real graph improves MAE by 3.32% over the shuffled control in this seed.
-These are **conditional, exploratory results**: historical load/weather/JAO
-publication vintages are unverified, and test results have been inspected before.
-The weather source is reanalysis, not archived weather forecasts.
-
-Read the [verified results](docs/vibing_suite_results.md) for validation scores,
-RMSE, runtimes and limitations. The [experiment guide](docs/vibing_suite.md)
-describes features, training and checkpointing.
-
-The [expanded controlled study](docs/controlled_study.md) adds a parameter-matched
-pooled MLP, pooled XGBoost, self-loop and multiple shuffled graphs, feature
-ablations, and GRU temporal controls across five seeds (100 jobs). Its full run
-is launched separately; smoke evidence does not replace the results above.
-
-## Inspect or run experiments
-
-Run commands from the repository root using its virtual environment. This
-machine uses the RX 9070 XT with ROCm; see [setup](docs/setup.md) for installation.
-
-```bash
-# Inspect the completed run referenced by the saved full result.
-.venv/bin/python -m epgnn.experiment_suite status --saved
-
-# Before a fresh run: verify the GPU, then all five methods on France.
-.venv/bin/python -m epgnn.experiment_suite gpu-smoke
-.venv/bin/python -m epgnn.experiment_suite france
-
-# Full evaluation in a persistent host-terminal session.
-tmux new-session -d -s vibing-full './scripts/experiments/run_vibing_suite.sh'
-tail -f runs/vibing_suite_launch/full.log
-```
-
-The suite runs three per-zone XGBoost variants and two pooled spatial GATs.
-The GATs have two layers and real/shuffled interconnector topology; they do not
-use a GRU or detailed constraint nodes. Configuration is in
-[configs/experiments/vibing_suite.json](configs/experiments/vibing_suite.json).
-
-Runs are tied to code, configuration and source fingerprints. **Code cleanup
-creates a new fingerprint.** The completed evaluation remains attached to its
-original implementation at commit `a48d599`, with summaries saved in `f50dc6e`.
-`status --saved` reads that historical run explicitly; fresh training requires
-preflights for the current code. Existing results are never relabelled as new runs.
+These are exploratory retrospective results. ERA5 is reanalysis, not archived
+operational weather forecasts; historical load/JAO/price vintages and airport
+receipt times remain unresolved. Test results have been inspected repeatedly.
+The [leakage audit](docs/leakage_audit.md) explains the practical limitations.
 
 ## Data and evaluation
 
-The audited master has 5,887,954 node rows over 62 price-area identities,
-January 2016–October 2026. It retains missing values and negative prices,
-keeps DE_AT_LU separate from DE_LU, and records structural absences and unresolved
-geography. Of these identities, 49 have valid fit/validation/test targets; the
-other 13 are reported separately. October 2026 stays unassigned.
+The audited grid contains 5,887,954 node rows over 62 historical market identities
+from January 2016 through October 2026. Forty-nine have labels in all required
+partitions. Missing values, negative prices and DE_AT_LU/DE_LU identities are
+preserved. Missing weather never removes a target.
 
-| Partition | Brussels delivery dates | Role |
+| Partition, Brussels delivery date | Dates | Use |
 |---|---|---|
-| Pretrain | 2016-01-01–2022-06-08 | Fit |
-| Train | 2022-06-09–2024-03-31 | Fit |
-| Validation | 2024-04-01–2025-03-31 | Early stopping |
-| Test | 2025-04-01–2026-09-30 | Exploratory evaluation |
+| Pretrain + train | January 2016–March 2024 | Fit models/preprocessing |
+| Validation | April 2024–March 2025 | Early stopping |
+| Test | April 2025–September 2026 | Exploratory evaluation |
+| Unassigned | October 2026 | Coverage checks only |
 
-Price lags use explicit UTC/zone joins. Weekly persistence copies the same zone's
-price 168 elapsed hours earlier. Model scores retain all valid targets, with
-persistence comparisons using common finite-history hours. Targets are never
-filled; neural preprocessing fits training data only.
+All-target scores use 428,427 validation and 634,578 test labels. Comparisons with
+weekly persistence use 428,213 and 633,885 common finite-history labels.
+Persistence copies the same market's price 168 elapsed hours earlier. MAE/RMSE
+are EUR/MWh; relative MAE compares model error with persistence on common hours.
 
-See [dataset construction](docs/forecast_dataset.md), the
-[price-publication clarification](docs/temperature_experiments.md), and
-[inspection notebook](notebooks/forecast_dataset_inspection.ipynb).
+## Run or inspect
+
+Use the project virtual environment. ROCm setup and GPU access are described in
+[setup](docs/setup.md). No bare system-Python interpreter is required.
+
+```bash
+# Rebuild the consolidated document from saved results; no fitting/GPU use.
+.venv/bin/python scripts/reports/build_experiment_summary.py
+
+# Inspect the completed first suite without creating a new generation.
+.venv/bin/python -m epgnn.experiment_suite status --saved
+
+# Check contracts.
+.venv/bin/python -m unittest discover -s tests -p 'test_*.py'
+.venv/bin/python -m unittest discover -s tests/dataset_build -p 'test_*.py'
+```
+
+For training commands and GPU gates, choose the appropriate
+[experiment configuration](configs/experiments/README.md). Changed source/config
+hashes create a new generation; historical models retain their original identity.
+The [investigation notebook](reports/investigation/README.md) provides editable
+country/week diagnostics, with affected GRU results explicitly labelled.
 
 ## Repository map
 
 | Location | Purpose |
 |---|---|
-| `epgnn/dataset_build/` | Audit, construct and validate the canonical dataset |
-| `epgnn/experiment_suite/` | Active five-model suite: data, neural models, GPU checks, scoring and orchestration |
-| `epgnn/boosting.py`, `boosting_batch.py` | Earlier audited boosting experiments |
-| `epgnn/data/`, `models/`, `run.py` | Original pipeline and scaffold; see [legacy notes](docs/legacy_pipeline.md) |
-| `configs/` | Source pins, split dates and experiment configurations |
-| `scripts/experiments/` | Host launcher, partner reproduction, diagnostics and report generation |
-| `results/` | Tracked metric summaries; see [results index](results/README.md) |
-| `runs/` | Local predictions, models, checkpoints and logs; ignored by Git |
-| `staging/` | Local audited generations and tensor caches; ignored by Git |
-| `datasets/` | Original downloaded tables and tracked schema documentation |
-| `docs/`, `reports/`, `notebooks/` | Guides, milestone PDF/source and inspection workflow |
+| `epgnn/dataset_build/` | Canonical source, geography and timing contract |
+| `epgnn/experiment_suite/` | First five-model suite and reusable data/scoring |
+| `epgnn/controlled_study/` | Five-seed static and original temporal controls |
+| `epgnn/airport_study/` | Airport-observation comparison |
+| `epgnn/partner_gru/` | Corrected residual GRU adaptation |
+| `epgnn/boosting.py`, `boosting_batch.py` | Earlier audited country baselines |
+| `epgnn/reporting/`, `scripts/reports/` | Read-only report/notebook construction |
+| `configs/`, `scripts/experiments/` | Pinned recipes, launchers and audits |
+| `results/` | Tracked metrics/provenance; [index](results/README.md) |
+| `runs/`, `staging/` | Local checkpoints, predictions and data caches; ignored |
+| `docs/`, `reports/`, `notebooks/` | Current report, detailed protocols and snapshots |
 
-## Checks
-
-```bash
-.venv/bin/python -m unittest discover -s tests -p 'test_*.py'
-.venv/bin/python -m unittest discover -s tests/dataset_build -p 'test_*.py'
-```
-
-[Documentation index](docs/README.md) · [Code walkthrough](docs/code_structure.md) ·
-[Experiment configuration index](configs/experiments/README.md) ·
-[Updated milestone draft](reports/milestone/milestone.pdf)
-
-## Airport temperature observations
-
-The [airport experiment](docs/airport_temperature.md) replaces reanalysis inputs
-with actual reports from each country's busiest airport. It compares price-only,
-latest temperature and temperature-history inputs for pooled XGBoost, MLP and
-GAT across five seeds. Publication/revision provenance remains conditional;
-spatial proxies and missingness are explicit. Previous results are preserved.
-
-All 45 airport fits completed and passed verification. See the
-[reviewed results](docs/airport_temperature_results.md): gains are small and vary
-by market; most of pooled XGBoost's headline gain comes from an unmapped market.
-
-## Guided report notebook
-
-Read the [illustrated project investigation](reports/investigation/forecasting_results.html)
-or open the [executed notebook](notebooks/forecasting_results_investigation.ipynb).
-It covers data, model comparisons, graphs, weather and editable validation-week
-diagnostics. [Usage and reproduction](reports/investigation/README.md).
-
-The [partner-inspired residual GRU experiment](docs/partner_gru.md) adds
-multivariate histories, a persistence-residual target and residual-spread loss
-on the canonical data. Its first full run uses seed 0 and retrospective
-ERA5-lineage inputs, with explicit differences from the partner's protocol.
+Original `epgnn/data/`, `models/` and `run.py` form a separate legacy pipeline;
+some YAML/model paths remain scaffolds. See [legacy notes](docs/legacy_pipeline.md).
+Original data and historical training implementations remain unchanged.

@@ -1,58 +1,68 @@
 # Documentation
 
-Start with the root [README](../README.md), then choose the relevant workflow.
+**Start with the [complete experiment record](experiments.md)**
+([browser version](../reports/experiments/experiments.html)). It contains every
+completed programme, all 20 controlled variants, all nine airport variants,
+earlier diagnostics and the current status of both GRU families.
 
-## Current workflow
+## Current reading
 
-Read the [forecast leakage audit](leakage_audit.md) alongside the model results:
-effective-time lags passed, but weather product latency and historical vintages
-prevent an operational availability certification.
-
-| Guide | Contents |
+| Document | Use |
 |---|---|
-| [Setup](setup.md) | Virtual environment, ROCm, source locations and checks |
-| [Five-model suite](vibing_suite.md) | Features, splits, GPU gates, tmux, checkpoint resume and outputs |
-| [Expanded controlled study](controlled_study.md) | MLP/pooled controls, five seeds, three rewired graphs, feature and GRU experiments; separate 100-job launch |
-| [Controlled-study comparison](controlled_study_comparison.md) | Completed 100-job evidence, earlier experiments, market/regime breakdowns and limitations |
-| [Milestone v2](../reports/milestone_v2/README.md) | Revised two-page interpretation, with frozen v1 preserved separately |
-| [Full results](vibing_suite_results.md) | Verified 49-market comparison, runtime and limitations |
-| [Two-page milestone](../reports/milestone/README.md) | Full-suite results combined with the earlier France diagnostics; PDF, source and build command |
-| [Code walkthrough](code_structure.md) | Active entry points and responsibilities |
-| [Dataset construction](forecast_dataset.md) | Source pins, geography, missingness and audit/build/validate commands |
-| [Original pipeline](legacy_pipeline.md) | Legacy entry points, stubs and known limitations |
+| [Experiment record](experiments.md) | Main results, comparison populations, limitations and next work |
+| [Leakage audit](leakage_audit.md) | Source publication/vintage problems and verified timing/preprocessing checks |
+| [Metrics and daily deployment](metrics_and_live_forecasting.md) | Relative errors and a prospective forecasting service |
+| [Setup](setup.md) | Virtual environment, ROCm and source locations |
+| [Code walkthrough](code_structure.md) | Package responsibilities and reproducibility |
+| [Dataset construction](forecast_dataset.md) | Immutable build contract, provenance and audit/build/validate commands |
+| [Investigation notebook](../reports/investigation/README.md) | Executed visual report and editable country/week diagnostics |
 
-## Earlier experiments and provenance
+**GRU correction, November 9:** original controlled GRUs fail the fused-backend
+CPU check on shuffled training-shaped inputs. Saved scores remain archived;
+the old claim that temporal learning hurt performance is withdrawn. The corrected
+partner-inspired GRU passes native-GPU/CPU checks. The
+[experiment record](experiments.md#our-grus-versus-the-partner-inspired-gru)
+explains the distinction and links both machine-readable audits.
 
-These guides describe earlier runs, not additional results from the five-model suite.
+## Detailed experiment protocols and saved reports
 
-| Guide | Question |
+Use these for exact features, launch commands, configurations and provenance.
+The consolidated record takes precedence over superseded interpretations.
+
+| Programme | Protocol | Results |
+|---|---|---|
+| First canonical suite | [Five-model guide](vibing_suite.md) | [Single-seed scores](vibing_suite_results.md) |
+| Five-seed controls | [Study design](controlled_study.md) | [Comparison](controlled_study_comparison.md), [original score export](controlled_study_results.md) |
+| Airport observations | [Method](airport_temperature.md), [smoke gates](airport_temperature_smoke.md) | [Reviewed results](airport_temperature_results.md) |
+| Residual GRU adaptation | [Method and backend correction](partner_gru.md) | [Comparison](partner_gru_comparison.md), [full learning curve](partner_gru_results.md) |
+
+## Earlier investigations
+
+| Record | Question |
 |---|---|
-| [First baseline](boosting_baseline.md) | What do strict calendar inputs and conditional weekly prices achieve? |
-| [Ten-country baseline](boosting_countries.md) | How does weekly-price XGBoost compare across countries? |
-| [Target transform](boosting_target_transform.md) | What changes with asinh targets and L1 loss? |
-| [Constraint summaries](boosting_constraints.md) | Do lagged JAO summaries improve the weekly baseline? |
-| [Temperature](temperature_experiments.md) | What do current/perfect temperature diagnostics show? Includes the price-publication correction. |
-| [Partner reproduction](partner_pipeline_reproduction.md) | Can the partner result be reproduced and reaggregated? |
-| [Pipeline comparison](pipeline_comparison.md) | Which pipeline differences explain the France gap? |
+| [Belgium baseline](boosting_baseline.md) | Strict calendar inputs versus weekly history |
+| [Ten-country baseline](boosting_countries.md) | Independent weekly-price XGBoost by country |
+| [Target transformation](boosting_target_transform.md) | asinh(price/50) and L1 loss |
+| [Constraint summaries](boosting_constraints.md) | Flat lag-48 CWE/CORE features |
+| [France temperature](temperature_experiments.md) | Current proxy, perfect-weather oracle and price-timing erratum |
+| [Partner XGBoost reproduction](partner_pipeline_reproduction.md) | Original pipeline and country reaggregation |
+| [France pipeline comparison](pipeline_comparison.md) | Recent-price effect and matched feature sequence |
+| [Legacy pipeline](legacy_pipeline.md) | Original code, stubs and modelling blockers |
 
-[Milestone PDF and source](../reports/milestone/README.md) ·
-[Saved metrics](../results/README.md) ·
-[Inspection notebook](../notebooks/forecast_dataset_inspection.ipynb)
+These files retain historical branch names and commands as reproduction records.
+The immutable dataset guide also retains its original conservative price-lag
+rule; the later price-publication correction is explained in the leakage and
+pipeline notes. Original model metrics and source hashes are not rewritten.
 
-The dataset construction guide is part of an immutable build fingerprint. Its
-original conservative price-lag interpretation is corrected in the linked
-temperature and pipeline-comparison notes; publication time differs from delivery
-time. Keeping the original build documentation intact preserves its audit trail.
+## Milestone snapshots and artifacts
 
-The [airport temperature experiment](airport_temperature.md) defines the new
-45-fit observation comparison and its source, timing, ROCm and smoke gates.
-The [completed airport results](airport_temperature_results.md) include the
-five-seed comparison, country scores and a review of indirect pooled-model gains.
+| Snapshot | Status |
+|---|---|
+| [Milestone v1](../reports/milestone_v1/README.md) | Frozen first-suite/France report |
+| [Milestone draft](../reports/milestone/README.md) | Historical report/build workflow |
+| [Milestone v2](../reports/milestone_v2/README.md) | Five-seed report; its negative GRU interpretation is superseded by the backend audit |
+| [Raw results index](../results/README.md) | Metric files, verification records and provenance |
 
-The [guided investigation](../reports/investigation/README.md) brings the data,
-pipeline, model and weather evidence together in an executed notebook and HTML.
-
-[Partner-inspired residual GRU](partner_gru.md): source/architecture differences,
-conditional ERA5 use, 49-market run commands, checkpointing and output locations.
-The [verified GRU comparison](partner_gru_comparison.md) compares its completed
-single-seed run with previous five-seed static models and records the limits.
+PDF snapshots are retained unchanged. For current conclusions, use the
+[consolidated record](experiments.md). Original inputs, training code and large
+local run artifacts were not changed by documentation cleanup.

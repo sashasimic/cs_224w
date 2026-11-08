@@ -1,5 +1,10 @@
 # Guided forecasting investigation
 
+The [consolidated experiment record](../../docs/experiments.md) is the current
+all-programme account, including the later residual GRU. This notebook retains
+the two five-seed studies, with their affected original GRU scores explicitly
+labelled after the November 9 training-shaped backend audit.
+
 Open [the self-contained HTML report](forecasting_results.html) for the readable
 version, or [the executed notebook](../../notebooks/forecasting_results_investigation.ipynb)
 to edit the selectors and inspect the Python. The HTML embeds its figures and

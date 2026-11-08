@@ -29,6 +29,8 @@ A guided recap of the data, pipeline changes and completed experiments. **MAE is
 
 Read top to bottom for the project story; edit the next cell to investigate a country and validation week. This notebook fits no models and downloads no data. Published test scores are exploratory: that period has been inspected repeatedly.
 
+**November 9 correction:** the original GRU scores are affected by a fused ROCm discrepancy on shuffled training-shaped batches. Consecutive inference and saved-score replay pass, but this does not validate training. Their old negative temporal conclusion is withdrawn. The later native-GPU residual GRU is a different accepted recipe. Read the complete experiment record (`docs/experiments.md`) for all programmes and both backend audits.
+
 **Contents:** 1. Data and timing · 2. Models and pipeline · 3. Competitive baselines · 4. Graphs, features and histories · 5. Airport observations · 6. Country investigations · 7. Conclusions and appendices
 """)
     code("""from pathlib import Path
@@ -109,7 +111,7 @@ We have **seven forecasting setups**: weekly persistence; per-zone and pooled XG
 
 Current models learn **asinh(price/50)** with L1 loss and invert with **50·sinh(prediction)** before price scoring. This preserves negative and zero prices and compresses extremes. Transformed-space L1 is not the same objective as MAE in EUR/MWh. Neural imputation and standardization use training data only.
 
-**Main story:** recent-price baselines, controlled feature/topology comparisons, and airport observations. **Keep as negative evidence:** the specified GRUs. **Historical context:** earlier raw-price versus asinh/L1, France pipeline diagnostics, partner reproduction and the first single-seed suite. **Not scientific results:** smoke fits. CNEC/heterogeneous-graph YAMLs are scaffolds, not completed experiments. JAO constraints here are flat summary features, not extra graph nodes.
+**Main story:** recent-price baselines, controlled feature/topology comparisons, and airport observations. **Affected historical evidence:** the original GRUs require corrected training because of a fused-backend discrepancy. **Historical context:** earlier raw-price versus asinh/L1, France pipeline diagnostics, partner reproduction and the first single-seed suite. **Not scientific results:** smoke fits. CNEC/heterogeneous-graph YAMLs are scaffolds, not completed experiments. JAO constraints here are flat summary features, not extra graph nodes.
 """)
     code("""inventory = report.inventory()
 assert inventory.jobs.sum() == 145 and inventory.variant.nunique() == 27
@@ -153,12 +155,12 @@ for model, graph in [("mlp", "none"), ("gat", "real")]:
         ablations.append({"addition": model + " + " + group, **{split: report.score("controlled", f"{model}_recent_{graph}", split).paired_mae_mean - report.score("controlled", f"{model}_{group}_{graph}", split).paired_mae_mean for split in ["val", "test"]}})
 heatmap(pd.DataFrame(ablations).set_index("addition"), "Matched MAE reduction from feature additions (EUR/MWh); positive helps", center=True)
 plt.show()
-report.family_figure(["mlp_rich_none", "gat_rich_real", "gru_mlp_rich_none", "gru_gat_rich_real"], "Keep the negative result: these GRUs degrade static-model scores")
+report.family_figure(["mlp_rich_none", "gat_rich_real", "gru_mlp_rich_none", "gru_gat_rich_real"], "Historical GRU scores: fused training path affected")
 plt.show()
 intervals = report.summaries["controlled"]["validation_intervals"]
 display(pd.DataFrame([{ "contrast": key, "improvement": value["mean_mae_improvement"], "lower": value["ci95_lower"], "upper": value["ci95_upper"]} for key, value in intervals.items() if "rich" in key]).round(4))
 """)
-    md("""**Interpretation:** rich real GAT improves on MLP and self-loop controls overall, but one shuffled-control validation interval spans zero. The tested GRUs are worse; this does not rule out temporal learning generally. Validation-week intervals resample shared weeks across countries, condition on fixed fitted models and are unadjusted for multiple comparisons. Feature additions are mixed; do not choose the weather-only GAT retrospectively because it has the smallest old test MAE.
+    md("""**Interpretation:** rich real GAT improves on MLP and self-loop controls overall, but one shuffled-control validation interval spans zero. The historical GRU scores and their contrast intervals involve an affected fused training backend and cannot establish a temporal disadvantage or GRU graph advantage. Validation-week intervals resample shared weeks across countries, condition on fixed fitted models and are unadjusted for multiple comparisons. Feature additions are mixed; do not choose the weather-only GAT retrospectively because it has the smallest old test MAE.
 
 ## 5. Did current airport observations help?
 
@@ -220,7 +222,7 @@ plt.show()
 | Does pooling matter? | Pooled XGBoost is a necessary strong reference | Isolating geography/identity effects needs dedicated controls |
 | Do graphs add value? | Modest overall GAT gains over matched MLP; rich topology controls offer additional evidence | Price-only topology controls, operational availability and country counterexamples |
 | Does temperature help? | Small mixed gains for the airport experiment | Regional representativeness, receipt vintages and archived weather forecasts |
-| Did temporal histories help? | These GRU variants were worse | Other temporal settings or architectures were not tested |
+| Did temporal histories help? | The original GRU scores involve an affected fused training path | Corrected original-family fits are needed; the later residual GRU is a different recipe |
 | Were constraints graph nodes? | No: tested JAO summaries were flat node features | Detailed CNEC graph identities and models remain untested |
 
 **Retain all archived runs.** Use the matched baselines in the main narrative; retain rich conditional studies and negative results with their limitations. No best seed or new model is selected from test performance here.
@@ -294,6 +296,10 @@ def main():
         default=ROOT / "notebooks/forecasting_results_investigation.ipynb",
     )
     args = parser.parse_args()
+    audit = json.loads((ROOT / "results/controlled_gru_backend_audit.json").read_text())
+    if (audit["checkpoint_count"] != 10 or audit["cases_per_checkpoint"] != 4
+            or not audit["native_reference_passed"] or not audit["saved_replay_passed"]):
+        raise ValueError("Complete original-GRU backend audit required")
     nb = notebook(args.with_details)
     env = {
         **os.environ,
@@ -347,6 +353,7 @@ def main():
                 Path(__file__),
                 ROOT / "epgnn/reporting/investigation.py",
                 ROOT / "scripts/reports/static_report.html.j2",
+                ROOT / "results/controlled_gru_backend_audit.json",
             ]
         },
         "study_fingerprints": {

@@ -108,8 +108,10 @@ archived. A new run uses native GPU RNN operations (`cudnn.enabled=False` around
 the GRU, which disables MIOpen's fused RNN on ROCm). This is still GPU training.
 Both preflight and actual-input evaluation now require CPU float64 agreement.
 The data, architecture, objective and seed remain the same; source/configuration
-fingerprints distinguish the replacement run. Earlier GRU experiments require
-separate backend checks; static MLP/GAT results do not use this RNN path.
+fingerprints distinguish the replacement run. The separate audit of earlier
+GRUs found a discrepancy on shuffled training-shaped batches, even though
+chronological inference replay passes. See the [consolidated report](experiments.md#our-grus-versus-the-partner-inspired-gru).
+Static MLP/GAT results do not use this RNN path.
 
 On two validation batches, the original fused path differed from CPU float64 by
 up to 35.39 and 41.68 EUR/MWh; native GPU differed by at most 0.000053 EUR/MWh.

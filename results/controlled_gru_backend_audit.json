@@ -1,0 +1,809 @@
+{
+  "fingerprint": "fd19205863b9d81b0f5d46535d9c970579838565b4b782d2b1550c79fdb1dff6",
+  "torch": "2.14.1+rocm7.2",
+  "hip": "7.2.53211",
+  "gpu": "AMD Radeon RX 9070 XT",
+  "training_rerun": false,
+  "checkpoint_count": 10,
+  "cases_per_checkpoint": 4,
+  "tolerance": {
+    "max_eur_mwh": 0.01,
+    "mean_eur_mwh": 0.0001
+  },
+  "native_reference_passed": true,
+  "fused_reference_passed": false,
+  "saved_replay_passed": true,
+  "scope": "Three actual inference batches and one shuffled training-input batch per checkpoint, all ten selected models. All forwards use evaluation mode with dropout disabled. This is a sampled forward backend check, not full-cohort CPU reevaluation or a backward-pass audit. Original weights, scores and prediction files are unchanged; native inference alone does not correct training performed with a discrepant backend.",
+  "checkpoints": [
+    {
+      "job": "gru_mlp_rich_none_seed224",
+      "checkpoint_sha256": "08e0e6110cef22c7741a84e42bedd94268839b8f49ef206d00a7b8aaac7c30a1",
+      "same_weights": true,
+      "native_reference_passed": true,
+      "fused_reference_passed": false,
+      "saved_replay_passed": true,
+      "cases": [
+        {
+          "split": "val",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 5.796849822559125e-05,
+            "mean_eur_mwh": 4.0635527042474606e-06
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 6.628521798290876e-05,
+            "mean_eur_mwh": 4.186004287074508e-06
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 1.1413640407909043e-05,
+            "mean_eur_mwh": 1.3996841768144098e-06
+          }
+        },
+        {
+          "split": "val",
+          "hour_offset": 8064,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00017318056751491895,
+            "mean_eur_mwh": 1.1666563344899812e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00017318056751491895,
+            "mean_eur_mwh": 1.213769402491287e-05
+          },
+          "unique_history_origins": 4,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 1.5408022164820068e-05,
+            "mean_eur_mwh": 2.6377414866452465e-06
+          }
+        },
+        {
+          "split": "test",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0003221677610554252,
+            "mean_eur_mwh": 1.0145238884522872e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0003221677610554252,
+            "mean_eur_mwh": 1.024860738116486e-05
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 4.706251547759166e-05,
+            "mean_eur_mwh": 2.415665001377037e-06
+          }
+        },
+        {
+          "split": "fit_shuffled",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.000375367475726307,
+            "mean_eur_mwh": 9.533585839635719e-06
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 95.7223473846347,
+            "mean_eur_mwh": 10.893937106841273
+          },
+          "unique_history_origins": 63,
+          "fused_gpu_vs_saved_predictions": null
+        }
+      ]
+    },
+    {
+      "job": "gru_gat_rich_real_seed224",
+      "checkpoint_sha256": "b9125d8ffb36bfe741ef9c63c30e2f83f424e1064b56db1b7300ec5cb3588179",
+      "same_weights": true,
+      "native_reference_passed": true,
+      "fused_reference_passed": false,
+      "saved_replay_passed": true,
+      "cases": [
+        {
+          "split": "val",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 7.532944800914265e-05,
+            "mean_eur_mwh": 7.161460179167874e-06
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 7.532944800914265e-05,
+            "mean_eur_mwh": 7.3525486739522295e-06
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 2.3989644489574857e-05,
+            "mean_eur_mwh": 2.9705462740889877e-06
+          }
+        },
+        {
+          "split": "val",
+          "hour_offset": 8064,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0001573298722519212,
+            "mean_eur_mwh": 1.625152265052604e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0001574565589521626,
+            "mean_eur_mwh": 1.623001330869005e-05
+          },
+          "unique_history_origins": 4,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 6.732251199537131e-05,
+            "mean_eur_mwh": 5.632838686417113e-06
+          }
+        },
+        {
+          "split": "test",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.000336609651640174,
+            "mean_eur_mwh": 1.4645054396984287e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0003779919697990408,
+            "mean_eur_mwh": 1.4678233241927868e-05
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 0.0001114288681378639,
+            "mean_eur_mwh": 5.0108580814123505e-06
+          }
+        },
+        {
+          "split": "fit_shuffled",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0005125949850253164,
+            "mean_eur_mwh": 1.5701792453685494e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 57.103597044693174,
+            "mean_eur_mwh": 9.583011730885648
+          },
+          "unique_history_origins": 64,
+          "fused_gpu_vs_saved_predictions": null
+        }
+      ]
+    },
+    {
+      "job": "gru_mlp_rich_none_seed225",
+      "checkpoint_sha256": "f33c2ee750ad054539c8709c8e9fb80c8f41bd5fcd34bbc720eab44eebe9470f",
+      "same_weights": true,
+      "native_reference_passed": true,
+      "fused_reference_passed": false,
+      "saved_replay_passed": true,
+      "cases": [
+        {
+          "split": "val",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 7.771539873147049e-05,
+            "mean_eur_mwh": 5.638007086229549e-06
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 5.716074608130839e-05,
+            "mean_eur_mwh": 9.670218460967741e-06
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 1.2002812468381308e-05,
+            "mean_eur_mwh": 1.680069556807528e-06
+          }
+        },
+        {
+          "split": "val",
+          "hour_offset": 8064,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00016493117067284402,
+            "mean_eur_mwh": 1.3239457146073754e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00016493117067284402,
+            "mean_eur_mwh": 1.524630366194077e-05
+          },
+          "unique_history_origins": 4,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 2.2449919981681887e-05,
+            "mean_eur_mwh": 2.9105554018945024e-06
+          }
+        },
+        {
+          "split": "test",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0002969514404185247,
+            "mean_eur_mwh": 1.2090664046829036e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0003291153835789373,
+            "mean_eur_mwh": 1.3238757864050878e-05
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 2.5503437029783527e-05,
+            "mean_eur_mwh": 2.787383248535217e-06
+          }
+        },
+        {
+          "split": "fit_shuffled",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.000384463447176131,
+            "mean_eur_mwh": 1.2282358467963047e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 86.53626325469648,
+            "mean_eur_mwh": 8.348979679256862
+          },
+          "unique_history_origins": 64,
+          "fused_gpu_vs_saved_predictions": null
+        }
+      ]
+    },
+    {
+      "job": "gru_gat_rich_real_seed225",
+      "checkpoint_sha256": "b4c5081ef885a1b033e4bad4f3d9c08365095811e1e46ac87222aa4ad4031337",
+      "same_weights": true,
+      "native_reference_passed": true,
+      "fused_reference_passed": false,
+      "saved_replay_passed": true,
+      "cases": [
+        {
+          "split": "val",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 4.633866140579812e-05,
+            "mean_eur_mwh": 4.985298878166415e-06
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 4.633866140579812e-05,
+            "mean_eur_mwh": 5.010055724519407e-06
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 2.599333052444308e-05,
+            "mean_eur_mwh": 2.874792313689363e-06
+          }
+        },
+        {
+          "split": "val",
+          "hour_offset": 8064,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00010428175696119979,
+            "mean_eur_mwh": 1.0628329608954697e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00010428175696119979,
+            "mean_eur_mwh": 1.0705032918868054e-05
+          },
+          "unique_history_origins": 4,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 0.00011027606691982328,
+            "mean_eur_mwh": 4.6046437447750625e-06
+          }
+        },
+        {
+          "split": "test",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00023364847868379002,
+            "mean_eur_mwh": 9.757626637413422e-06
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0002478151029094988,
+            "mean_eur_mwh": 9.6322511769543e-06
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 0.00017284483561752495,
+            "mean_eur_mwh": 4.149289585605839e-06
+          }
+        },
+        {
+          "split": "fit_shuffled",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0008339125315615092,
+            "mean_eur_mwh": 1.097889922064132e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 211.47217428846818,
+            "mean_eur_mwh": 14.208613656553954
+          },
+          "unique_history_origins": 64,
+          "fused_gpu_vs_saved_predictions": null
+        }
+      ]
+    },
+    {
+      "job": "gru_mlp_rich_none_seed226",
+      "checkpoint_sha256": "a97ed9701ef599e93ec01de02659e70ba3ce9b9973fd926355d9aae668797ba0",
+      "same_weights": true,
+      "native_reference_passed": true,
+      "fused_reference_passed": false,
+      "saved_replay_passed": true,
+      "cases": [
+        {
+          "split": "val",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 9.869644119930854e-05,
+            "mean_eur_mwh": 1.0892589026111774e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 8.172664973926658e-05,
+            "mean_eur_mwh": 1.081801691971027e-05
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 1.2487899141433445e-05,
+            "mean_eur_mwh": 2.1166623221448273e-06
+          }
+        },
+        {
+          "split": "val",
+          "hour_offset": 8064,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0003019562491886063,
+            "mean_eur_mwh": 2.280567023835677e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00022328174037511417,
+            "mean_eur_mwh": 2.2340800225012616e-05
+          },
+          "unique_history_origins": 4,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 2.6643277294624568e-05,
+            "mean_eur_mwh": 3.448524640924808e-06
+          }
+        },
+        {
+          "split": "test",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.000439957115645484,
+            "mean_eur_mwh": 2.0853543627070966e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.000439957115645484,
+            "mean_eur_mwh": 2.0700756778954964e-05
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 3.526669513576053e-05,
+            "mean_eur_mwh": 3.227436819138463e-06
+          }
+        },
+        {
+          "split": "fit_shuffled",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00047166376452878467,
+            "mean_eur_mwh": 1.5537381581731514e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 26.67454437662721,
+            "mean_eur_mwh": 14.741925765694582
+          },
+          "unique_history_origins": 64,
+          "fused_gpu_vs_saved_predictions": null
+        }
+      ]
+    },
+    {
+      "job": "gru_gat_rich_real_seed226",
+      "checkpoint_sha256": "e5feca2e39b4d79322c1225e6966d6692395ab1fad9c88e36d9438939ea2f712",
+      "same_weights": true,
+      "native_reference_passed": true,
+      "fused_reference_passed": false,
+      "saved_replay_passed": true,
+      "cases": [
+        {
+          "split": "val",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 5.2755544373894736e-05,
+            "mean_eur_mwh": 6.758649828461015e-06
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 5.206598993368061e-05,
+            "mean_eur_mwh": 6.78266385039072e-06
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 2.6934402526990198e-05,
+            "mean_eur_mwh": 3.161167131389901e-06
+          }
+        },
+        {
+          "split": "val",
+          "hour_offset": 8064,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00012062712301030842,
+            "mean_eur_mwh": 1.3960600223721569e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00012062712301030842,
+            "mean_eur_mwh": 1.3743911329328062e-05
+          },
+          "unique_history_origins": 4,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 9.802015654258867e-05,
+            "mean_eur_mwh": 5.62881263111278e-06
+          }
+        },
+        {
+          "split": "test",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00030267858664956293,
+            "mean_eur_mwh": 1.288713956449429e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00030267858664956293,
+            "mean_eur_mwh": 1.2858142225916931e-05
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 5.3657404663454145e-05,
+            "mean_eur_mwh": 4.79104112740819e-06
+          }
+        },
+        {
+          "split": "fit_shuffled",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0004051604728374514,
+            "mean_eur_mwh": 1.2110924652376304e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 103.03839528899346,
+            "mean_eur_mwh": 9.485199581879208
+          },
+          "unique_history_origins": 64,
+          "fused_gpu_vs_saved_predictions": null
+        }
+      ]
+    },
+    {
+      "job": "gru_mlp_rich_none_seed227",
+      "checkpoint_sha256": "0071d706f275f3fa6f7e0ddc68d9c615729516e9a44201dcf2b072662835647d",
+      "same_weights": true,
+      "native_reference_passed": true,
+      "fused_reference_passed": false,
+      "saved_replay_passed": true,
+      "cases": [
+        {
+          "split": "val",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 9.723332451017086e-05,
+            "mean_eur_mwh": 1.1921576003557547e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 9.723332451017086e-05,
+            "mean_eur_mwh": 1.185813105922874e-05
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 1.1963354722865915e-05,
+            "mean_eur_mwh": 2.178255727844868e-06
+          }
+        },
+        {
+          "split": "val",
+          "hour_offset": 8064,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00023989739861463022,
+            "mean_eur_mwh": 2.1098157810248437e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00023989739861463022,
+            "mean_eur_mwh": 2.120155779900217e-05
+          },
+          "unique_history_origins": 4,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 2.355886033456045e-05,
+            "mean_eur_mwh": 3.260410134366772e-06
+          }
+        },
+        {
+          "split": "test",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00037576867043753737,
+            "mean_eur_mwh": 2.0222836684210024e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00037576867043753737,
+            "mean_eur_mwh": 2.027868247718898e-05
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 2.0755720470333472e-05,
+            "mean_eur_mwh": 3.0257360932813204e-06
+          }
+        },
+        {
+          "split": "fit_shuffled",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0005493357969044155,
+            "mean_eur_mwh": 1.7985181382684278e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 33.37819778917893,
+            "mean_eur_mwh": 22.130025050333423
+          },
+          "unique_history_origins": 64,
+          "fused_gpu_vs_saved_predictions": null
+        }
+      ]
+    },
+    {
+      "job": "gru_gat_rich_real_seed227",
+      "checkpoint_sha256": "b36e84f7a0820770c2cf5b2434a041f55ac63a913a8b704527d38a14fffc36d2",
+      "same_weights": true,
+      "native_reference_passed": true,
+      "fused_reference_passed": false,
+      "saved_replay_passed": true,
+      "cases": [
+        {
+          "split": "val",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 4.4975618607168144e-05,
+            "mean_eur_mwh": 5.415393160873016e-06
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 5.472476105694568e-05,
+            "mean_eur_mwh": 5.376185385185908e-06
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 2.6414000288355055e-05,
+            "mean_eur_mwh": 2.8384703019118324e-06
+          }
+        },
+        {
+          "split": "val",
+          "hour_offset": 8064,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00017665992788806761,
+            "mean_eur_mwh": 1.4493263456026612e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00017665992788806761,
+            "mean_eur_mwh": 1.445416547033236e-05
+          },
+          "unique_history_origins": 4,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 0.00012152782073826529,
+            "mean_eur_mwh": 5.401800726567934e-06
+          }
+        },
+        {
+          "split": "test",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00023983352849654693,
+            "mean_eur_mwh": 1.2920883667216662e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00023983352849654693,
+            "mean_eur_mwh": 1.2862958417569337e-05
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 6.195190951530094e-05,
+            "mean_eur_mwh": 4.714710402574969e-06
+          }
+        },
+        {
+          "split": "fit_shuffled",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0006937513610409951,
+            "mean_eur_mwh": 8.5280871615894e-06
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 75.95541840362512,
+            "mean_eur_mwh": 5.987378404265447
+          },
+          "unique_history_origins": 62,
+          "fused_gpu_vs_saved_predictions": null
+        }
+      ]
+    },
+    {
+      "job": "gru_mlp_rich_none_seed228",
+      "checkpoint_sha256": "6bcc85d423c06b5520feb51d95f7d2ca57382e4c8676d4bdd635014a157c03ab",
+      "same_weights": true,
+      "native_reference_passed": true,
+      "fused_reference_passed": false,
+      "saved_replay_passed": true,
+      "cases": [
+        {
+          "split": "val",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 5.8687174998794944e-05,
+            "mean_eur_mwh": 6.45153546301322e-06
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 5.8687174998794944e-05,
+            "mean_eur_mwh": 6.502261451571344e-06
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 1.1112864370943498e-05,
+            "mean_eur_mwh": 1.8408784178368867e-06
+          }
+        },
+        {
+          "split": "val",
+          "hour_offset": 8064,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00012990561248216181,
+            "mean_eur_mwh": 1.506448435903588e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00016147988870329755,
+            "mean_eur_mwh": 1.6088700898693664e-05
+          },
+          "unique_history_origins": 4,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 2.24895712790385e-05,
+            "mean_eur_mwh": 2.9652486566688493e-06
+          }
+        },
+        {
+          "split": "test",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.000552022632120952,
+            "mean_eur_mwh": 1.2525378883645366e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.000552022632120952,
+            "mean_eur_mwh": 1.269115822460003e-05
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 3.003408278345887e-05,
+            "mean_eur_mwh": 2.6767871263450465e-06
+          }
+        },
+        {
+          "split": "fit_shuffled",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.00046992750594654353,
+            "mean_eur_mwh": 9.27826987928712e-06
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 155.6194479586145,
+            "mean_eur_mwh": 7.403726997416925
+          },
+          "unique_history_origins": 64,
+          "fused_gpu_vs_saved_predictions": null
+        }
+      ]
+    },
+    {
+      "job": "gru_gat_rich_real_seed228",
+      "checkpoint_sha256": "000a6df2a3e60e1da20327a49f3702d0e1d4b6601041fc6f043a711be130c21a",
+      "same_weights": true,
+      "native_reference_passed": true,
+      "fused_reference_passed": false,
+      "saved_replay_passed": true,
+      "cases": [
+        {
+          "split": "val",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 6.603548824557492e-05,
+            "mean_eur_mwh": 7.630753899892028e-06
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 7.513304964845702e-05,
+            "mean_eur_mwh": 7.711248800998326e-06
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 4.0697911089182526e-05,
+            "mean_eur_mwh": 3.4550853579596433e-06
+          }
+        },
+        {
+          "split": "val",
+          "hour_offset": 8064,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0001220887095882972,
+            "mean_eur_mwh": 1.6039863029526533e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0001489317432117332,
+            "mean_eur_mwh": 1.6549395513500125e-05
+          },
+          "unique_history_origins": 4,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 9.29023499907089e-05,
+            "mean_eur_mwh": 5.83642614901233e-06
+          }
+        },
+        {
+          "split": "test",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0005476876970078592,
+            "mean_eur_mwh": 1.5739339880333502e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0005476876970078592,
+            "mean_eur_mwh": 1.582296630523291e-05
+          },
+          "unique_history_origins": 3,
+          "fused_gpu_vs_saved_predictions": {
+            "max_eur_mwh": 0.00012337692089658958,
+            "mean_eur_mwh": 5.302807488831582e-06
+          }
+        },
+        {
+          "split": "fit_shuffled",
+          "hour_offset": 0,
+          "batch_hours": 64,
+          "native_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 0.0006082891200094309,
+            "mean_eur_mwh": 1.698173652979191e-05
+          },
+          "fused_gpu_vs_cpu_float64": {
+            "max_eur_mwh": 72.94794695618046,
+            "mean_eur_mwh": 10.724532419828378
+          },
+          "unique_history_origins": 64,
+          "fused_gpu_vs_saved_predictions": null
+        }
+      ]
+    }
+  ]
+}
