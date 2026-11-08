@@ -13,13 +13,14 @@ import torch
 
 def masked_loss(pred: torch.Tensor, target: torch.Tensor, mask: torch.Tensor,
                 spread_pairs: torch.Tensor | None = None, spread_weight: float = 0.0) -> torch.Tensor:
-    err = (pred - target).abs()
-    loss = (err * mask).sum() / mask.sum().clamp(min=1)
+    # Index before arithmetic: NaN * zero is still NaN, including in backward.
+    valid = mask.bool() & torch.isfinite(target)
+    loss = (pred[valid] - target[valid]).abs().sum() / valid.sum().clamp(min=1)
     if spread_pairs is not None and spread_weight > 0:
         a, b = spread_pairs
-        m = mask[a] & mask[b]
-        sp = ((pred[a] - pred[b]) - (target[a] - target[b])).abs()
-        loss = loss + spread_weight * (sp * m).sum() / m.sum().clamp(min=1)
+        m = valid[a] & valid[b]
+        sp = ((pred[a][m] - pred[b][m]) - (target[a][m] - target[b][m])).abs()
+        loss = loss + spread_weight * sp.sum() / m.sum().clamp(min=1)
     return loss
 
 

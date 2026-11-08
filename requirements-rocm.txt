@@ -1,0 +1,4 @@
+# Linux AMD GPU environment. Use from the repository root; see README.md.
+--extra-index-url https://download.pytorch.org/whl/rocm7.2
+torch==2.14.1+rocm7.2
+-e .[model]

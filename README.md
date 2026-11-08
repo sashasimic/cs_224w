@@ -107,6 +107,43 @@ scripts/datasets/datasets.py pull
 
 If `pull` fails with a permission error, your account has not been added to the bucket yet; ask Sasha.
 
+### AMD GPU / ROCm (Linux)
+
+For the local ROCm 7.2 machine, use the pinned AMD build instead of the default
+PyTorch package. The [ROCm requirements](requirements-rocm.txt) select the official
+PyTorch 2.14.1 + ROCm 7.2 wheel, including its matching `triton-rocm` dependency,
+and the project's model dependencies. Python 3.14 is supported by this wheel.
+Run these commands from the repository root with `uv` installed:
+
+```bash
+uv venv .venv                         # only when creating a new environment
+# When converting an existing NVIDIA environment, remove triton first: its files
+# overlap with triton-rocm. Skip this command for a fresh environment.
+uv pip uninstall --python .venv/bin/python triton
+uv pip install --python .venv/bin/python -r requirements-rocm.txt
+.venv/bin/python scripts/check_rocm.py
+```
+
+The check requires a ROCm build, visible GPU devices, and successful GPU matrix
+multiplication plus a GRU/GATv2 forward pass, masked loss, backward pass and Adam
+step. It exits nonzero on failure. Run it in a terminal with `/dev/kfd` and
+`/dev/dri/renderD*` access; a sandbox that hides these devices cannot verify GPU
+execution. If initialization fails, run `rocminfo` in that same terminal and
+check your user's device permissions. Containers must expose the GPU devices
+and allow their owning group, as described in
+[AMD's container instructions](https://rocmdocs.amd.com/en/latest/install/docker-containers.html).
+
+ROCm uses `torch.device("cuda")`, `.to("cuda")`, and `torch.cuda.is_available()`;
+`torch.version.hip` distinguishes the AMD build. See
+[PyTorch's HIP semantics](https://docs.pytorch.org/docs/main/notes/hip.html).
+Keep using the ROCm requirements when reinstalling this machine's environment so
+a generic PyTorch upgrade does not select a CUDA build. Other machines can use
+the standard setup above.
+
+This enables the PyTorch/PyG stack. The GAT/heterogeneous runners and shared
+training loop are still stubs. Existing XGBoost experiments explicitly use CPU;
+installing ROCm PyTorch does not change XGBoost's backend.
+
 ## Experiments
 
 The structure is in place; only the non-trainable persistence reference runs today. A run is a config, not a branch. Every YAML in `configs/experiments/` names a model, a feature set and the splits; the checkpoints of the Methods doc are these files:
@@ -247,3 +284,10 @@ Bucket owner, once per person:
 gcloud storage buckets add-iam-policy-binding gs://cs224w-epgnn-datasets \
   --member=user:THEIR_EMAIL --role=roles/storage.objectViewer     # or objectAdmin to allow push
 ```
+
+## ROCm experiment suite (`vibing`)
+
+The [five-experiment suite](docs/vibing_suite.md) compares recent-price, richer
+and neighbour XGBoost against real/shuffled hourly GAT models on the audited grid.
+GPU and France preflights are complete; see the guide for a persistent `tmux`
+launch, status, checkpoint resume, conditional feature admission and results.

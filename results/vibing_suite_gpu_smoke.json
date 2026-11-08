@@ -1,0 +1,43 @@
+{
+  "gpu": "AMD Radeon RX 9070 XT",
+  "hip": "7.2.53211",
+  "torch": "2.14.1+rocm7.2",
+  "checks": [
+    {
+      "graph": "real",
+      "training_steps": 3,
+      "checks": [
+        "forward",
+        "NaN-masked loss",
+        "backward",
+        "Adam",
+        "validation",
+        "checkpoint reload",
+        "optimizer resume"
+      ],
+      "seconds": 0.4609929789994567,
+      "peak_vram_gib": 0.23092365264892578
+    },
+    {
+      "graph": "shuffled",
+      "training_steps": 3,
+      "checks": [
+        "forward",
+        "NaN-masked loss",
+        "backward",
+        "Adam",
+        "validation",
+        "checkpoint reload",
+        "optimizer resume"
+      ],
+      "seconds": 0.04185058700022637,
+      "peak_vram_gib": 0.23102188110351562
+    }
+  ],
+  "peak_vram_gib": 0.23102188110351562,
+  "batch_size": 64,
+  "neural_code_sha256": "a16aeafdb0c21b85951916506df32302b10434b1e19ec6c5d13459e637076302",
+  "loss_code_sha256": "377f71a5d6622e169089c70e74fc11522387b1530cffa0d4d7e3799aff06edc5",
+  "epoch_resume_matches_continuous_training": true,
+  "passed": true
+}
