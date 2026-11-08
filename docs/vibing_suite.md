@@ -2,8 +2,8 @@
 
 The suite is implemented independently of the legacy graph/sample stubs, using
 `python -m epgnn.experiment_suite`. It shares the audited calendar, canonical
-geography and target masks across all five methods. The full run has **not**
-been launched: the user requested launching it from a separate host `tmux` session.
+geography and target masks across all five methods. The full run completed successfully in the user's separate host `tmux` session;
+see [verified full results](vibing_suite_results.md).
 
 ## Launch, monitor, stop and resume
 

@@ -1,0 +1,12 @@
+{
+  "fingerprint": "fd694619ba8ce3bc23ebb2db54b50b559fb6fdff37ddc79799ca98544b4655f8",
+  "summary_sha256": "f71a054f6b1d2374ecf30eeab5f9a8eff8231857f9eb478c3571b3f54ad3f4ae",
+  "checks": [
+    "all five experiment artifact manifests match",
+    "ten prediction tables have unique keys and finite predictions",
+    "target keys, values and masks identical across models",
+    "all-target MAE recomputes within 1e-10 EUR/MWh"
+  ],
+  "passed": true,
+  "launcher_exit_code": 0
+}
