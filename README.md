@@ -106,4 +106,4 @@ See [dataset construction](docs/forecast_dataset.md), the
 
 [Documentation index](docs/README.md) · [Code walkthrough](docs/code_structure.md) ·
 [Experiment configuration index](configs/experiments/README.md) ·
-[Earlier milestone draft](reports/milestone/milestone.pdf)
+[Updated milestone draft](reports/milestone/milestone.pdf)

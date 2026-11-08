@@ -9,6 +9,7 @@ Start with the root [README](../README.md), then choose the relevant workflow.
 | [Setup](setup.md) | Virtual environment, ROCm, source locations and checks |
 | [Five-model suite](vibing_suite.md) | Features, splits, GPU gates, tmux, checkpoint resume and outputs |
 | [Full results](vibing_suite_results.md) | Verified 49-market comparison, runtime and limitations |
+| [Two-page milestone](../reports/milestone/README.md) | Full-suite results combined with the earlier France diagnostics; PDF, source and build command |
 | [Code walkthrough](code_structure.md) | Active entry points and responsibilities |
 | [Dataset construction](forecast_dataset.md) | Source pins, geography, missingness and audit/build/validate commands |
 | [Original pipeline](legacy_pipeline.md) | Legacy entry points, stubs and known limitations |

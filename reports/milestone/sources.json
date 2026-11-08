@@ -1,0 +1,16 @@
+{
+  "full_suite_fingerprint": "fd694619ba8ce3bc23ebb2db54b50b559fb6fdff37ddc79799ca98544b4655f8",
+  "france_diagnostic_fingerprint": "543a551ca557013472cc4609dec1ed04d3896f34a7b11e648e6eb44751f72376",
+  "inputs_sha256": {
+    "results/vibing_suite_full.json": "f71a054f6b1d2374ecf30eeab5f9a8eff8231857f9eb478c3571b3f54ad3f4ae",
+    "results/vibing_suite_full_verification.json": "8a15c7d6e63f02a60db74b517e659f4dc99f2a3083cff3ed24f0b04cadd404ff",
+    "results/pipeline_diagnostics_france.json": "8a25bc2165886ae764c04756af0ba911893bfa0a6ac0480380811e46bccbbefd",
+    "results/milestone_pipeline_audit.json": "0cb042d9a7d029fee3b404fdd4aa9319126fb3de7c5e692bb412779e5a099776",
+    "results/partner_c1_xgb_zone_by_country.json": "9928b78b70df1fdd06b45f272b002f120856ad3fe66579b6c06b501528ce5dc6",
+    "results/c1_xgb_countries_weekly_conditional.json": "92ea096f2fc48da4842601e1b82e45d14e0ad940227603467a0025b86e99dd7f",
+    "results/c1_xgb_countries_weekly_asinh_l1_conditional.json": "531844564de452a55c7b0f25caef699acf1fd33d6dc6a1a9aadbb888f3e13666",
+    "results/partner_vs_audited_weekly_country_comparison.json": "b1e3e58b5767ccee2a4e89ae878dd4f527b00812356498cfc51645ada9e0c8fc"
+  },
+  "main_table_population": "49 identities, common finite weekly-history target hours",
+  "rmse_population": "all valid test targets, distinct from the paired MAE table"
+}
