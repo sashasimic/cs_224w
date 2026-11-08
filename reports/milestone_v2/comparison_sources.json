@@ -17,6 +17,10 @@
   },
   "v1_source_commit": "efe0e66",
   "v1_pdf_sha256": "697c5f0c9d0cc707a4455d762b25d9ba02bc696a0d455277d0a38036550b4295",
+  "presentation_code_sha256": {
+    "scripts/experiments/build_milestone_v2.py": "0710268b3893eca03267bc0a1f9c6990da7f05b6dbc4b170d350613ba7cbe00c",
+    "epgnn/reporting/milestone.py": "29a8484d716c14d1ff8a24af198134a380d5ace0f060c2257d3eeeaebe190ba0"
+  },
   "comparison_inputs_sha256": {
     "results/controlled_study_full.json": "006a9ddb603e80f0b06f5f8d699087262308d5449a8e4d02f93675e684e05734",
     "results/controlled_study_full_by_zone.csv": "12144580adb1ddbb23d42db882e35368d61278c5495b8c106fdabdc3cd8ed164",

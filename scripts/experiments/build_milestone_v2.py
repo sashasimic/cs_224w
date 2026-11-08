@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import tempfile
 
 os.environ.setdefault("MPLCONFIGDIR", "/tmp/cs224w-milestone-v2-matplotlib")
 import matplotlib
@@ -17,6 +18,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+from epgnn.reporting.milestone import FUTURE_WORK, render_table
 
 ROOT = Path(__file__).resolve().parents[2]
 V1 = ROOT / "reports/milestone_v1"
@@ -100,6 +103,7 @@ def build():
     template = template.replace(
         "Both GATs add self-loops", "All GAT variants add self-loops"
     )
+    template = template.replace(r"\newpage", "")
     (V2 / "milestone.tex").write_text(template)
     gat, mlp, pooled, self_only = [
         score(summary, name)
@@ -174,26 +178,57 @@ def build():
         r"\paragraph{Timing and limitations.}",
         earlier,
     )
+    first = text.index(r"\begin{table}")
+    last = text.index(r"\end{table}", first) + len(r"\end{table}")
+    text = text[:first] + render_table(summary) + text[last:]
+    first = text.index(r"\section{Future work}")
+    text = text[:first] + FUTURE_WORK + "\n}\n"
+    methods = r"""\newcommand{\ControlledMethods}{\paragraph{Controlled models.} The 100 jobs cross five seeds (224--228): per-zone/pooled trees, MLP/GAT feature ablations, self-loop and three degree-preserving rewired graphs, and GRU--MLP/GAT pairs. Rich static MLP/GAT have 12,001/12,097 parameters; neither uses zone embeddings. Neural models share training-only preprocessing, asinh(price/50), L1 loss, Adam 0.001, maximum 30 epochs and validation patience five. GAT has two layers, 64 channels and four heads. The 32-unit GRU encodes 168 same-identity completed price intervals ending at Brussels noon, with missingness. Trees use depth 6 and at most 600 rounds.}
+"""
+    text = replace_section(text, r"\newcommand{\ControlledMethods}", r"\newcommand{\ControlledResults}", methods)
+    earlier = r"""\paragraph{Earlier and extended experiments.} The first single-seed real/shuffled GAT scores of 20.83/21.54 become 20.97/21.45 across seeds and rewirings. Pooled rich XGBoost scores 21.06 versus 22.11 for per-zone models. Gains vary: France GAT scores 25.48 versus MLP's 22.00. Weather-only GAT has test MAE 20.90, but richer GAT has better validation MAE (20.98 versus 21.06). Load and JAO effects are mixed. GRU--MLP/GAT score 24.50/23.59, worse than static controls; these settings do not rule out other temporal models or detailed constraints.
+"""
+    text = replace_section(text, r"\paragraph{Comparison with earlier experiments.}", r"\paragraph{Timing and limitations.}", earlier)
+    limits = r"""\paragraph{Timing and limitations.} Prior-day auction prices are normally published on $D-2$ \cite{auction}; DST guards exclude lag-24 target-day prices. ERA5-derived lag-48 inputs conflict with documented publication latency \cite{era5}; load/JAO vintages remain unresolved. Temporal histories end by noon. Static training-only topology does not reconstruct commissioning dates. All models retain identical target keys/masks and missing features; targets are never filled. Previously inspected test data make these conditional exploratory comparisons, not confirmatory evidence. Multiple feature comparisons do not establish causal effects.
+"""
+    text = replace_section(text, r"\paragraph{Timing and limitations.}", r"\section{Future work}", limits)
     (V2 / "controlled_study.tex").write_text(text)
+    template = template.replace(
+        "Weekly persistence copies the same identity's price",
+        "A 1 MWh quantity is 1,000 kWh; 21 EUR/MWh error is 2.1 euro cents/kWh. "
+        "Relative MAE divides model MAE by weekly-persistence MAE on identical hours; "
+        "0.72 means 28\\% less error, not 28\\% price error. "
+        "Weekly persistence copies the same identity's price",
+    )
+    (V2 / "milestone.tex").write_text(template)
     env = dict(os.environ, TEXMFVAR="/tmp/cs224w-milestone-v2-texmf")
-    for _ in range(2):
-        result = subprocess.run(
-            ["pdflatex", "-interaction=nonstopmode", "-halt-on-error", "milestone.tex"],
-            cwd=V2,
-            env=env,
-            capture_output=True,
-            text=True,
-        )
-        if result.returncode:
-            raise RuntimeError(result.stdout[-4000:])
-    info = subprocess.check_output(["pdfinfo", str(V2 / "milestone.pdf")], text=True)
-    if not any(line.split() == ["Pages:", "2"] for line in info.splitlines()):
-        raise ValueError("Milestone v2 must fit two pages:\n" + info)
+    # Editor auto-builds may run in V2 concurrently. Validate in isolation and
+    # publish only a complete two-page PDF, without touching the editor process.
+    with tempfile.TemporaryDirectory(prefix="cs224w-milestone-") as temporary:
+        build_dir = Path(temporary)
+        for source in V2.iterdir():
+            if source.suffix in {".tex", ".sty"}:
+                shutil.copyfile(source, build_dir / source.name)
+        for _ in range(2):
+            result = subprocess.run(
+                ["pdflatex", "-interaction=nonstopmode", "-halt-on-error", "milestone.tex"],
+                cwd=build_dir, env=env, capture_output=True, text=True,
+            )
+            if result.returncode:
+                raise RuntimeError(result.stdout[-4000:])
+        info = subprocess.check_output(["pdfinfo", str(build_dir / "milestone.pdf")], text=True)
+        if not any(line.split() == ["Pages:", "2"] for line in info.splitlines()):
+            raise ValueError("Milestone v2 must fit two pages:\n" + info)
+        staged = V2 / "milestone.pdf.tmp"
+        staged.write_bytes((build_dir / "milestone.pdf").read_bytes())
+        staged.replace(V2 / "milestone.pdf")
     (V2 / "README.md").write_text(
         "# Milestone v2\n\n[Two-page PDF](milestone.pdf) · [LaTeX](milestone.tex) · [Frozen v1](../milestone_v1/milestone.pdf) · [Detailed comparison](../../docs/controlled_study_comparison.md)\n\nRebuild with `.venv/bin/python scripts/experiments/build_milestone_v2.py`. All 100 jobs must pass artifact verification first. No models are fitted. Author details remain placeholders.\n"
     )
+    with (V2 / "README.md").open("a") as handle:
+        handle.write("\nPresentation revision: Table 1 groups methods by class, includes weekly persistence and relative MAE, and bolds the smallest mean in each column. Future work now proposes a daily prospective forecasting service. Numerical model results are unchanged. The [availability audit](../../docs/leakage_audit.md) still applies; this is a conditional retrospective report. See [metrics and prospective deployment](../../docs/metrics_and_live_forecasting.md).\n")
     (V1 / ".gitignore").write_text("*.aux\n*.log\n*.out\n")
-    (V2 / ".gitignore").write_text("*.aux\n*.log\n*.out\n")
+    (V2 / ".gitignore").write_text("*.aux\n*.log\n*.out\n*.fls\n*.fdb_latexmk\n*.synctex.gz\n")
     manifest = {
         "study_fingerprint": summary["fingerprint"],
         "summary_sha256": digest,
@@ -202,6 +237,10 @@ def build():
         "v1_pdf_sha256": hashlib.sha256(
             (V1 / "milestone.pdf").read_bytes()
         ).hexdigest(),
+    }
+    manifest["presentation_code_sha256"] = {
+        str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in [Path(__file__), ROOT / "epgnn/reporting/milestone.py"]
     }
     manifest["comparison_inputs_sha256"] = {
         name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()

@@ -49,7 +49,7 @@ unscored, while all 62 can provide dated graph context.
 Fit on January 1, 2016--March 31, 2024 (pretrain + train); validate on April 1,
 2024--March 31, 2025; test on April 1, 2025--September 30, 2026, using Brussels
 delivery dates. October stays unassigned. MAE and RMSE are measured after inverse
-transformation, in EUR/MWh. Weekly persistence copies the same identity's price
+transformation, in EUR/MWh. A 1 MWh quantity is 1,000 kWh; 21 EUR/MWh error is 2.1 euro cents/kWh. Relative MAE divides model MAE by weekly-persistence MAE on identical hours; 0.72 means 28\% less error, not 28\% price error. Weekly persistence copies the same identity's price
 168 elapsed hours earlier. Targets are never filled or filtered for feature
 completeness; neural preprocessing is fitted on training-period features only.
 
@@ -74,7 +74,7 @@ at most 30 epochs and patience five. Seed is 224; stopping uses transformed
 validation MAE. CPU XGBoost and ROCm GAT runs completed in about six minutes total.
 \fi
 
-\newpage
+
 \ifdefined\ControlledStudyComplete
 \ControlledResults
 \else
