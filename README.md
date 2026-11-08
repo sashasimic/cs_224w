@@ -6,6 +6,11 @@ including 23- and 25-hour daylight-saving days.
 
 ## Latest controlled study
 
+**Availability audit:** the [leakage analysis](docs/leakage_audit.md) identifies
+an ERA5 publication-delay mismatch and unresolved load/JAO/price vintages. The
+scores below are retrospective conditional benchmarks, not certified operational
+noon forecasts; no direct target/scaler leakage was found in the reviewed paths.
+
 All 100 five-seed jobs completed. On matched test hours, richer real GAT averages
 20.97 MAE versus pooled MLP 21.19 and pooled XGBoost 21.06. Gains are modest and
 vary by market; the GRU variants performed worse. See the

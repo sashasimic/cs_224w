@@ -1,0 +1,138 @@
+{
+  "study_fingerprint": "fd19205863b9d81b0f5d46535d9c970579838565b4b782d2b1550c79fdb1dff6",
+  "cache": "/srv/cs224w/Project/arsen/cs_224w/staging/vibing_suite/db9c746adbdffe0aecb90d8ba86adbe4cdfc9f101a82b8c2055cee2de8ac4408",
+  "code_identity": {
+    "epgnn/controlled_study/__init__.py": "f8a6726d5833e30f5c68f89a226a062366825545724212d2dfd9dae2e268c6ed",
+    "epgnn/controlled_study/__main__.py": "fa408f699f5b376c842e8e0ec05fd561f062ba85e9359f08128b0d736c0ea1e3",
+    "epgnn/controlled_study/analysis.py": "bdc3b1b969d237818ca49a3fb87a93d611704958f9e060605dd5960447c8ce0b",
+    "epgnn/controlled_study/design.py": "39cfc5fda9a3339df8a02cf36b582e19988ee46bfb86d4b3dc96db77cb034321",
+    "epgnn/controlled_study/history.py": "ddf1c00b079c83c4787df60ef4379a2b00d06df45a823b55ca22e3fe3cadcdbf",
+    "epgnn/controlled_study/models.py": "b1f2708bc653122df51b586366d0d01d35e038e5c9edbbcdad2cad790ebbb999",
+    "epgnn/controlled_study/preflight.py": "016782391d6d0fe134063a0a7b453facfce10d6a240042e1c39affc26e79324f",
+    "epgnn/controlled_study/report.py": "a7d2be0cffa9a9db37721231411fa292f5b310a334bcf12956da9602b31cde1c",
+    "epgnn/controlled_study/runner.py": "5cc58ca07eb0c5efc12a8db6d4614bf38ff60830d9fd443d17cb5f17ccb8edda",
+    "epgnn/controlled_study/training.py": "1545a9beeea6820d6f692c0a5917171eec0d3a79ad95889bd52e323dd4c7ee87"
+  },
+  "checks": {
+    "source_matches_trained_provenance": true,
+    "cache_artifact_checksums_match": true,
+    "split": {
+      "train_last": "2024-03-31 21:00:00+00:00",
+      "val_first": "2024-03-31 22:00:00+00:00",
+      "val_last": "2025-03-31 21:00:00+00:00",
+      "test_first": "2025-03-31 22:00:00+00:00",
+      "disjoint_ordered": true,
+      "unassigned_not_fitted": true
+    },
+    "price_lag24_guarded": {
+      "mismatches": 0,
+      "finite_values": 4439350
+    },
+    "price_lag168": {
+      "mismatches": 0,
+      "finite_values": 4431105
+    },
+    "checkpoint_preprocessing": {
+      "checked_neural_checkpoints": 80,
+      "all_match_training_only_statistics": true,
+      "temporal_statistics_match_training_histories": true
+    },
+    "histories": {
+      "unique_origins": 3957,
+      "completion_after_origin": 0,
+      "missing_source_intervals": 763
+    },
+    "counterfactuals": {
+      "future_prices_do_not_change_past_histories_or_statistics": true,
+      "future_graph_in_batch_cannot_change_earlier_graph_prediction": true
+    },
+    "topology": {
+      "edges": 250,
+      "exactly_training_observed_pairs": true,
+      "test_observations_used_for_edge_selection": false
+    }
+  },
+  "source_risks": {
+    "weather_5_day_latency_screen": {
+      "temp_pw_lag48": {
+        "finite_test_values": 565536,
+        "younger_than_5_days": 565536,
+        "minimum_age_hours": 12.0,
+        "maximum_age_hours": 36.0
+      },
+      "temp_anom_lag48": {
+        "finite_test_values": 565536,
+        "younger_than_5_days": 565536,
+        "minimum_age_hours": 12.0,
+        "maximum_age_hours": 36.0
+      },
+      "wind_cf_lag48": {
+        "finite_test_values": 565536,
+        "younger_than_5_days": 565536,
+        "minimum_age_hours": 12.0,
+        "maximum_age_hours": 36.0
+      },
+      "solar_cf_lag48": {
+        "finite_test_values": 565536,
+        "younger_than_5_days": 565536,
+        "minimum_age_hours": 12.0,
+        "maximum_age_hours": 36.0
+      }
+    },
+    "jobs_using_weather": 65,
+    "load": {
+      "finite": 976531,
+      "availability_verified": 0,
+      "nonmissing_update_max": 976531,
+      "update_max_after_origin": 804754,
+      "update_min_after_origin": 804635,
+      "examples": [
+        {
+          "zone": "AT",
+          "delivery": "2024-03-31 22:00:00+00:00",
+          "origin": "2024-03-31 10:00:00+00:00",
+          "update_min": "2025-09-28 00:57:27+00:00",
+          "update_max": "2025-09-28 00:57:27+00:00"
+        },
+        {
+          "zone": "AT",
+          "delivery": "2024-03-31 23:00:00+00:00",
+          "origin": "2024-03-31 10:00:00+00:00",
+          "update_min": "2025-09-28 00:57:27+00:00",
+          "update_max": "2025-09-28 00:57:27+00:00"
+        },
+        {
+          "zone": "BE",
+          "delivery": "2024-03-31 22:00:00+00:00",
+          "origin": "2024-03-31 10:00:00+00:00",
+          "update_min": "2025-09-28 00:57:27+00:00",
+          "update_max": "2025-09-28 00:57:27+00:00"
+        },
+        {
+          "zone": "BE",
+          "delivery": "2024-03-31 23:00:00+00:00",
+          "origin": "2024-03-31 10:00:00+00:00",
+          "update_min": "2025-09-28 00:57:27+00:00",
+          "update_max": "2025-09-28 00:57:27+00:00"
+        },
+        {
+          "zone": "BG",
+          "delivery": "2024-03-31 22:00:00+00:00",
+          "origin": "2024-03-31 10:00:00+00:00",
+          "update_min": "2025-09-28 00:57:28+00:00",
+          "update_max": "2025-09-28 00:57:28+00:00"
+        }
+      ]
+    },
+    "cohort": {
+      "eligible_zones": 49,
+      "uses_validation_and_test_target_presence_to_define_reported_cohort": true
+    }
+  },
+  "classification": {
+    "confirmed_product_timing_problem": "lag-48 ERA5-derived values are younger than the earliest approximately five-day ERA5T availability; exact export lineage remains unverified",
+    "unresolved": "load/JAO publication vintages, revised historical prices, weather-derived anomaly climatology and capacity-factor calibration",
+    "research_protocol": "test period was repeatedly inspected and influenced subsequent experiment design; no fresh confirmatory holdout",
+    "not_found": "direct same-day target input, cross-split preprocessing fit, future GRU intervals, cross-time graph edges, test-derived physical topology"
+  }
+}

@@ -4,6 +4,10 @@ Start with the root [README](../README.md), then choose the relevant workflow.
 
 ## Current workflow
 
+Read the [forecast leakage audit](leakage_audit.md) alongside the model results:
+effective-time lags passed, but weather product latency and historical vintages
+prevent an operational availability certification.
+
 | Guide | Contents |
 |---|---|
 | [Setup](setup.md) | Virtual environment, ROCm, source locations and checks |
