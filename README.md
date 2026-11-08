@@ -144,3 +144,8 @@ Read the [illustrated project investigation](reports/investigation/forecasting_r
 or open the [executed notebook](notebooks/forecasting_results_investigation.ipynb).
 It covers data, model comparisons, graphs, weather and editable validation-week
 diagnostics. [Usage and reproduction](reports/investigation/README.md).
+
+The [partner-inspired residual GRU experiment](docs/partner_gru.md) adds
+multivariate histories, a persistence-residual target and residual-spread loss
+on the canonical data. Its first full run uses seed 0 and retrospective
+ERA5-lineage inputs, with explicit differences from the partner's protocol.

@@ -1,0 +1,143 @@
+{
+  "fingerprint": "881d84b072bf950423743251f97718bc23394dffd383c8bfd89bf8d0689b973c",
+  "verified": true,
+  "phase": "smoke",
+  "seed": 0,
+  "seconds": 3.809040420999736,
+  "curves": [
+    {
+      "epoch": 1,
+      "train_residual_plus_spread": 0.2777699848016103,
+      "val_residual_plus_spread": 0.35304152965545654,
+      "seconds": 0.5023569360000693,
+      "peak_vram_gib": 0.763279914855957
+    },
+    {
+      "epoch": 2,
+      "train_residual_plus_spread": 0.23085210058424208,
+      "val_residual_plus_spread": 0.40801772475242615,
+      "seconds": 0.4827911900001709,
+      "peak_vram_gib": 0.763279914855957
+    },
+    {
+      "epoch": 3,
+      "train_residual_plus_spread": 0.19853709042072296,
+      "val_residual_plus_spread": 0.3747599124908447,
+      "seconds": 0.4222550770000453,
+      "peak_vram_gib": 0.763279914855957
+    }
+  ],
+  "parameters": 40577,
+  "rows": [
+    {
+      "experiment": "partner_residual_gru_conditional",
+      "split": "val",
+      "zone": "FR",
+      "coverage": "all",
+      "hours": 8760,
+      "mae": 31.413636537536885,
+      "rmse": 40.16202641556993,
+      "paired_hours": 8760,
+      "paired_mae": 31.413636537536885,
+      "persistence_mae": 33.15231391382021,
+      "persistence_rmse": 44.26548277471072,
+      "relative_mae": 0.9475548711078499
+    },
+    {
+      "experiment": "partner_residual_gru_conditional",
+      "split": "test",
+      "zone": "FR",
+      "coverage": "all",
+      "hours": 13152,
+      "mae": 33.246900915957816,
+      "rmse": 44.069660249860526,
+      "paired_hours": 13152,
+      "paired_mae": 33.246900915957816,
+      "persistence_mae": 32.44253898736366,
+      "persistence_rmse": 45.375696902404904,
+      "relative_mae": 1.0247934333656024
+    }
+  ],
+  "aggregate": [
+    {
+      "experiment": "partner_residual_gru_conditional",
+      "split": "test",
+      "coverage": "all",
+      "scope": "overall",
+      "hours": 13152,
+      "paired_hours": 13152,
+      "mae": 33.246900915957816,
+      "rmse": 44.069660249860526,
+      "paired_mae": 33.246900915957816,
+      "persistence_mae": 32.44253898736366,
+      "relative_mae": 1.0247934333656024
+    },
+    {
+      "experiment": "partner_residual_gru_conditional",
+      "split": "val",
+      "coverage": "all",
+      "scope": "overall",
+      "hours": 8760,
+      "paired_hours": 8760,
+      "mae": 31.413636537536885,
+      "rmse": 40.16202641556993,
+      "paired_mae": 31.413636537536885,
+      "persistence_mae": 33.15231391382021,
+      "relative_mae": 0.9475548711078499
+    },
+    {
+      "experiment": "partner_residual_gru_conditional",
+      "split": "test",
+      "coverage": "all",
+      "country": "FR",
+      "scope": "country",
+      "hours": 13152,
+      "paired_hours": 13152,
+      "mae": 33.246900915957816,
+      "rmse": 44.069660249860526,
+      "paired_mae": 33.246900915957816,
+      "persistence_mae": 32.44253898736366,
+      "relative_mae": 1.0247934333656024
+    },
+    {
+      "experiment": "partner_residual_gru_conditional",
+      "split": "val",
+      "coverage": "all",
+      "country": "FR",
+      "scope": "country",
+      "hours": 8760,
+      "paired_hours": 8760,
+      "mae": 31.413636537536885,
+      "rmse": 40.16202641556993,
+      "paired_mae": 31.413636537536885,
+      "persistence_mae": 33.15231391382021,
+      "relative_mae": 0.9475548711078499
+    }
+  ],
+  "spread_metrics": {
+    "val": {
+      "pairs": 0,
+      "paired_edge_hours": 0,
+      "price_spread_mae_eur_mwh": null
+    },
+    "test": {
+      "pairs": 0,
+      "paired_edge_hours": 0,
+      "price_spread_mae_eur_mwh": null
+    }
+  },
+  "target_signatures": {
+    "val": "91cebb19e595ad9b2dc0bfb926dcb8a96a7f9d246141b3c7a084dfca30699ed7",
+    "test": "534ae7ed60f1b2aab8662e7daa47e64ea8f5814d470bacff46a5ddcd4b3de241"
+  },
+  "availability": "conditional retrospective ERA5, load/flow archive vintages unresolved; no post-origin history intervals",
+  "limitations": [
+    "Single-seed adaptation, not an exact partner reproduction",
+    "Retrospective ERA5 is not available weather forecasts",
+    "Canonical 62 identities/49 scored, no German splice or upstream fills",
+    "Literal Brussels noon and timestamp joins, 23/24/25 slots",
+    "Day weather lag48 rather than lag24; known availability conflict remains",
+    "Net inflow over training physical pairs only, missing incident flows => NaN",
+    "Index targets before arithmetic to avoid NaN masking defect"
+  ]
+}

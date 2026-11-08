@@ -1,0 +1,22 @@
+{
+  "name": "partner_residual_gru_conditional_v1",
+  "dataset_directory": "staging/forecast_dataset_v1.0/current",
+  "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+  "partner_commit": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
+  "partner_directory": "/srv/cs224w/Project/arsen/partner_pipeline_reproduction",
+  "seed": 0,
+  "epochs": 50,
+  "patience": 8,
+  "min_delta": 0.00001,
+  "batch_days": 16,
+  "history_hours": 168,
+  "hidden": 64,
+  "mlp_hidden": 128,
+  "dropout": 0.1,
+  "lr": 0.001,
+  "grad_clip": 1.0,
+  "spread_weight": 0.5,
+  "smoke_training_days": 90,
+  "smoke_validation_days": 14,
+  "smoke_epochs": 3
+}

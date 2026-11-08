@@ -51,3 +51,6 @@ five-seed comparison, country scores and a review of indirect pooled-model gains
 
 The [guided investigation](../reports/investigation/README.md) brings the data,
 pipeline, model and weather evidence together in an executed notebook and HTML.
+
+[Partner-inspired residual GRU](partner_gru.md): source/architecture differences,
+conditional ERA5 use, 49-market run commands, checkpointing and output locations.

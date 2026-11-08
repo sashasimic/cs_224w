@@ -1,0 +1,50 @@
+{
+  "config": {
+    "name": "partner_residual_gru_conditional_v1",
+    "dataset_directory": "staging/forecast_dataset_v1.0/current",
+    "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+    "partner_commit": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
+    "partner_directory": "/srv/cs224w/Project/arsen/partner_pipeline_reproduction",
+    "seed": 0,
+    "epochs": 50,
+    "patience": 8,
+    "min_delta": 1e-05,
+    "batch_days": 16,
+    "history_hours": 168,
+    "hidden": 64,
+    "mlp_hidden": 128,
+    "dropout": 0.1,
+    "lr": 0.001,
+    "grad_clip": 1.0,
+    "spread_weight": 0.5,
+    "smoke_training_days": 90,
+    "smoke_validation_days": 14,
+    "smoke_epochs": 3
+  },
+  "parent_complete": {
+    "active.npy": "31903729ed7b0d17a68a39a77c898cbbfaa47637d20cb568bf95eaf8605445c6",
+    "edges.npy": "c94d94145938bf3b06775bdbe3508714e3e596d58f1426a5c636b7b355345b15",
+    "metadata.json": "d2faa85bdae26a4d5a82b0f57be9b493c01ff610d20dc0c4cf4b07b1d2c2f52d",
+    "shuffled_edges.npy": "5b3b53b39334782a52b2c7d997a78bd79b57cd5c245262796254dfbd3f48f203",
+    "split.npy": "f2207da22a69bd9664b0224a650fca7054502851b51501d37531cf29ab6b8b25",
+    "times.npy": "5ca7857310939b730d12ed1348a1890f92850f7965fbe1d3e903d4bcc4905404",
+    "x.npy": "70ff5204d8d548e2f29bb11b7ddedeb2204dc7f7d00d66c776596dc1c58c5f65",
+    "y.npy": "9bd19826b648065a1a8f5457cc0bbd190bf1931f86228454a898acf5b2ba22c6"
+  },
+  "partner": {
+    "commit": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
+    "files": {
+      "epgnn/models/gru_mlp.py": "7f3234f1701391e4a838be9060f3c054e7b7e5156305e3fa3809805efba65445",
+      "epgnn/models/encoders.py": "1469bef684c1e63aae64f33b448bf2e4bb7271a4590222e9442d649c63f6af4e",
+      "epgnn/train.py": "7a71d34313e71bd7b29145d62ba0faa479ba087c5a98979cf0eab9573e1f4da8",
+      "epgnn/data/scaling.py": "9b47aea9d492397490b6f4e38b7b408c73f946c09a6f7b598eb981ee6dd2c4df",
+      "configs/experiments/c25_gru_mlp.yaml": "d4c74aa7031a3b1d97b1078117b39a5dab5eae716235fdc88c139c201d7c654f"
+    }
+  },
+  "code": {
+    "training.py": "2f763166761f8816411a8d0ca237b1c9d7420968d739374043ace0f23624735d",
+    "__main__.py": "5878bd185a2486237e4fbfca58b52ee448c0fbc6352f3d059e18dc28e2526153",
+    "__init__.py": "c066d12659c9a1dfbeba5ac4094eb7b752d8238dd72267dc4e9fa985f0e7525c",
+    "data.py": "17b2ebf37579a5b042015b56c3f8993d51f2e6a0825cc6082b0a44ec84200918"
+  }
+}

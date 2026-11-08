@@ -39,3 +39,7 @@ saved results are indexed in [results/README.md](../../results/README.md).
 original `python -m epgnn.run PATH` workflow. Several model implementations there
 remain stubs. These YAMLs do not run the active suite; see
 [legacy pipeline notes](../../docs/legacy_pipeline.md) before using them.
+
+`partner_gru.json` configures the partner-inspired residual GRU adaptation to the
+audited data. Use `.venv/bin/python -m epgnn.partner_gru` with `gpu-smoke`, `audit`,
+`smoke`, `full` or `status`; see [the guide](../../docs/partner_gru.md).
