@@ -96,3 +96,33 @@ existing 49-market evaluation. Large models remain ignored by Git.
 The host tmux session exits normally when its command ends. Check the launcher's
 `exit.json` and final log lines to distinguish completion from failure. This run
 has no automatic upload or Git commit.
+
+## ROCm backend correction
+
+The initial fused-RNN run (`881d84...`) completed training but failed the final
+replay check. An independent reference then showed a larger CPU/MIOpen GRU
+discrepancy on actual 168-step inputs. The native GPU path agrees with CPU;
+`results/partner_gru_backend_audit.json` records the same-weight comparison.
+The original run is rejected as evidence for the intended GRU and remains
+archived. A new run uses native GPU RNN operations (`cudnn.enabled=False` around
+the GRU, which disables MIOpen's fused RNN on ROCm). This is still GPU training.
+Both preflight and actual-input evaluation now require CPU float64 agreement.
+The data, architecture, objective and seed remain the same; source/configuration
+fingerprints distinguish the replacement run. Earlier GRU experiments require
+separate backend checks; static MLP/GAT results do not use this RNN path.
+
+On two validation batches, the original fused path differed from CPU float64 by
+up to 35.39 and 41.68 EUR/MWh; native GPU differed by at most 0.000053 EUR/MWh.
+These comparisons use identical checkpoint weights and input tensors. They
+establish a discrepancy for this configuration, not its underlying library cause
+or a finding about every earlier GRU checkpoint. Reproduce with:
+
+```bash
+.venv/bin/python -u scripts/experiments/check_gru_backend.py
+```
+
+The replacement generation is
+`9b5aaae786ce06f14abf0b82c96882638fa5a306f9a9ec064db16a2b23b235aa`.
+Its France smoke passed both checkpoint replay and actual-input CPU checks;
+the full fit runs in tmux session `partner-gru-native`. Full evaluation must pass
+the same checks before its scores are accepted.

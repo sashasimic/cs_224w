@@ -61,6 +61,15 @@ def gpu_smoke(config, output):
             torch.load(path, weights_only=True, map_location=device)
         )
         torch.testing.assert_close(before, restored(hist, day), rtol=1e-5, atol=1e-5)
+        cpu = training.ResidualGRU(config).double().eval()
+        cpu.load_state_dict(
+            {k: v.detach().cpu().double() for k, v in model.state_dict().items()}
+        )
+        with torch.no_grad():
+            independent = cpu(hist.cpu().double(), day.cpu().double()).numpy()
+        np.testing.assert_allclose(
+            before.cpu().numpy(), independent, rtol=1e-4, atol=1e-5
+        )
     peak = torch.cuda.max_memory_allocated() / 2**30
     if peak > 12:
         raise ValueError("Preflight exceeds the 12 GiB tensor budget")
@@ -120,6 +129,7 @@ def gpu_smoke(config, output):
             "Adam",
             "checkpoint reload",
             "epoch-boundary resume against continuous fit",
+            "native GPU forward agrees with independent CPU float64",
         ],
     }
     write_json(output, evidence)
@@ -168,9 +178,13 @@ def run(config, smoke):
             started = time.monotonic()
             model, scalers, curves = training.fit(data, config, directory, token, smoke)
             write_json(directory / "scalers.json", scalers)
-            rows, spread_metrics = [], {}
+            rows, spread_metrics, cpu_checks = [], {}, {}
             for split, code in [("val", 1), ("test", 2)]:
                 prediction = training.predict(model, scalers, data, config, code)
+                days = np.flatnonzero(data.calendar["split"] == code)
+                cpu_checks[split] = training.cpu_reference_check(
+                    model, scalers, data, days[: config["batch_days"]]
+                )
                 # Independent checkpoint round trip on actual data.
                 restored = training.ResidualGRU(config).to(require_gpu())
                 state = torch.load(
@@ -245,6 +259,7 @@ def run(config, smoke):
                 "rows": rows,
                 "aggregate": grouped_scores(rows),
                 "spread_metrics": spread_metrics,
+                "cpu_reference_checks": cpu_checks,
                 "target_signatures": signatures(directory),
                 "availability": metadata["availability"],
                 "limitations": [
@@ -303,6 +318,8 @@ def publish_report(record):
         f"Fingerprint: `{record['fingerprint']}`. Seed {record['seed']}; one full adaptation, not five-seed evidence or an exact partner reproduction.",
         "",
         "ERA5 is reanalysis, not archived operational forecasts. Recent ERA5 observations have a known publication-latency conflict with the noon contract. Load and flow vintages and anomaly climatology remain unverified. These are retrospective conditional scores.",
+        "",
+        "The initial fused ROCm GRU run was rejected after a CPU cross-check exposed a long-sequence backend discrepancy. This run uses native GPU RNN operations, verified against independent CPU float64 predictions; see results/partner_gru_backend_audit.json. Original failed checkpoints remain archived and are not scientific comparison scores.",
         "",
         "Inputs retain original missingness and historical zone identities. The baseline used in residual reconstruction falls back from weekly to guarded daily price, then zero; targets are never filled. Training uses multivariate 168-hour histories, a 64-unit GRU, 128-unit ReLU head, day batches, and L1 residual error plus 0.5 times cross-zone residual-contrast error. This loss is not raw-price spread MAE. Early stopping uses the same residual-plus-spread validation objective.",
         "",

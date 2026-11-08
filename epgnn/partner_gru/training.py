@@ -23,7 +23,10 @@ class ResidualGRU(nn.Module):
 
     def forward(self, hist, xday):
         batch, zones, window, features = hist.shape
-        _, state = self.gru(hist.reshape(batch * zones, window, features))
+        # Keep computation on ROCm, but bypass the fused MIOpen RNN path.
+        # The trained 168-step case disagreed with CPU; native GPU matched it.
+        with torch.backends.cudnn.flags(enabled=False):
+            _, state = self.gru(hist.reshape(batch * zones, window, features))
         encoded = state[-1].reshape(batch, zones, -1)
         encoded = encoded[:, :, None, :].expand(-1, -1, xday.shape[2], -1)
         return self.head(torch.cat([encoded, xday], dim=-1)).squeeze(-1)
@@ -175,3 +178,49 @@ def predict(model, scalers, data, config, code):
     if not np.isfinite(output[indices]).all():
         raise ValueError("Unassigned canonical prediction slots")
     return output[indices][:, data.zones]
+
+
+def cpu_reference_check(model, scalers, data, days):
+    """Independent float64 CPU check on actual inputs, in original price units."""
+    batch, raw = data.batch(days, scalers, torch.device("cpu"))
+    reference = (
+        ResidualGRU(
+            {
+                "hidden": model.gru.hidden_size,
+                "mlp_hidden": model.head[0].out_features,
+                "dropout": model.head[2].p,
+            }
+        )
+        .double()
+        .eval()
+    )
+    reference.load_state_dict(
+        {k: v.detach().cpu().double() for k, v in model.state_dict().items()}
+    )
+    model.eval()
+    with torch.no_grad():
+        cpu = reference(batch["hist"].double(), batch["xday"].double()).numpy()
+        gpu = (
+            model(batch["hist"].to(require_gpu()), batch["xday"].to(require_gpu()))
+            .cpu()
+            .numpy()
+        )
+    base = np.arcsinh(raw["base"].astype(np.float64) / 50)
+    difference = np.abs(
+        50 * np.sinh(cpu + base) - 50 * np.sinh(gpu.astype(float) + base)
+    )[raw["mask"]]
+    if (
+        not len(difference)
+        or not np.isfinite(difference).all()
+        or difference.max() > 0.01
+        or difference.mean() > 0.0001
+    ):
+        raise ValueError("Actual-input native GPU/CPU GRU reference mismatch")
+    return {
+        "max_absolute_eur_mwh": float(difference.max()),
+        "mean_absolute_eur_mwh": float(difference.mean()),
+        "max_allowed_eur_mwh": 0.01,
+        "mean_allowed_eur_mwh": 0.0001,
+        "observations": len(difference),
+        "backend": "native GPU vs independent CPU float64",
+    }

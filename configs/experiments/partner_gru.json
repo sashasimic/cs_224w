@@ -5,6 +5,7 @@
   "partner_commit": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
   "partner_directory": "/srv/cs224w/Project/arsen/partner_pipeline_reproduction",
   "seed": 0,
+  "rnn_backend": "native_gpu_verified_against_cpu",
   "epochs": 50,
   "patience": 8,
   "min_delta": 0.00001,

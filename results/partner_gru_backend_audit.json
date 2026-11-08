@@ -1,0 +1,36 @@
+{
+  "training_rerun": false,
+  "training_fingerprint": "881d84b072bf950423743251f97718bc23394dffd383c8bfd89bf8d0689b973c",
+  "checkpoint_sha256": "5c853a0b889b36e48f48eb86f2a1de2d26f7857e81b99ef57c98d6815f03c2d1",
+  "torch": "2.14.1+rocm7.2",
+  "hip": "7.2.53211",
+  "gpu": "AMD Radeon RX 9070 XT",
+  "exact_same_weights": true,
+  "native_reference_checks_passed": true,
+  "cases": [
+    {
+      "validation_batch_start": 0,
+      "native_gpu_vs_cpu_float64": {
+        "max_eur_mwh": 3.5259094886441744e-05,
+        "mean_eur_mwh": 1.2529173782035296e-06
+      },
+      "fused_gpu_vs_cpu_float64": {
+        "max_eur_mwh": 35.38654281564445,
+        "mean_eur_mwh": 3.646109979490561
+      }
+    },
+    {
+      "validation_batch_start": 336,
+      "native_gpu_vs_cpu_float64": {
+        "max_eur_mwh": 5.293323434329977e-05,
+        "mean_eur_mwh": 2.1961712202542048e-06
+      },
+      "fused_gpu_vs_cpu_float64": {
+        "max_eur_mwh": 41.67837741381619,
+        "mean_eur_mwh": 4.94368052573281
+      }
+    }
+  ],
+  "conclusion": "Fused ROCm GRU discrepancy observed on trained 168-step sequences. Original run is not accepted as intended GRU evidence. Native GPU agrees with CPU reference; retrain with that path.",
+  "scope": "This checkpoint/input configuration; older temporal experiments require their own backend audit. Static MLP/GAT have no GRU and are outside this finding."
+}

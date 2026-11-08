@@ -3,8 +3,8 @@
   "gpu": "AMD Radeon RX 9070 XT",
   "hip": "7.2.53211",
   "parameters": 40577,
-  "peak_vram_gib": 0.7624049186706543,
-  "warm_batch_seconds": 0.07813217750003787,
+  "peak_vram_gib": 0.7366313934326172,
+  "warm_batch_seconds": 0.0678880480004409,
   "config": {
     "name": "partner_residual_gru_conditional_v1",
     "dataset_directory": "staging/forecast_dataset_v1.0/current",
@@ -12,6 +12,7 @@
     "partner_commit": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
     "partner_directory": "/srv/cs224w/Project/arsen/partner_pipeline_reproduction",
     "seed": 0,
+    "rnn_backend": "native_gpu_verified_against_cpu",
     "epochs": 50,
     "patience": 8,
     "min_delta": 1e-05,
@@ -32,6 +33,7 @@
     "NaN-masked residual and spread loss",
     "Adam",
     "checkpoint reload",
-    "epoch-boundary resume against continuous fit"
+    "epoch-boundary resume against continuous fit",
+    "native GPU forward agrees with independent CPU float64"
   ]
 }

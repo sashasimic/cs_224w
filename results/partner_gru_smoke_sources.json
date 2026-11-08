@@ -6,6 +6,7 @@
     "partner_commit": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
     "partner_directory": "/srv/cs224w/Project/arsen/partner_pipeline_reproduction",
     "seed": 0,
+    "rnn_backend": "native_gpu_verified_against_cpu",
     "epochs": 50,
     "patience": 8,
     "min_delta": 1e-05,
@@ -42,8 +43,8 @@
     }
   },
   "code": {
-    "training.py": "2f763166761f8816411a8d0ca237b1c9d7420968d739374043ace0f23624735d",
-    "__main__.py": "5878bd185a2486237e4fbfca58b52ee448c0fbc6352f3d059e18dc28e2526153",
+    "training.py": "e0bb323384ae25f59602dfed5f83cb37aeeba256a1cecbbfffecb428b0bf1163",
+    "__main__.py": "9a8b6e6393292e2e1ed614f4a27257cb635b10c6714c0384fcc762b9f8198fd5",
     "__init__.py": "c066d12659c9a1dfbeba5ac4094eb7b752d8238dd72267dc4e9fa985f0e7525c",
     "data.py": "17b2ebf37579a5b042015b56c3f8993d51f2e6a0825cc6082b0a44ec84200918"
   }
