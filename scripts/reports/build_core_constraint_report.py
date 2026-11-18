@@ -32,6 +32,19 @@ def verify_predictions(directory, jobs):
             raise ValueError(f"Inconsistent target validity in {stem}")
         if reference is None:
             reference = frame[KEY_COLUMNS]
+            days = reference.ts_utc.dt.tz_convert("Europe/Brussels").dt.strftime(
+                "%Y-%m-%d"
+            )
+            if days.min() != "2024-04-01" or days.max() != "2025-03-31":
+                raise ValueError(
+                    "Prediction keys must span the original validation period"
+                )
+            if (
+                reference.zone.nunique() != 49
+                or reference.ts_utc.nunique() != 8760
+                or len(reference) != 49 * 8760
+            ):
+                raise ValueError("The full 49-market validation grid is required")
         elif not reference.equals(frame[KEY_COLUMNS]):
             raise ValueError(f"Target rows or masks differ in {stem}")
     return len(reference)
@@ -106,7 +119,7 @@ def report(directory, output):
     ]
     for model, label in LABELS.items():
         overall, core, france = (
-            aligned.loc[model, scope] for scope in ("all", "core_covered", "FR")
+            aligned.loc[(model, scope), :] for scope in ("all", "core_covered", "FR")
         )
         lines.append(
             f"| {label} | {overall.mae:.2f} ± {overall.seed_sd:.2f} | "
@@ -132,8 +145,8 @@ def report(directory, output):
             f"- {LABELS[comparison['model']]} versus {LABELS[comparison['control']]} "
             f"{comparison['mae_improvement']:+.3f} EUR/MWh with 95% interval [{lo:+.3f}, {hi:+.3f}]."
         )
-    core = aligned.loc["bipartite", "core_covered"]
-    overall = aligned.loc["bipartite", "all"]
+    core = aligned.loc[("bipartite", "core_covered"), :]
+    overall = aligned.loc[("bipartite", "all"), :]
     lines.extend(
         [
             "",

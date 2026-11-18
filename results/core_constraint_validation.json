@@ -1,0 +1,85 @@
+{
+  "catalog_fingerprint": "869737bb52deabd3d224ec353d503d5f0bef819a75e9404b44ca0765cf3b5acb",
+  "contrasts": [
+    {
+      "ci95": [
+        -1.8310821161109272,
+        0.0552826697787305
+      ],
+      "control": "flat_jao",
+      "mae_improvement": -0.6254223585128784,
+      "model": "bipartite",
+      "n": 428427,
+      "scope": "all",
+      "weeks": 53
+    },
+    {
+      "ci95": [
+        -0.026639380793747617,
+        0.09878686476862793
+      ],
+      "control": "shuffled",
+      "mae_improvement": 0.027684494853019714,
+      "model": "bipartite",
+      "n": 428427,
+      "scope": "all",
+      "weeks": 53
+    },
+    {
+      "ci95": [
+        -0.12203657314159984,
+        0.07067657582564738
+      ],
+      "control": "interconnector",
+      "mae_improvement": -0.021784072741866112,
+      "model": "flat_jao",
+      "n": 428427,
+      "scope": "all",
+      "weeks": 53
+    },
+    {
+      "ci95": [
+        -0.014806860055304849,
+        0.8702410754266882
+      ],
+      "control": "flat_jao",
+      "mae_improvement": 0.4541379511356354,
+      "model": "bipartite",
+      "n": 105120,
+      "scope": "core_covered",
+      "weeks": 53
+    },
+    {
+      "ci95": [
+        -0.08678913016153605,
+        0.1354321390154157
+      ],
+      "control": "shuffled",
+      "mae_improvement": 0.025661492720246315,
+      "model": "bipartite",
+      "n": 105120,
+      "scope": "core_covered",
+      "weeks": 53
+    },
+    {
+      "ci95": [
+        -0.8271426594814135,
+        -0.18078239707766283
+      ],
+      "control": "interconnector",
+      "mae_improvement": -0.5035902857780457,
+      "model": "flat_jao",
+      "n": 105120,
+      "scope": "core_covered",
+      "weeks": 53
+    }
+  ],
+  "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+  "jobs": 20,
+  "matched_prediction_rows_per_job": 429240,
+  "peak_vram_gib": 0.36569738388061523,
+  "publication_admission": "conditional",
+  "run_fingerprint": "866fb061bbdaaacac51d244878222bf9df3ad99b588b1af26482636f745c245a",
+  "seed_count": 5,
+  "source_results_sha256": "41be738e49ea93d9a261620c47d94cbf0a6ce77d1b47433610954a8b743dc93e"
+}

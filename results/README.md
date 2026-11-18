@@ -70,3 +70,10 @@ checks; `_comparison.csv` and `_review_sources.json` accompany the
 conditional retrospective reanalysis. `partner_gru_backend_audit.json` documents
 why the first fused-RNN run was rejected; published full scores use native GPU
 operations checked against CPU float64. Smoke files remain pipeline checks.
+
+## CORE constraint graph study
+
+[Validation results](../docs/core_constraint_validation.md) compare the real and
+shuffled bipartite GATs with two interconnector controls over five seeds. The
+[score table](core_constraint_validation.csv) includes every market, and the
+[metadata](core_constraint_validation.json) records paired comparisons and run identity.

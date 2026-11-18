@@ -2,6 +2,8 @@
 
 The catalog gives SQL and graph models the same source rows and forecast clock. Its forecasting task is to predict every hourly day-ahead price for Brussels delivery day D at noon on the preceding local calendar date.
 
+The [five-seed validation report](core_constraint_validation.md) summarizes the completed comparison.
+
 ## Build and run
 
 From the repository root, with the audited dataset and original JAO export available:
@@ -18,6 +20,8 @@ uv pip install --python .venv/bin/python 'duckdb>=1.3,<2'
 The default config pins the audited dataset and the existing 49-market benchmark arrays. The experiment reuses their chronological price lags and training-derived physical topology. It obtains the flat JAO inputs and constraint graphs from the new catalog. See `configs/experiments/relational_forecast.json` for paths and settings.
 
 Open `staging/relational_forecast/current/forecast.duckdb` read-only. The catalog and a validation report are published atomically after checking the pinned source hashes and relational integrity. Parquet views refer to resolved local source paths. On another checkout, rebuild the catalog using a locally built audited dataset. The experiment requires ROCm. It saves epoch checkpoints, validation predictions, metrics and comparisons under `runs/relational_forecast/`. Rerun the same command to resume with the same settings and source fingerprint.
+
+To regenerate the tracked report, pass the completed validation directory to `scripts/reports/build_core_constraint_report.py` using `.venv/bin/python`. The report builder checks the prediction grid and masks for every job before aggregating the scores.
 
 ## Tables and keys
 
