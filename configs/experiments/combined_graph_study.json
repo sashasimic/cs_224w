@@ -1,0 +1,10 @@
+{
+  "base_config": "configs/experiments/relational_forecast.json",
+  "output": "runs/combined_graph_study",
+  "cache": "staging/combined_graph_study",
+  "seeds": [224, 225, 226, 227, 228],
+  "neural": {"epochs": 30, "patience": 5, "lr": 0.001, "relational_days": 8, "adaptive_hours": 128, "width": 48},
+  "xgb": {"max_rounds": 160, "patience": 12, "max_depth": 5, "max_bin": 64, "learning_rate": 0.08, "nthread": 6},
+  "smoke": {"fit_days": 90, "calibration_days": 14, "validation_days": 7, "epochs": 3, "trees": 12},
+  "bootstrap_repetitions": 2000
+}
