@@ -1,0 +1,15 @@
+{
+  "dataset": "staging/forecast_dataset_v1.0/current",
+  "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+  "benchmark_arrays": "staging/vibing_suite/db9c746adbdffe0aecb90d8ba86adbe4cdfc9f101a82b8c2055cee2de8ac4408",
+  "staging": "staging/relational_forecast",
+  "runs": "runs/relational_forecast",
+  "seeds": [224, 225, 226, 227, 228],
+  "shuffle_seed": 901,
+  "batch_size": 64,
+  "epochs": 30,
+  "patience": 5,
+  "learning_rate": 0.001,
+  "validation_bootstraps": 2000,
+  "smoke": {"training_days": 90, "validation_days": 14, "epochs": 3}
+}

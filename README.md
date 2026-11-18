@@ -82,6 +82,7 @@ country/week diagnostics, with affected GRU results explicitly labelled.
 | `epgnn/dataset_build/` | Canonical source, geography and timing contract |
 | `epgnn/experiment_suite/` | First five-model suite and reusable data/scoring |
 | `epgnn/controlled_study/` | Five-seed static and original temporal controls |
+| `epgnn/relational_forecast/` | [Relational catalog and CORE constraint GAT](docs/relational_forecast.md) |
 | `epgnn/airport_study/` | Airport-observation comparison |
 | `epgnn/partner_gru/` | Corrected residual GRU adaptation |
 | `epgnn/boosting.py`, `boosting_batch.py` | Earlier audited country baselines |

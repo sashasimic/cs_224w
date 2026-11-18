@@ -12,6 +12,7 @@ dependencies = [
 # Model stack: same core as the course Colabs (torch + PyTorch Geometric), without their course-only
 # extras (deepsnap, ogb, torch_scatter/torch_sparse), plus XGBoost for the non-graph baselines.
 [project.optional-dependencies]
+relational = ["duckdb>=1.3,<2"]
 inspection = [
   "nbformat",
   "nbclient",
