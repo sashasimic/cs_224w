@@ -1,0 +1,62 @@
+{
+  "cache": "2ced29fe8ee0b05d7ab90cc6def6649dcb0778f0f3d80006dfedc0d5fb11ab07",
+  "code": {
+    "inputs.py": "c5b890caf94e22eb94817d5823ed5f49f87c71f057ce2c9cfc1f458b3e204784",
+    "models.py": "73e42783d4bbd2b863c29e9f6fce9fa76cc83eeefe324bc6d677ff813c001f18",
+    "runner.py": "143ad7100787ba63d24f173a20b71e6014e92b7d6e966e51450e9f7eea87849d",
+    "sql_features.py": "fda2f25305405e6c735ecd2cfa5d8cacfd9fcd48e907d3be0e0dc2b391c705b8",
+    "training.py": "c9a01785d56593132fd3aa0e879691d5b3246bffbacb92156902f7795378fe97"
+  },
+  "hip": "7.2.53211",
+  "lineage": {
+    "benchmark": "88401b5240c76b5dc064ff650609e3c43e401bba07926d0a3d440a11cdb65a8c",
+    "catalog": "869737bb52deabd3d224ec353d503d5f0bef819a75e9404b44ca0765cf3b5acb",
+    "dataset": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+    "inputs_code": "c5b890caf94e22eb94817d5823ed5f49f87c71f057ce2c9cfc1f458b3e204784",
+    "source_rows": {
+      "flow": 14145872,
+      "jao": 530346,
+      "load": 3437822,
+      "price": 3478897,
+      "weather": 3414012
+    }
+  },
+  "mode": "validation",
+  "settings": {
+    "base_config": "configs/experiments/relational_forecast.json",
+    "bootstrap_repetitions": 2000,
+    "cache": "staging/combined_graph_study",
+    "neural": {
+      "adaptive_hours": 128,
+      "epochs": 30,
+      "lr": 0.001,
+      "patience": 5,
+      "relational_days": 8,
+      "width": 48
+    },
+    "output": "runs/combined_graph_study",
+    "seeds": [
+      224,
+      225,
+      226,
+      227,
+      228
+    ],
+    "smoke": {
+      "calibration_days": 14,
+      "epochs": 3,
+      "fit_days": 90,
+      "trees": 12,
+      "validation_days": 7
+    },
+    "xgb": {
+      "learning_rate": 0.08,
+      "max_bin": 64,
+      "max_depth": 5,
+      "max_rounds": 160,
+      "nthread": 6,
+      "patience": 12
+    }
+  },
+  "torch": "2.14.1+rocm7.2"
+}

@@ -2,6 +2,8 @@
 
 The suite compares two ways to use market relationships. The relational study compares learned aggregation and cross-zone messages with pooled SQL-based XGBoost. The adaptive study tests whether learned links improve on physical links and uniform pooling, then asks whether historical directional CORE margins improve learned routing.
 
+See the [verified 45-run validation report](combined_graph_validation.md) for the score table and paired confidence intervals.
+
 ## Run from the repository root
 
 ```bash

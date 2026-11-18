@@ -77,3 +77,11 @@ operations checked against CPU float64. Smoke files remain pipeline checks.
 shuffled bipartite GATs with two interconnector controls over five seeds. The
 [score table](core_constraint_validation.csv) includes every market, and the
 [metadata](core_constraint_validation.json) records paired comparisons and run identity.
+
+## Relational and adaptive zone graph studies
+
+The [combined validation report](../docs/combined_graph_validation.md) covers 45
+fits. The [score table](combined_graph_validation.csv) records metrics by seed
+and cohort. The [paired comparisons](combined_graph_validation.json) include
+learned-neighbor stability and prediction hashes. The
+[run manifest](combined_graph_validation_manifest.json) pins inputs and settings.

@@ -148,20 +148,22 @@ def publish(settings, data, output, common, results, predictions):
         "",
         (
             f"{len(results)} jobs used the same {len(common):,} zone-hour keys from April 2024 through March 2025. "
-            "Values are mean MAE in EUR/MWh over five seeds. JAO, weather, and archived load inputs are conditional."
+            "MAE is in EUR/MWh and averaged over five seeds. Skill is the reduction in MAE versus weekly persistence on matched rows. "
+            "JAO, weather, and archived load inputs are conditional."
         ),
         "",
-        "| Model | Fit begins | All MAE | CORE MAE | France MAE | Skill vs weekly | Spread MAE |",
-        "|---|---|---:|---:|---:|---:|---:|",
+        "| Model | Fit begins | All MAE | CORE MAE | France MAE | All skill | CORE skill | Spread MAE |",
+        "|---|---|---:|---:|---:|---:|---:|---:|",
     ]
     for model in VARIANTS:
         family = metrics.loc[metrics.variant.eq(model), "family"].iat[0]
         overall = means.loc[(model, "all"), :]
-        core = means.loc[(model, "core"), "mae"]
+        core = means.loc[(model, "core"), :]
         fr = means.loc[(model, "FR"), "mae"]
         lines.append(
             f"| {model} | {TRAIN_START[family]} | {overall.mae:.3f} ± {sd.loc[(model, 'all')]:.3f} | "
-            f"{core:.3f} | {fr:.3f} | {overall.persistence_skill:.1%} | {overall.spread_mae:.3f} |"
+            f"{core.mae:.3f} | {fr:.3f} | {overall.persistence_skill:.1%} | "
+            f"{core.persistence_skill:.1%} | {overall.spread_mae:.3f} |"
         )
     lines.extend(
         [
@@ -177,7 +179,7 @@ def publish(settings, data, output, common, results, predictions):
     for c in contrast:
         a, b = c["ci95"]
         lines.append(
-            f"| {c['scope']} | {c['model']} | {c['control']} | {c['improvement']:+.3f} | [{a:+.3f}, {b:+.3f}] |"
+            f"| {c['scope']} | {c['model']} | {c['control']} | {c['improvement']:+.4f} | [{a:+.4f}, {b:+.4f}] |"
         )
     lines.extend(
         [
