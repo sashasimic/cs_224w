@@ -1,9 +1,9 @@
 # Documentation
 
 **Start with the [complete experiment record](experiments.md)**
-([browser version](../reports/experiments/experiments.html)). It contains every
-completed programme, all 20 controlled variants, all nine airport variants,
-earlier diagnostics and the current status of both GRU families.
+([browser version](../reports/experiments/experiments.html)). It covers the
+completed programmes, including the foundation pilots, CORE constraint GAT,
+relational and adaptive graphs, and the earlier controls and backend audits.
 
 ## Current reading
 
@@ -36,6 +36,9 @@ The consolidated record takes precedence over superseded interpretations.
 | Five-seed controls | [Study design](controlled_study.md) | [Comparison](controlled_study_comparison.md), [original score export](controlled_study_results.md) |
 | Airport observations | [Method](airport_temperature.md), [smoke gates](airport_temperature_smoke.md) | [Reviewed results](airport_temperature_results.md) |
 | Residual GRU adaptation | [Method and backend correction](partner_gru.md) | [Comparison](partner_gru_comparison.md), [full learning curve](partner_gru_results.md) |
+| TimesFM and GraphPFN | [Pinned branch snapshots](../results/archived_experiments/README.md) | [Full validation and shared week](experiments.md#foundation-model-pilots) |
+| Bipartite CORE constraints | [Relational catalog and protocol](relational_forecast.md) | [Five-seed validation](core_constraint_validation.md) |
+| Relational and adaptive graphs | [Run guide](combined_graph_study.md) | [45-fit validation](combined_graph_validation.md) |
 
 ## Earlier investigations
 

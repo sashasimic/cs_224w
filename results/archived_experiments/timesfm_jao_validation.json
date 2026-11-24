@@ -1,0 +1,107 @@
+{
+  "cohort": {
+    "start": "2024-04-01",
+    "end_exclusive": "2025-04-01",
+    "partition": "validation",
+    "markets": 49,
+    "rows": 429240,
+    "valid_targets": 428427,
+    "paired_targets": 428213
+  },
+  "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+  "tensor_cache": "db9c746adbdffe0aecb90d8ba86adbe4cdfc9f101a82b8c2055cee2de8ac4408",
+  "reference_fingerprint": "8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b",
+  "reference_prediction_sha256": {
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/pooled_xgb_recent_none_seed224/predictions_val.parquet": "c1e7927842c924bcbce31de21eab9e96de2cb84278c61e4d8960cb26a539d6c1",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/pooled_xgb_recent_none_seed225/predictions_val.parquet": "6fdb64e77b3cfd0db3846e911b02055c10e86c1888586829bfacd6cb51153022",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/pooled_xgb_recent_none_seed226/predictions_val.parquet": "ffdecf6a6ec6644755a8cd3269555595afcab11cc4c1124d5c60ed38faec9309",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/pooled_xgb_recent_none_seed227/predictions_val.parquet": "32b387f56643f8511db70c6161eb04e4395b6014f759d1b7fdea676fc8fd2763",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/pooled_xgb_recent_none_seed228/predictions_val.parquet": "932dc0d673575559b08b477e451faa5ae7e7ab47d7ffb0d06ff062abda4ad31f",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/gat_recent_real_seed224/predictions_val.parquet": "5617f5d38a0bb6483193985979d7f7d0156b788001025e7bc173256ce65d51c3",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/gat_recent_real_seed225/predictions_val.parquet": "87c17d5d6dc2269161ce2a4ba81e80573aa57cfbbe47362506b9a117c11ce976",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/gat_recent_real_seed226/predictions_val.parquet": "20db9cb98653e2033815d703019ab9eedc364cdd5d98a27c070949ea22ca513e",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/gat_recent_real_seed227/predictions_val.parquet": "72bf57911b22142b28ac00ef9daa1954ae675df5bdceb65a4465db8910c69cff",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/gat_recent_real_seed228/predictions_val.parquet": "156abdec68d3df988375fc17eaed63f8b92de2c481bdab61ffb1ad99bb3a66cc"
+  },
+  "pilot_code_sha256": {
+    "foundation_pilot_data.py": "2dbc9d56f957e15a22de7f2af597bdd0050b64f35089e58bbbc0db487d5c7b51",
+    "pilot_timesfm_jao.py": "2af3c3aa704ae7ab59e1f0218b3459adfb4676dcafeed7ded9f0d2922bd25772"
+  },
+  "protocol": "All scores on common finite weekly-history targets. Saved reference scores average five seeds. Archived prices follow auction timing and historical price revisions remain unverified.",
+  "scores": {
+    "pooled_xgb_recent_none": {
+      "mae": 20.842076699386183,
+      "rmse": 38.0049226751158,
+      "rmae": 0.6905422102235693
+    },
+    "gat_recent_real": {
+      "mae": 21.146802323316034,
+      "rmse": 69.18252254952922,
+      "rmae": 0.7006384165131504
+    },
+    "weekly_persistence": {
+      "mae": 30.182190734782704,
+      "rmse": 54.64352544458225,
+      "rmae": 1.0
+    },
+    "timesfm_joint": {
+      "mae": 17.735924830949955,
+      "rmse": 35.10250140315868,
+      "rmae": 0.587628810207956
+    },
+    "timesfm_joint_jao": {
+      "mae": 17.996483978367575,
+      "rmse": 35.48799318258163,
+      "rmae": 0.5962616874469613
+    }
+  },
+  "details": {
+    "model": "google/timesfm-3.0-pytorch",
+    "upstream": "918df02c9d366b2145bc5876135fa2131d3ed2a6",
+    "price_runner_sha256": "ba4427eb256f5b9914dfbf7b9988fd64b36368791c064f4b68dc6c4795ba3d20",
+    "baseline_predictions_sha256": "408047725d5b4b1d488cd56e13faa4b826968234633b1813eb73dd410371fb12",
+    "baseline_report_sha256": "ea9c89b5adb734b811c9bb8232a7b4a367f0f653e781e5f3dfa50ff2c6afe374",
+    "checkpoint_revision": "43046b85ec22d584a13f8098c2ed39c889e129c2",
+    "checkpoint_sha256": {
+      "config.json": "ff17bbc07b792c5a904cca265b8468579d736a4fe84981da25eb871b0a125bc6",
+      "model.safetensors": "a7592b0a8432baee54483254e5647856911ce69e09d09a9bb65904b2d98f17da"
+    },
+    "context_hours": 336,
+    "input_features": [
+      "n_presolved_lag48",
+      "min_ram_ratio_lag48",
+      "jao_domain_present_lag48"
+    ],
+    "device": "AMD Radeon RX 9070 XT",
+    "peak_gpu_gib": 1.4550046920776367,
+    "runtime_seconds": 230.6507409119513,
+    "days_with_constraints": 365,
+    "max_jao_channels": 48,
+    "coverage_metrics": {
+      "local_domain_present": {
+        "paired_targets": 105120,
+        "timesfm_joint": {
+          "mae": 20.617974845213016,
+          "rmse": 36.62717211757938
+        },
+        "timesfm_joint_jao": {
+          "mae": 21.127979470198017,
+          "rmse": 37.22805861693568
+        }
+      },
+      "local_domain_absent_or_unknown": {
+        "paired_targets": 323093,
+        "timesfm_joint": {
+          "mae": 16.798234761838792,
+          "rmse": 34.59195587628779
+        },
+        "timesfm_joint_jao": {
+          "mae": 16.977635516465842,
+          "rmse": 34.903155128144725
+        }
+      }
+    },
+    "admission": "Conditional retrospective JAO. Same-zone lag-48 source-domain completion is before origin. Historical publication and revision timestamps are unresolved."
+  },
+  "predictions_sha256": "17a880ce77aca1207a3eefd2003be95654a2540303c1af24b9abdd409d4129bc"
+}

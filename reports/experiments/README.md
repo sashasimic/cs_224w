@@ -4,10 +4,10 @@
 
 For a concise seven-method report, read [milestone v3](../milestone_v3/README.md).
 
-This is the current all-programme report. It covers the 100-job controlled
-study, 45-job airport study, first five-model suite, accepted residual GRU,
-earlier country/France diagnostics and rejected or affected runs. Cohorts,
-metrics, seeds and source-availability limitations are labelled separately.
+The report covers the earlier country, weather, boosting, GAT and GRU studies
+alongside TimesFM, GraphPFN, the bipartite CORE GAT, relational GraphSAGE and
+adaptive zone graphs. Tables identify the cohort, metric and evaluation period.
+The report preserves affected runs and explains the source-availability limits.
 
 Rebuild from the repository root:
 
@@ -19,7 +19,8 @@ The builder checks the verified multi-seed result summaries, reconciles their
 scores with seed/zone tables, and requires the native/replay GRU audit evidence.
 It updates marked result tables in the authored Markdown and exports the HTML.
 It fits no models, uses no GPU and imports neither Torch nor XGBoost.
-[sources.json](sources.json) records input, code and output hashes.
+[sources.json](sources.json) records input, code and output hashes and the
+original Git commits for the [archived branch scores](../../results/archived_experiments/README.md).
 
 The original controlled GRUs are affected by a fused-backend discrepancy on
 shuffled training-shaped inputs. Their historical numbers are retained, but

@@ -1,0 +1,14 @@
+[Unit]
+Description=EPGNN day-ahead cutoff and forecast workers
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO@
+Environment=ENTSOE_TOKEN_FILE=%h/.config/epgnn-forecast/entsoe.token
+ExecStart=@REPO@/.venv/bin/python -m epgnn.forecast_service forecast-tick
+UMask=0077
+TimeoutStartSec=540
+KillMode=control-group
+Restart=on-failure
+RestartSec=5s

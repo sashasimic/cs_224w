@@ -1,0 +1,11 @@
+[Unit]
+Description=Capture at 11:52 and freeze at 11:55 Europe/Brussels
+
+[Timer]
+OnCalendar=*-*-* 11:52,54,55:00 Europe/Brussels
+OnCalendar=*-*-* 12:01,05:00 Europe/Brussels
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

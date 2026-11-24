@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Forecast monitor</title>
+  <link rel="stylesheet" href="/dashboard.css">
+  <script defer src="/dashboard.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail">
+      <a class="brand" href="#live">
+        <span class="mark" aria-hidden="true">↯</span>
+        <span>Forecast monitor<span class="brand-caption">Day-ahead markets</span></span>
+      </a>
+      <nav aria-label="Dashboard views">
+        <a href="#live" data-page="live"><span aria-hidden="true">◉</span>Live results</a>
+        <a href="#backtest" data-page="backtest"><span aria-hidden="true">▥</span>Backtest</a>
+        <a href="#feed" data-page="feed"><span aria-hidden="true">⌗</span>Feed readiness</a>
+      </nav>
+      <div class="rail-foot"><span class="rail-dot" aria-hidden="true"></span> Europe/Brussels</div>
+    </aside>
+    <div class="workspace">
+      <header class="toolbar">
+        <p id="dashboard-date"></p>
+        <div class="toolbar-actions">
+          <span id="updated" aria-live="polite"></span>
+          <button id="refresh" class="button"><span aria-hidden="true">↻</span> Refresh</button>
+        </div>
+      </header>
+      <main id="content" tabindex="-1"><p class="loading">Loading forecast data…</p></main>
+    </div>
+  </div>
+</body>
+</html>

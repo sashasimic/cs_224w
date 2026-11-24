@@ -9,11 +9,11 @@ checks. Existing score files and model artifacts are preserved.
 Files here are tracked summaries. Large models, keyed predictions, logs and
 checkpoints are kept under the ignored `runs/` directory.
 
-## Latest full evaluation
+## First full canonical evaluation
 
-`controlled_study_smoke*` files are preflight evidence for the expanded study;
-its five-seed full summaries will be written as `controlled_study_full*` after
-all 100 jobs complete. The established full evaluation below is preserved.
+`controlled_study_smoke*` files record preflight checks. The completed five-seed
+study is in `controlled_study_full*`, with interpretation in the
+[controlled comparison](../docs/controlled_study_comparison.md).
 
 | File | Contents |
 |---|---|
@@ -85,3 +85,8 @@ fits. The [score table](combined_graph_validation.csv) records metrics by seed
 and cohort. The [paired comparisons](combined_graph_validation.json) include
 learned-neighbor stability and prediction hashes. The
 [run manifest](combined_graph_validation_manifest.json) pins inputs and settings.
+
+## Foundation models and original partner runs
+
+[Archived results](archived_experiments/README.md) retain the original TimesFM,
+GraphPFN and partner summaries with their Git provenance.

@@ -17,6 +17,18 @@ ROOT = Path(__file__).resolve().parents[2]
 DOCUMENT = ROOT / "docs/experiments.md"
 OUTPUT = ROOT / "reports/experiments"
 
+# The original saved summaries travel with the report so rebuilding it does not
+# depend on other worktrees or on branches still being available.
+ARCHIVED_REVISIONS = {
+    "timesfm_full_validation": "997549a00fbd8c2242d9eba53584588dcc69aec7",
+    "timesfm_jao_validation": "997549a00fbd8c2242d9eba53584588dcc69aec7",
+    "timesfm_validation_week": "997549a00fbd8c2242d9eba53584588dcc69aec7",
+    "graphpfn_validation_week": "8b6f869f8226efba9635e3a863d71cc808f40fde",
+    "c1_xgb_zone": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
+    "c2_xgb_neighbours": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
+    "c25_gru_mlp": "757da793c2e2e726cc6e750f2d42f1dd836ca39c",
+}
+
 
 class Sources:
     def __init__(self):
@@ -95,6 +107,165 @@ def study_table(report, study):
     return result
 
 
+def recent_graph_tables(sources):
+    core_manifest = sources.json("core_constraint_validation.json")
+    combined_manifest = sources.json("combined_graph_validation.json")
+    combined_run = sources.json("combined_graph_validation_manifest.json")
+    if (
+        core_manifest["jobs"] != 20
+        or combined_manifest["jobs"] != 45
+        or core_manifest["matched_prediction_rows_per_job"] != 429240
+        or combined_manifest["keys_per_job"] != 429240
+        or combined_run["lineage"]["dataset"] != core_manifest["dataset_fingerprint"]
+    ):
+        raise ValueError("Unexpected validation lineage for the recent graph studies")
+    core = sources.csv("core_constraint_validation.csv")
+    core = core[core.scope.isin(["all", "core_covered"])].set_index(
+        ["variant", "scope"]
+    )
+    core_names = {
+        "interconnector": "Interconnector GAT",
+        "flat_jao": "Interconnector GAT + flat JAO",
+        "bipartite": "Bipartite GAT + flat JAO",
+        "shuffled": "Bipartite GAT + flat JAO, shuffled links",
+    }
+    core_rows = []
+    for key, label in core_names.items():
+        overall = core.loc[(key, "all"), :]
+        covered = core.loc[(key, "core_covered"), :]
+        if (overall.hours, covered.hours) != (428427, 105120):
+            raise ValueError("CORE study target mask changed")
+        core_rows.append(
+            [label, f"{overall.mae:.3f} ± {overall.seed_sd:.3f}", f"{covered.mae:.3f}"]
+        )
+    combined = sources.csv("combined_graph_validation.csv")
+    combined = combined[combined.scope.isin(["all", "core"])]
+    sizes = combined.scope.map({"all": 428427, "core": 105120})
+    if len(combined) != 90 or not np.array_equal(combined.n, sizes):
+        raise ValueError("Combined study target masks changed")
+    means = combined.groupby(["variant", "scope"]).mean(numeric_only=True)
+    names = {
+        "sql_price": "Price-only SQL XGBoost",
+        "sql_full": "Full SQL XGBoost",
+        "relational_local": "Local relational GraphSAGE",
+        "relational_cross": "Cross-zone relational GraphSAGE",
+        "physical": "Physical links",
+        "uniform": "Uniform all-zone links",
+        "learned": "Learned links",
+        "margin": "Learned links + CORE margins",
+        "shuffled_margin": "Learned links + shuffled margins",
+    }
+    fits = {
+        row["variant"]: row["train_start"] for row in combined_manifest["manifests"]
+    }
+    combined_rows = [
+        [
+            label,
+            fits[key],
+            f"{means.loc[(key, 'all'), 'mae']:.3f}",
+            f"{means.loc[(key, 'core'), 'mae']:.3f}",
+            f"{means.loc[(key, 'all'), 'spread_mae']:.3f}",
+        ]
+        for key, label in names.items()
+    ]
+    return {
+        "core_graph": table(
+            ["Variant", "All-market MAE ± seed SD", "CORE MAE"], core_rows
+        ),
+        "combined_graph": table(
+            ["Variant", "Fit starts", "All-market MAE", "CORE MAE", "Spread MAE"],
+            combined_rows,
+        ),
+    }
+
+
+def archived_tables(sources):
+    archive = {
+        key: sources.json(f"archived_experiments/{key}.json")
+        for key in ARCHIVED_REVISIONS
+    }
+    full = archive["timesfm_full_validation"]
+    jao = archive["timesfm_jao_validation"]
+    week = archive["timesfm_validation_week"]
+    graphpfn = archive["graphpfn_validation_week"]
+    if (
+        full["cohort"] != jao["cohort"]
+        or week["cohort"] != graphpfn["cohort"]
+        or full["cohort"]["paired_targets"] != 428213
+        or week["cohort"]["paired_targets"] != 8232
+        or len(
+            {result["dataset_fingerprint"] for result in (full, jao, week, graphpfn)}
+        )
+        != 1
+        or full["scores"]["timesfm_joint"] != jao["scores"]["timesfm_joint"]
+    ):
+        raise ValueError("Foundation model comparison cohorts changed")
+    references = {
+        "weekly_persistence": "Weekly persistence",
+        "pooled_xgb_recent_none": "Pooled recent-price XGBoost",
+        "gat_recent_real": "Recent-price real GAT",
+    }
+    if any(week["scores"][key] != graphpfn["scores"][key] for key in references):
+        raise ValueError("Shared-week baselines differ")
+    timesfm = {
+        "timesfm_univariate": "TimesFM independent",
+        "timesfm_joint": "TimesFM joint",
+    }
+    scores = full["scores"] | {"timesfm_joint_jao": jao["scores"]["timesfm_joint_jao"]}
+    labels = references | timesfm | {"timesfm_joint_jao": "TimesFM joint + flat JAO"}
+    full_rows = [
+        [
+            name,
+            f"{scores[key]['mae']:.2f}",
+            f"{scores[key]['rmse']:.2f}",
+            f"{scores[key]['rmae']:.3f}",
+        ]
+        for key, name in labels.items()
+    ]
+    week_scores = week["scores"] | graphpfn["scores"]
+    week_labels = (
+        references
+        | timesfm
+        | {
+            "graphpfn_self": "GraphPFN self-loops",
+            "graphpfn_physical": "GraphPFN physical links",
+        }
+    )
+    week_rows = [
+        [name, f"{week_scores[key]['mae']:.2f}", f"{week_scores[key]['rmse']:.2f}"]
+        for key, name in week_labels.items()
+    ]
+    legacy_names = {
+        "c1_xgb_zone": "Partner per-zone XGBoost",
+        "c2_xgb_neighbours": "Partner XGBoost + neighbors",
+        "c25_gru_mlp": "Partner GRU + MLP",
+    }
+    legacy_rows = []
+    for key, name in legacy_names.items():
+        val = archive[key]["metrics"]["val"]["all"]
+        test = archive[key]["metrics"]["test"]["all"]
+        if (val["n_hours"], test["n_hours"]) != (376680, 565320):
+            raise ValueError("Legacy partner comparison cohort changed")
+        legacy_rows.append(
+            [
+                name,
+                f"{val['mae']:.4f}",
+                f"{test['mae']:.4f}",
+                f"{test['spread_mae']:.4f}",
+            ]
+        )
+    return {
+        "timesfm": table(
+            ["Model", "Validation MAE", "Validation RMSE", "Relative MAE"], full_rows
+        ),
+        "foundation_week": table(["Model", "Week MAE", "Week RMSE"], week_rows),
+        "partner_legacy": table(
+            ["Original partner run", "Validation MAE", "Test MAE", "Test spread MAE"],
+            legacy_rows,
+        ),
+    }
+
+
 def main():
     sources = Sources()
     report = Report(ROOT)  # Verifies both five-seed studies and reconciles zone scores.
@@ -127,6 +298,8 @@ def main():
     ):
         raise ValueError("Complete native/replay backend audit required")
     blocks = {study: study_table(report, study) for study in ["controlled", "airport"]}
+    blocks.update(recent_graph_tables(sources))
+    blocks.update(archived_tables(sources))
     audit_rows = []
     for family in ["gru_mlp", "gru_gat"]:
         checkpoints = [r for r in audit["checkpoints"] if r["job"].startswith(family)]
@@ -369,6 +542,13 @@ code,pre{{background:#eef2f5;font-size:.88em}}pre{{padding:16px;overflow:auto}}@
         "controlled_jobs": 100,
         "airport_jobs": 45,
         "controlled_gru_checkpoints_audited": audit["checkpoint_count"],
+        "archive_origins": {
+            f"results/archived_experiments/{name}.json": {
+                "commit": commit,
+                "path": f"results/{name}.json",
+            }
+            for name, commit in ARCHIVED_REVISIONS.items()
+        },
         "sources": {
             str(p.relative_to(ROOT)): digest(p)["sha256"] for p in sorted(sources.paths)
         },

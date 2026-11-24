@@ -7,27 +7,36 @@ h2{margin-top:2em;border-top:1px solid #ddd;padding-top:1em}a{color:#17688a}tabl
 th,td{text-align:left;border-bottom:1px solid #dde3e7;padding:8px 12px}th{background:#edf3f7}tr:nth-child(even){background:#fafbfd}
 code,pre{background:#eef2f5;font-size:.88em}pre{padding:16px;overflow:auto}@media(max-width:700px){main{padding:18px}}
 @media print{body{background:white}main{padding:0}table{font-size:10px}h2{break-after:avoid}}</style></head>
-<body><main><nav aria-label="Contents"><a href="#what-we-have-learned">What we have learned</a> · <a href="#data-forecast-contract-and-metrics">Data, forecast contract and metrics</a> · <a href="#experiment-inventory">Experiment inventory</a> · <a href="#controlled-study-all-20-variants">Controlled study: all 20 variants</a> · <a href="#our-grus-versus-the-partner-inspired-gru">Our GRUs versus the partner-inspired GRU</a> · <a href="#airport-temperature-all-nine-variants">Airport temperature: all nine variants</a> · <a href="#first-canonical-suite-all-five-jobs">First canonical suite: all five jobs</a> · <a href="#earlier-baselines-transformation-and-constraints">Earlier baselines, transformation and constraints</a> · <a href="#france-temperature-and-pipeline-investigations">France temperature and pipeline investigations</a> · <a href="#what-remains-usable-and-what-comes-next">What remains usable, and what comes next</a> · <a href="#reproduction-and-retained-records">Reproduction and retained records</a></nav><h1>European electricity-price forecasting: experiment record</h1>
-<p>This is the current consolidated account of the completed experiments, including
-negative results and rejected runs. It replaces scattered summaries as the
-starting point for reading results. Detailed protocols, original metrics and
-milestone snapshots remain linked for reproduction. Tables are rebuilt from
-saved results; no training or model selection occurs during report generation.</p>
+<body><main><nav aria-label="Contents"><a href="#what-we-have-learned">What we have learned</a> · <a href="#data-forecast-contract-and-metrics">Data, forecast contract and metrics</a> · <a href="#experiment-inventory">Experiment inventory</a> · <a href="#core-constraint-gat">CORE constraint GAT</a> · <a href="#relational-and-adaptive-zone-graphs">Relational and adaptive zone graphs</a> · <a href="#foundation-model-pilots">Foundation-model pilots</a> · <a href="#controlled-study-all-20-variants">Controlled study: all 20 variants</a> · <a href="#our-grus-versus-the-partner-inspired-gru">Our GRUs versus the partner-inspired GRU</a> · <a href="#airport-temperature-all-nine-variants">Airport temperature: all nine variants</a> · <a href="#first-canonical-suite-all-five-jobs">First canonical suite: all five jobs</a> · <a href="#earlier-baselines-transformation-and-constraints">Earlier baselines, transformation and constraints</a> · <a href="#france-temperature-and-pipeline-investigations">France temperature and pipeline investigations</a> · <a href="#what-remains-usable-and-what-comes-next">What remains usable, and what comes next</a> · <a href="#reproduction-and-retained-records">Reproduction and retained records</a></nav><h1>European electricity-price forecasting: experiment record</h1>
+<p>The completed forecasting experiments through November 19, 2026 are collected
+here, including null results and rejected runs. The tables use saved results
+from the main experiment history, the foundation-model branches and the partner
+pipeline. The report links to protocols, score files and milestone snapshots.</p>
 <h2 id="what-we-have-learned">What we have learned</h2>
-<p>Recent auction prices explain most of the initial improvement over weekly
-persistence. Once models share strong recent-price inputs and pool training
-across markets, XGBoost, MLP and static GAT are much closer than the first
-per-zone comparison suggested. Graph improvements are modest and vary by market.</p>
-<p>Our original GRU experiments need correction: their saved scores are reproducible,
-but the fused ROCm GRU disagrees with CPU on shuffled training-shaped batches.
-Those scores cannot establish that temporal learning is worse. The newer
-partner-inspired GRU uses a verified native GPU path and achieves about
-21 EUR/MWh test MAE, close to strong static models. Its recipe differs in several
-ways, so the difference cannot be attributed to one change.</p>
-<p>Weather and constraint results are mixed. We have retrospective ERA5-lineage
-weather and airport observations, <strong>not historical operational weather forecasts</strong>.
-JAO constraints entered as flat summaries; no completed experiment used CNECs as
-extra graph nodes. None of these results certifies a production-time noon forecast.</p>
+<ul>
+<li><strong>Recent auction prices account for the largest measured feature gain.</strong> In
+the France pipeline comparison, adding guarded prior-day auction prices
+lowered test MAE from 32.09 to 22.20 EUR/MWh. With strong recent-price features
+and pooled training, XGBoost, MLP and static GAT were much closer.</li>
+<li><strong>Physical links showed the clearest graph signal.</strong> In the adaptive study,
+the physical-link model beat learned all-zone links by 0.378 EUR/MWh overall.
+The bipartite CNEC GAT gained 0.026 EUR/MWh over shuffled links on CORE hours,
+with a 95% interval spanning zero. Cross-zone GraphSAGE gained 0.020 over its
+local control on CORE hours. The full SQL XGBoost comparator still had lower
+MAE on that cohort.</li>
+<li><strong>Joint TimesFM had the lowest saved 49-market full-validation MAE, 17.74 EUR/MWh.</strong>
+Weekly persistence scored 30.18 on the same 428,213 hours. Checkpoint
+pretraining overlap with these series is unresolved. GraphPFN improved with
+physical links in the shared-week pilot and still trailed the saved baselines.</li>
+<li><strong>Weather and JAO gains were small or inconsistent.</strong> The weather inputs were
+retrospective ERA5-lineage fields or airport observations. Archived
+operational weather forecasts were unavailable. The tests span flat JAO
+summaries, individual constraint nodes and directional margin features.</li>
+<li><strong>The GRU backend changes what we can conclude.</strong> The original fused ROCm
+runs fail the CPU reference check on shuffled training-shaped batches. The
+corrected partner-inspired native run passes numerical checks and scores
+21.07 all-target test MAE. It uses a different history and loss recipe.</li>
+</ul>
 <h2 id="data-forecast-contract-and-metrics">Data, forecast contract and metrics</h2>
 <p>At 12:00 Europe/Brussels on D−1, predict each hourly price of delivery day D.
 Origins use the previous local calendar date at literal noon, then convert to
@@ -122,9 +131,9 @@ not its publication time. All conditional columns remain conditional here.</p>
   <td><a href="../../docs/temperature_experiments.md">Temperature</a></td>
 </tr>
 <tr>
-  <td>Partner XGBoost and France sequence</td>
-  <td>43 scored legacy zones; eight France profiles</td>
-  <td>Reproduction, reaggregation and pipeline differences</td>
+  <td>Original partner models and France sequence</td>
+  <td>Three legacy models on 43 zones; local XGBoost reproduction; eight France profiles</td>
+  <td>Own-zone and neighbor XGBoost, GRU+MLP, reproduction and feature timing</td>
   <td><a href="../../docs/partner_pipeline_reproduction.md">Reproduction</a>, <a href="../../docs/pipeline_comparison.md">sequence</a></td>
 </tr>
 <tr>
@@ -151,13 +160,300 @@ not its publication time. All conditional columns remain conditional here.</p>
   <td>Multivariate histories, persistence residual and residual-contrast loss</td>
   <td><a href="../../docs/partner_gru.md">Method</a>, <a href="../../docs/partner_gru_comparison.md">results</a></td>
 </tr>
+<tr>
+  <td>TimesFM 3.0</td>
+  <td>Independent/joint forecasts on the shared week and full validation; joint JAO ablation on full validation</td>
+  <td>Price-history context, cross-market prediction and flat JAO covariates</td>
+  <td><a href="#foundation-model-pilots">Foundation-model results</a></td>
+</tr>
+<tr>
+  <td>GraphPFN 1.3</td>
+  <td>Two topologies on the shared validation week</td>
+  <td>Physical edges versus self-loops with fixed labelled context</td>
+  <td><a href="#foundation-model-pilots">Foundation-model results</a></td>
+</tr>
+<tr>
+  <td>CORE constraint GAT</td>
+  <td>Four variants × five seeds = 20 jobs</td>
+  <td>Flat JAO, zone–constraint message passing and shuffled constraint links</td>
+  <td><a href="../../docs/core_constraint_validation.md">CORE results</a></td>
+</tr>
+<tr>
+  <td>Relational and adaptive graphs</td>
+  <td>Nine variants × five seeds = 45 jobs</td>
+  <td>GraphSAGE versus SQL, physical versus learned links, real versus shuffled margins</td>
+  <td><a href="../../docs/combined_graph_validation.md">Combined results</a></td>
+</tr>
 </tbody>
 </table>
-<p>The two five-seed studies share two variant names: 27 distinct names across
-145 jobs, not 145 different model designs. A per-zone XGBoost job fits separate
-models for the scored markets. The first suite and the newer residual GRU are
-additional programmes. Smoke fits, bootstrap resamples and checkpoint reloads
-are correctness checks, not additional scientific experiments.</p>
+<p>The original controlled and airport studies share two variant names and cover
+27 distinct names across 145 jobs. A per-zone XGBoost job fits separate models
+for the scored markets. Smoke fits and checkpoint reloads serve as correctness
+checks. Bootstrap resamples quantify uncertainty in paired comparisons.</p>
+<h2 id="core-constraint-gat">CORE constraint GAT</h2>
+<p>The study uses one node per original CORE constraint observation. Signed PTDFs
+connect constraints to priced zones and RAM, Fmax and RAM/Fmax describe each
+constraint. The archived domain comes from exactly 48 elapsed hours before
+delivery. Fit spans June 2022–March 2024. Results below use the full April
+2024–March 2025 validation year, with 428,427 valid priced zone-hours overall
+and 105,120 on the CORE-covered subset.</p>
+<!-- generated:core_graph -->
+
+<table>
+<thead>
+<tr>
+  <th>Variant</th>
+  <th>All-market MAE ± seed SD</th>
+  <th>CORE MAE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Interconnector GAT</td>
+  <td>21.637 ± 0.121</td>
+  <td>24.573</td>
+</tr>
+<tr>
+  <td>Interconnector GAT + flat JAO</td>
+  <td>21.659 ± 0.144</td>
+  <td>25.077</td>
+</tr>
+<tr>
+  <td>Bipartite GAT + flat JAO</td>
+  <td>22.284 ± 0.200</td>
+  <td>24.622</td>
+</tr>
+<tr>
+  <td>Bipartite GAT + flat JAO, shuffled links</td>
+  <td>22.312 ± 0.192</td>
+  <td>24.648</td>
+</tr>
+</tbody>
+</table>
+<!-- end:core_graph -->
+
+<p>The interconnector GAT with price and calendar inputs had the lowest overall
+and CORE MAE. Correct PTDF assignments improved CORE MAE by <strong>0.026 EUR/MWh</strong>
+over shuffled links, with a paired-week 95% interval of −0.087 to +0.135.
+The archive does not verify which domain revision was available before noon.
+<a href="../../docs/relational_forecast.md">Protocol</a> · <a href="../../docs/core_constraint_validation.md">Verified results and contrasts</a></p>
+<h2 id="relational-and-adaptive-zone-graphs">Relational and adaptive zone graphs</h2>
+<p>The relational study compared GraphSAGE with pooled XGBoost using SQL
+aggregates. The full SQL and relational models drew from the same as-of
+windows for prices, weather, archived load, physical flows and JAO summaries.
+Local GraphSAGE kept incident border observations and blocked cross-zone
+messages. The adaptive study compared physical links, uniform pooling and
+learned links, then added real or shuffled directional CORE margin features.
+Both studies calibrated stopping on January–March 2024, refit through March,
+and evaluated the same full-validation targets as the CORE constraint GAT.</p>
+<!-- generated:combined_graph -->
+
+<table>
+<thead>
+<tr>
+  <th>Variant</th>
+  <th>Fit starts</th>
+  <th>All-market MAE</th>
+  <th>CORE MAE</th>
+  <th>Spread MAE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Price-only SQL XGBoost</td>
+  <td>2016-01-01</td>
+  <td>20.717</td>
+  <td>23.650</td>
+  <td>16.513</td>
+</tr>
+<tr>
+  <td>Full SQL XGBoost</td>
+  <td>2016-01-01</td>
+  <td>20.681</td>
+  <td>23.674</td>
+  <td>16.585</td>
+</tr>
+<tr>
+  <td>Local relational GraphSAGE</td>
+  <td>2016-01-01</td>
+  <td>22.252</td>
+  <td>25.101</td>
+  <td>17.457</td>
+</tr>
+<tr>
+  <td>Cross-zone relational GraphSAGE</td>
+  <td>2016-01-01</td>
+  <td>22.235</td>
+  <td>25.081</td>
+  <td>17.446</td>
+</tr>
+<tr>
+  <td>Physical links</td>
+  <td>2022-06-09</td>
+  <td>21.662</td>
+  <td>24.769</td>
+  <td>16.879</td>
+</tr>
+<tr>
+  <td>Uniform all-zone links</td>
+  <td>2022-06-09</td>
+  <td>22.045</td>
+  <td>25.353</td>
+  <td>17.107</td>
+</tr>
+<tr>
+  <td>Learned links</td>
+  <td>2022-06-09</td>
+  <td>22.041</td>
+  <td>25.191</td>
+  <td>17.290</td>
+</tr>
+<tr>
+  <td>Learned links + CORE margins</td>
+  <td>2022-06-09</td>
+  <td>22.040</td>
+  <td>25.190</td>
+  <td>17.288</td>
+</tr>
+<tr>
+  <td>Learned links + shuffled margins</td>
+  <td>2022-06-09</td>
+  <td>22.041</td>
+  <td>25.193</td>
+  <td>17.290</td>
+</tr>
+</tbody>
+</table>
+<!-- end:combined_graph -->
+
+<p>Full SQL XGBoost had the lowest overall MAE in this suite, <strong>20.681 EUR/MWh</strong>,
+and reduced error by <strong>31.5%</strong> versus weekly persistence on matched rows.
+GraphSAGE with cross-zone messages improved CORE MAE by 0.020 versus the local
+control (95% interval +0.008 to +0.030). Its overall gain was 0.017, with an
+interval spanning zero. In the adaptive family, physical links beat learned
+links by 0.378 overall (95% interval +0.297 to +0.465). Margins added less than
+0.001 of overall improvement over price-only learned links. The two families
+used different fit windows. <a href="../../docs/combined_graph_study.md">Run guide</a> · <a href="../../docs/combined_graph_validation.md">Verified results and contrasts</a></p>
+<h2 id="foundation-model-pilots">Foundation-model pilots</h2>
+<h3>Full validation</h3>
+<p>TimesFM 3.0 uses a pretrained checkpoint and 336 hours of price history. The
+independent variant forecasts each market separately. The joint variant attends
+across markets. All rows in this table share <strong>428,213</strong> finite weekly-history
+targets across the full validation year. Reference XGBoost and GAT use recent
+price/calendar inputs and five-seed saved results.</p>
+<!-- generated:timesfm -->
+
+<table>
+<thead>
+<tr>
+  <th>Model</th>
+  <th>Validation MAE</th>
+  <th>Validation RMSE</th>
+  <th>Relative MAE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Weekly persistence</td>
+  <td>30.18</td>
+  <td>54.64</td>
+  <td>1.000</td>
+</tr>
+<tr>
+  <td>Pooled recent-price XGBoost</td>
+  <td>20.84</td>
+  <td>38.00</td>
+  <td>0.691</td>
+</tr>
+<tr>
+  <td>Recent-price real GAT</td>
+  <td>21.15</td>
+  <td>69.18</td>
+  <td>0.701</td>
+</tr>
+<tr>
+  <td>TimesFM independent</td>
+  <td>18.43</td>
+  <td>35.91</td>
+  <td>0.611</td>
+</tr>
+<tr>
+  <td>TimesFM joint</td>
+  <td>17.74</td>
+  <td>35.10</td>
+  <td>0.588</td>
+</tr>
+<tr>
+  <td>TimesFM joint + flat JAO</td>
+  <td>18.00</td>
+  <td>35.49</td>
+  <td>0.596</td>
+</tr>
+</tbody>
+</table>
+<!-- end:timesfm -->
+
+<p>Adding flat lag-48 JAO features raised the joint model's MAE from 17.74 to
+18.00 overall and from 20.62 to 21.13 on the 105,120 hours with a lagged local
+JAO domain. Historical price revisions and checkpoint training-corpus overlap
+are unverified. The score is retrospective evidence with an unresolved
+pretraining contamination risk. The validation study does not establish whether
+overlap occurred. <a href="../../docs/../results/archived_experiments/timesfm_full_validation.json">Price-only result and provenance</a> · <a href="../../docs/../results/archived_experiments/timesfm_jao_validation.json">JAO ablation</a></p>
+<h3>Shared July week</h3>
+<p>Both pilots used July 8–14, 2024 and <strong>8,232</strong> matched targets. GraphPFN 1.3
+used 585 labelled fit-context nodes and one ensemble member. Physical edges
+lowered its MAE by 1.26 EUR/MWh relative to self-loops. The saved XGBoost and
+GAT references were fitted on the full training period. <a href="../../docs/../results/archived_experiments/timesfm_validation_week.json">TimesFM week</a> · <a href="../../docs/../results/archived_experiments/graphpfn_validation_week.json">GraphPFN week</a></p>
+<!-- generated:foundation_week -->
+
+<table>
+<thead>
+<tr>
+  <th>Model</th>
+  <th>Week MAE</th>
+  <th>Week RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Weekly persistence</td>
+  <td>31.88</td>
+  <td>61.26</td>
+</tr>
+<tr>
+  <td>Pooled recent-price XGBoost</td>
+  <td>20.86</td>
+  <td>39.33</td>
+</tr>
+<tr>
+  <td>Recent-price real GAT</td>
+  <td>22.29</td>
+  <td>42.52</td>
+</tr>
+<tr>
+  <td>TimesFM independent</td>
+  <td>21.41</td>
+  <td>41.77</td>
+</tr>
+<tr>
+  <td>TimesFM joint</td>
+  <td>20.10</td>
+  <td>41.78</td>
+</tr>
+<tr>
+  <td>GraphPFN self-loops</td>
+  <td>37.15</td>
+  <td>67.96</td>
+</tr>
+<tr>
+  <td>GraphPFN physical links</td>
+  <td>35.89</td>
+  <td>67.01</td>
+</tr>
+</tbody>
+</table>
+<!-- end:foundation_week -->
+
 <h2 id="controlled-study-all-20-variants">Controlled study: all 20 variants</h2>
 <p>All models use the same canonical cohort and splits. XGBoost rows distinguish
 independent per-zone models from one pooled model. MLP/GAT share weights across
@@ -805,11 +1101,11 @@ from 30.9590 to 30.9371, a 0.07% test improvement and a slight validation declin
 </table>
 <!-- end:jao -->
 
-<p>JAO inputs are n_presolved, minimum RAM/Fmax ratio and publication-domain
-presence at lag 48. Missing publications differ from published zeros; CWE and
-CORE retain dated membership. No experiment treated MaxBex as jointly feasible
-import capacity, and no detailed constraint-node model was trained. The CNEC
-and heterogeneous-graph YAML configurations remain scaffolds.</p>
+<p>These early JAO inputs use n_presolved, minimum RAM/Fmax ratio and
+publication-domain presence at lag 48. Missing publications differ from
+published zeros, and CWE and CORE retain dated membership. The later CORE
+constraint GAT and adaptive graph experiments use separate audited loaders for
+individual CNECs. <a href="../../docs/relational_forecast.md">CORE graph protocol</a> · <a href="../../docs/combined_graph_study.md">Adaptive graph protocol</a></p>
 <h2 id="france-temperature-and-pipeline-investigations">France temperature and pipeline investigations</h2>
 <p>These temperature diagnostics extend the original weekly/raw-price France
 model, not the later rich/pooled models. The current-origin proxy is one
@@ -856,15 +1152,47 @@ and is labelled an <strong>oracle</strong>, excluded from forecasting rankings.<
 
 <p>Neither temperature addition beats France persistence's 32.4425 test MAE.
 This does not imply that operational regional weather forecasts are unhelpful.</p>
-<p>The partner XGBoost reproduction scored 21.2539 test MAE across 43 legacy zones,
-close to its published 21.2433. It scored 22.0893 on France. It uses a richer
-feature set, legacy geography/fills and different tree parameters. It cannot be
-ranked against a 49-market or ten-market aggregate as if the populations match.
-The partner's published GRU+MLP score of 20.4014 belongs to that separate
-protocol; we adapted its method rather than reproducing that numerical result.
-The separate legacy persistence artifact scores 30.1463 validation and 29.0087
-test MAE over 376,680/565,320 zone-hours. It is historical context on that legacy
-cohort, not a replacement for the canonical persistence comparator of 29.1334.</p>
+<h3>Original partner pipeline</h3>
+<p>The original partner runs use 43 legacy zones, with 376,680 validation and
+565,320 test zone-hours. The legacy persistence reference scores 30.1463 on
+validation and 29.0087 on test. The local reproduction of partner per-zone
+XGBoost scored 21.2539 test MAE overall and 22.0893 in France. The partner's
+original GRU uses that same legacy cohort and a separate protocol from our
+native-GPU adaptation. <a href="../../docs/partner_pipeline_reproduction.md">Reproduction</a> · <a href="../../docs/../results/archived_experiments/README.md">Original saved partner runs</a></p>
+<!-- generated:partner_legacy -->
+
+<table>
+<thead>
+<tr>
+  <th>Original partner run</th>
+  <th>Validation MAE</th>
+  <th>Test MAE</th>
+  <th>Test spread MAE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Partner per-zone XGBoost</td>
+  <td>20.6918</td>
+  <td>21.2433</td>
+  <td>17.7777</td>
+</tr>
+<tr>
+  <td>Partner XGBoost + neighbors</td>
+  <td>20.3551</td>
+  <td>21.0322</td>
+  <td>17.4855</td>
+</tr>
+<tr>
+  <td>Partner GRU + MLP</td>
+  <td>20.0290</td>
+  <td>20.4014</td>
+  <td>15.0603</td>
+</tr>
+</tbody>
+</table>
+<!-- end:partner_legacy -->
+
 <p>The fixed-learner France sequence below tests the richer pipeline, including
 explicitly retrospective weather controls. Rows are cumulative through flows;
 the three weather rows are alternative profiles. The lag-24 all-weather case
@@ -970,8 +1298,16 @@ mixed; those source vintages still need independent publication checks.</p>
   <td>Explicit oracle diagnostic, not forecasting evidence</td>
 </tr>
 <tr>
-  <td>CNEC/heterogeneous constraint-node configurations</td>
-  <td>Planned scaffold, no completed fit</td>
+  <td>Bipartite CORE GAT, relational and adaptive graphs</td>
+  <td>Completed validation-only experiments. Historical JAO, weather and load availability remains conditional</td>
+</tr>
+<tr>
+  <td>TimesFM</td>
+  <td>Full-validation and shared-week scores. Checkpoint pretraining overlap and archived price revisions are unresolved</td>
+</tr>
+<tr>
+  <td>GraphPFN</td>
+  <td>One-week, fixed-context pilot. Use the within-pilot topology contrast</td>
 </tr>
 <tr>
   <td>France/synthetic smoke runs</td>
@@ -1001,7 +1337,8 @@ forecast archive; retrospective ERA5 is not such an archive.</p>
 .venv/bin/python scripts/experiments/review_partner_gru.py
 </code></pre>
 <p>The browser version is <a href="../../docs/../reports/experiments/experiments.html">reports/experiments/experiments.html</a>.
-Its source manifest records the result and code hashes used for this compilation.
+Its source manifest records result and code hashes plus the commit origins for
+the archived foundation-model and legacy partner summaries.
 The <a href="../../docs/README.md">documentation index</a> separates current guidance from historical
 protocols; <a href="../../docs/../results/README.md">results/README.md</a> indexes raw scores and source
 evidence. Original Parquets, tensor caches, models and training code are unchanged.

@@ -1,0 +1,12 @@
+[Unit]
+Description=Retrieve day-ahead outcomes and update experiment reports
+
+[Timer]
+OnCalendar=*-*-* 12:45:00 Europe/Brussels
+OnCalendar=*-*-* 13..22:20:00 Europe/Brussels
+OnCalendar=*-*-* 08:20:00 Europe/Brussels
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,296 @@
+[
+  {
+    "zone": "AT",
+    "eic": "10YAT-APG------L",
+    "group": "AT",
+    "name": "Austria (AT)"
+  },
+  {
+    "zone": "BE",
+    "eic": "10YBE----------2",
+    "group": "BE",
+    "name": "Belgium (BE)"
+  },
+  {
+    "zone": "BG",
+    "eic": "10YCA-BULGARIA-R",
+    "group": "BG",
+    "name": "Bulgaria (BG)"
+  },
+  {
+    "zone": "CH",
+    "eic": "10YCH-SWISSGRIDZ",
+    "group": "CH",
+    "name": "Switzerland (CH)"
+  },
+  {
+    "zone": "CZ",
+    "eic": "10YCZ-CEPS-----N",
+    "group": "CZ",
+    "name": "Czech Republic (CZ)"
+  },
+  {
+    "zone": "DE_LU",
+    "eic": "10Y1001A1001A82H",
+    "group": "DE-LU",
+    "name": "DE-LU"
+  },
+  {
+    "zone": "DK_1",
+    "eic": "10YDK-1--------W",
+    "group": "DK",
+    "name": "DK1"
+  },
+  {
+    "zone": "DK_2",
+    "eic": "10YDK-2--------M",
+    "group": "DK",
+    "name": "DK2"
+  },
+  {
+    "zone": "EE",
+    "eic": "10Y1001A1001A39I",
+    "group": "EE",
+    "name": "Estonia (EE)"
+  },
+  {
+    "zone": "ENTSOE:10Y1001A1001A885",
+    "eic": "10Y1001A1001A885",
+    "group": "IT",
+    "name": "IT-SACOAC"
+  },
+  {
+    "zone": "ENTSOE:10Y1001A1001A893",
+    "eic": "10Y1001A1001A893",
+    "group": "IT",
+    "name": "IT-SACODC"
+  },
+  {
+    "zone": "ENTSOE:10Y1001C--000182",
+    "eic": "10Y1001C--000182",
+    "group": "UA",
+    "name": "UA-IPS"
+  },
+  {
+    "zone": "ENTSOE:10Y1001C--00100H",
+    "eic": "10Y1001C--00100H",
+    "group": "XK",
+    "name": "Kosovo (XK)"
+  },
+  {
+    "zone": "ENTSOE:10YAL-KESH-----5",
+    "eic": "10YAL-KESH-----5",
+    "group": "AL",
+    "name": "Albania (AL)"
+  },
+  {
+    "zone": "ENTSOE:50Y0JVU59B4JWQCU",
+    "eic": "50Y0JVU59B4JWQCU",
+    "group": "NO2NSL",
+    "name": "NO2NSL"
+  },
+  {
+    "zone": "ES",
+    "eic": "10YES-REE------0",
+    "group": "ES",
+    "name": "Spain (ES)"
+  },
+  {
+    "zone": "FI",
+    "eic": "10YFI-1--------U",
+    "group": "FI",
+    "name": "Finland (FI)"
+  },
+  {
+    "zone": "FR",
+    "eic": "10YFR-RTE------C",
+    "group": "FR",
+    "name": "France (FR)"
+  },
+  {
+    "zone": "GR",
+    "eic": "10YGR-HTSO-----Y",
+    "group": "GR",
+    "name": "Greece (GR)"
+  },
+  {
+    "zone": "HR",
+    "eic": "10YHR-HEP------M",
+    "group": "HR",
+    "name": "Croatia (HR)"
+  },
+  {
+    "zone": "HU",
+    "eic": "10YHU-MAVIR----U",
+    "group": "HU",
+    "name": "Hungary (HU)"
+  },
+  {
+    "zone": "IE_SEM",
+    "eic": "10Y1001A1001A59C",
+    "group": "SEM",
+    "name": "IE(SEM)"
+  },
+  {
+    "zone": "IT_CALA",
+    "eic": "10Y1001C--00096J",
+    "group": "IT",
+    "name": "IT-Calabria"
+  },
+  {
+    "zone": "IT_CNOR",
+    "eic": "10Y1001A1001A70O",
+    "group": "IT",
+    "name": "IT-Centre-North"
+  },
+  {
+    "zone": "IT_CSUD",
+    "eic": "10Y1001A1001A71M",
+    "group": "IT",
+    "name": "IT-Centre-South"
+  },
+  {
+    "zone": "IT_NORD",
+    "eic": "10Y1001A1001A73I",
+    "group": "IT",
+    "name": "IT-North"
+  },
+  {
+    "zone": "IT_SARD",
+    "eic": "10Y1001A1001A74G",
+    "group": "IT",
+    "name": "IT-Sardinia"
+  },
+  {
+    "zone": "IT_SICI",
+    "eic": "10Y1001A1001A75E",
+    "group": "IT",
+    "name": "IT-Sicily"
+  },
+  {
+    "zone": "IT_SUD",
+    "eic": "10Y1001A1001A788",
+    "group": "IT",
+    "name": "IT-South"
+  },
+  {
+    "zone": "LT",
+    "eic": "10YLT-1001A0008Q",
+    "group": "LT",
+    "name": "Lithuania (LT)"
+  },
+  {
+    "zone": "LV",
+    "eic": "10YLV-1001A00074",
+    "group": "LV",
+    "name": "Latvia (LV)"
+  },
+  {
+    "zone": "ME",
+    "eic": "10YCS-CG-TSO---S",
+    "group": "ME",
+    "name": "Montenegro (ME)"
+  },
+  {
+    "zone": "MK",
+    "eic": "10YMK-MEPSO----8",
+    "group": "MK",
+    "name": "North Macedonia (MK)"
+  },
+  {
+    "zone": "NL",
+    "eic": "10YNL----------L",
+    "group": "NL",
+    "name": "Netherlands (NL)"
+  },
+  {
+    "zone": "NO_1",
+    "eic": "10YNO-1--------2",
+    "group": "NO",
+    "name": "NO1"
+  },
+  {
+    "zone": "NO_2",
+    "eic": "10YNO-2--------T",
+    "group": "NO",
+    "name": "NO2"
+  },
+  {
+    "zone": "NO_3",
+    "eic": "10YNO-3--------J",
+    "group": "NO",
+    "name": "NO3"
+  },
+  {
+    "zone": "NO_4",
+    "eic": "10YNO-4--------9",
+    "group": "NO",
+    "name": "NO4"
+  },
+  {
+    "zone": "NO_5",
+    "eic": "10Y1001A1001A48H",
+    "group": "NO",
+    "name": "NO5"
+  },
+  {
+    "zone": "PL",
+    "eic": "10YPL-AREA-----S",
+    "group": "PL",
+    "name": "Poland (PL)"
+  },
+  {
+    "zone": "PT",
+    "eic": "10YPT-REN------W",
+    "group": "PT",
+    "name": "Portugal (PT)"
+  },
+  {
+    "zone": "RO",
+    "eic": "10YRO-TEL------P",
+    "group": "RO",
+    "name": "Romania (RO)"
+  },
+  {
+    "zone": "RS",
+    "eic": "10YCS-SERBIATSOV",
+    "group": "RS",
+    "name": "Serbia (RS)"
+  },
+  {
+    "zone": "SE_1",
+    "eic": "10Y1001A1001A44P",
+    "group": "SE",
+    "name": "SE1"
+  },
+  {
+    "zone": "SE_2",
+    "eic": "10Y1001A1001A45N",
+    "group": "SE",
+    "name": "SE2"
+  },
+  {
+    "zone": "SE_3",
+    "eic": "10Y1001A1001A46L",
+    "group": "SE",
+    "name": "SE3"
+  },
+  {
+    "zone": "SE_4",
+    "eic": "10Y1001A1001A47J",
+    "group": "SE",
+    "name": "SE4"
+  },
+  {
+    "zone": "SI",
+    "eic": "10YSI-ELES-----O",
+    "group": "SI",
+    "name": "Slovenia (SI)"
+  },
+  {
+    "zone": "SK",
+    "eic": "10YSK-SEPS-----K",
+    "group": "SK",
+    "name": "Slovakia (SK)"
+  }
+]

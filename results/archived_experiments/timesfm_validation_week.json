@@ -1,0 +1,80 @@
+{
+  "cohort": {
+    "start": "2024-07-08",
+    "end_exclusive": "2024-07-15",
+    "partition": "validation",
+    "markets": 49,
+    "rows": 8232,
+    "valid_targets": 8232,
+    "paired_targets": 8232
+  },
+  "dataset_fingerprint": "6f5f86c54cbcc7545f4cef01602c863b50e2cb6a436f7ff508d33b1f7f3aaa1f",
+  "tensor_cache": "db9c746adbdffe0aecb90d8ba86adbe4cdfc9f101a82b8c2055cee2de8ac4408",
+  "reference_fingerprint": "8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b",
+  "reference_prediction_sha256": {
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/pooled_xgb_recent_none_seed224/predictions_val.parquet": "c1e7927842c924bcbce31de21eab9e96de2cb84278c61e4d8960cb26a539d6c1",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/pooled_xgb_recent_none_seed225/predictions_val.parquet": "6fdb64e77b3cfd0db3846e911b02055c10e86c1888586829bfacd6cb51153022",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/pooled_xgb_recent_none_seed226/predictions_val.parquet": "ffdecf6a6ec6644755a8cd3269555595afcab11cc4c1124d5c60ed38faec9309",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/pooled_xgb_recent_none_seed227/predictions_val.parquet": "32b387f56643f8511db70c6161eb04e4395b6014f759d1b7fdea676fc8fd2763",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/pooled_xgb_recent_none_seed228/predictions_val.parquet": "932dc0d673575559b08b477e451faa5ae7e7ab47d7ffb0d06ff062abda4ad31f",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/gat_recent_real_seed224/predictions_val.parquet": "5617f5d38a0bb6483193985979d7f7d0156b788001025e7bc173256ce65d51c3",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/gat_recent_real_seed225/predictions_val.parquet": "87c17d5d6dc2269161ce2a4ba81e80573aa57cfbbe47362506b9a117c11ce976",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/gat_recent_real_seed226/predictions_val.parquet": "20db9cb98653e2033815d703019ab9eedc364cdd5d98a27c070949ea22ca513e",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/gat_recent_real_seed227/predictions_val.parquet": "72bf57911b22142b28ac00ef9daa1954ae675df5bdceb65a4465db8910c69cff",
+    "runs/airport_temperature/8be91e76858aa68c606def353b59030b5b96c6ef94904da15287b663779e4d6b/full/gat_recent_real_seed228/predictions_val.parquet": "156abdec68d3df988375fc17eaed63f8b92de2c481bdab61ffb1ad99bb3a66cc"
+  },
+  "pilot_code_sha256": {
+    "foundation_pilot_data.py": "2dbc9d56f957e15a22de7f2af597bdd0050b64f35089e58bbbc0db487d5c7b51",
+    "pilot_timesfm.py": "ba4427eb256f5b9914dfbf7b9988fd64b36368791c064f4b68dc6c4795ba3d20"
+  },
+  "protocol": "All scores on common finite weekly-history targets. Saved reference scores average five seeds. Archived prices follow auction timing and historical price revisions remain unverified.",
+  "scores": {
+    "pooled_xgb_recent_none": {
+      "mae": 20.85603568431373,
+      "rmse": 39.33315147980814,
+      "rmae": 0.6542496998473122
+    },
+    "gat_recent_real": {
+      "mae": 22.288571930043013,
+      "rmse": 42.51876909723874,
+      "rmae": 0.699188077541674
+    },
+    "weekly_persistence": {
+      "mae": 31.87779175012397,
+      "rmse": 61.25676684339597,
+      "rmae": 1.0
+    },
+    "timesfm_univariate": {
+      "mae": 21.40616085671501,
+      "rmse": 41.76830859849911,
+      "rmae": 0.6715070173150173
+    },
+    "timesfm_joint": {
+      "mae": 20.09884870658444,
+      "rmse": 41.777086611582455,
+      "rmae": 0.6304968946447265
+    }
+  },
+  "details": {
+    "model": "google/timesfm-3.0-pytorch",
+    "upstream": "918df02c9d366b2145bc5876135fa2131d3ed2a6",
+    "checkpoint_revision": "43046b85ec22d584a13f8098c2ed39c889e129c2",
+    "checkpoint_sha256": {
+      "config.json": "ff17bbc07b792c5a904cca265b8468579d736a4fe84981da25eb871b0a125bc6",
+      "model.safetensors": "a7592b0a8432baee54483254e5647856911ce69e09d09a9bb65904b2d98f17da"
+    },
+    "device": "AMD Radeon RX 9070 XT",
+    "torch": "2.14.1+rocm7.2",
+    "hip": "7.2.53211",
+    "peak_gpu_gib": 1.3813776969909668,
+    "runtime_seconds": 12.355528697022237,
+    "context_hours": 336,
+    "imputed_history_cells": 0,
+    "last_known_price_fallback_hours_by_zone": {},
+    "last_known_price_fallback_valid_targets": 0,
+    "inputs": "Price only. Context ends before day D in local delivery time. Prices for D-1 are assumed known at noon by auction convention. History interpolation uses only that context.",
+    "forecast": "Official pretrained median with symmetric averaging and signed predictions. Joint mode attends over all available markets in one example.",
+    "pretraining_scope": "The checkpoint training-corpus description does not rule out overlap with source electricity-price series. This is a retrospective pilot."
+  },
+  "predictions_sha256": "263624428824f8063b41a33305dc6d5b6433ce0a42e5aa37b76abe5c80861a52"
+}

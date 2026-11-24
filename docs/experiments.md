@@ -1,29 +1,34 @@
 # European electricity-price forecasting: experiment record
 
-This is the current consolidated account of the completed experiments, including
-negative results and rejected runs. It replaces scattered summaries as the
-starting point for reading results. Detailed protocols, original metrics and
-milestone snapshots remain linked for reproduction. Tables are rebuilt from
-saved results; no training or model selection occurs during report generation.
+The completed forecasting experiments through November 19, 2026 are collected
+here, including null results and rejected runs. The tables use saved results
+from the main experiment history, the foundation-model branches and the partner
+pipeline. The report links to protocols, score files and milestone snapshots.
 
 ## What we have learned
 
-Recent auction prices explain most of the initial improvement over weekly
-persistence. Once models share strong recent-price inputs and pool training
-across markets, XGBoost, MLP and static GAT are much closer than the first
-per-zone comparison suggested. Graph improvements are modest and vary by market.
-
-Our original GRU experiments need correction: their saved scores are reproducible,
-but the fused ROCm GRU disagrees with CPU on shuffled training-shaped batches.
-Those scores cannot establish that temporal learning is worse. The newer
-partner-inspired GRU uses a verified native GPU path and achieves about
-21 EUR/MWh test MAE, close to strong static models. Its recipe differs in several
-ways, so the difference cannot be attributed to one change.
-
-Weather and constraint results are mixed. We have retrospective ERA5-lineage
-weather and airport observations, **not historical operational weather forecasts**.
-JAO constraints entered as flat summaries; no completed experiment used CNECs as
-extra graph nodes. None of these results certifies a production-time noon forecast.
+- **Recent auction prices account for the largest measured feature gain.** In
+  the France pipeline comparison, adding guarded prior-day auction prices
+  lowered test MAE from 32.09 to 22.20 EUR/MWh. With strong recent-price features
+  and pooled training, XGBoost, MLP and static GAT were much closer.
+- **Physical links showed the clearest graph signal.** In the adaptive study,
+  the physical-link model beat learned all-zone links by 0.378 EUR/MWh overall.
+  The bipartite CNEC GAT gained 0.026 EUR/MWh over shuffled links on CORE hours,
+  with a 95% interval spanning zero. Cross-zone GraphSAGE gained 0.020 over its
+  local control on CORE hours. The full SQL XGBoost comparator still had lower
+  MAE on that cohort.
+- **Joint TimesFM had the lowest saved 49-market full-validation MAE, 17.74 EUR/MWh.**
+  Weekly persistence scored 30.18 on the same 428,213 hours. Checkpoint
+  pretraining overlap with these series is unresolved. GraphPFN improved with
+  physical links in the shared-week pilot and still trailed the saved baselines.
+- **Weather and JAO gains were small or inconsistent.** The weather inputs were
+  retrospective ERA5-lineage fields or airport observations. Archived
+  operational weather forecasts were unavailable. The tests span flat JAO
+  summaries, individual constraint nodes and directional margin features.
+- **The GRU backend changes what we can conclude.** The original fused ROCm
+  runs fail the CPU reference check on shuffled training-shaped batches. The
+  corrected partner-inspired native run passes numerical checks and scores
+  21.07 all-target test MAE. It uses a different history and loss recipe.
 
 ## Data, forecast contract and metrics
 
@@ -73,17 +78,133 @@ not its publication time. All conditional columns remain conditional here.
 | Legacy persistence reference | 43 scored legacy zones | Earlier persistence on the original pipeline cohort | [Saved result](../results/c1_persistence.json) |
 | JAO summaries | Seven covered markets; one seed | Three lag-48 flat constraint summaries | [Constraints](boosting_constraints.md) |
 | Early temperature diagnostics | France; two additions to one baseline | Current-origin ERA5 proxy and explicit perfect-weather oracle | [Temperature](temperature_experiments.md) |
-| Partner XGBoost and France sequence | 43 scored legacy zones; eight France profiles | Reproduction, reaggregation and pipeline differences | [Reproduction](partner_pipeline_reproduction.md), [sequence](pipeline_comparison.md) |
+| Original partner models and France sequence | Three legacy models on 43 zones; local XGBoost reproduction; eight France profiles | Own-zone and neighbor XGBoost, GRU+MLP, reproduction and feature timing | [Reproduction](partner_pipeline_reproduction.md), [sequence](pipeline_comparison.md) |
 | First canonical suite | Five experiment jobs; one seed | Per-zone XGBoost and real/shuffled GAT | [Suite](vibing_suite_results.md) |
 | Controlled study | 20 variants × five seeds = 100 jobs | Pooled controls, feature/topology ablations, original GRU+MLP/GAT | [Design](controlled_study.md), [results](controlled_study_comparison.md) |
 | Airport observations | Nine variants × five seeds = 45 jobs | Price-only, latest temperature and trailing temperature history | [Airport review](airport_temperature_results.md) |
 | Partner-inspired residual GRU | One accepted canonical full fit; seed 0 | Multivariate histories, persistence residual and residual-contrast loss | [Method](partner_gru.md), [results](partner_gru_comparison.md) |
+| TimesFM 3.0 | Independent/joint forecasts on the shared week and full validation; joint JAO ablation on full validation | Price-history context, cross-market prediction and flat JAO covariates | [Foundation-model results](#foundation-model-pilots) |
+| GraphPFN 1.3 | Two topologies on the shared validation week | Physical edges versus self-loops with fixed labelled context | [Foundation-model results](#foundation-model-pilots) |
+| CORE constraint GAT | Four variants × five seeds = 20 jobs | Flat JAO, zone–constraint message passing and shuffled constraint links | [CORE results](core_constraint_validation.md) |
+| Relational and adaptive graphs | Nine variants × five seeds = 45 jobs | GraphSAGE versus SQL, physical versus learned links, real versus shuffled margins | [Combined results](combined_graph_validation.md) |
 
-The two five-seed studies share two variant names: 27 distinct names across
-145 jobs, not 145 different model designs. A per-zone XGBoost job fits separate
-models for the scored markets. The first suite and the newer residual GRU are
-additional programmes. Smoke fits, bootstrap resamples and checkpoint reloads
-are correctness checks, not additional scientific experiments.
+The original controlled and airport studies share two variant names and cover
+27 distinct names across 145 jobs. A per-zone XGBoost job fits separate models
+for the scored markets. Smoke fits and checkpoint reloads serve as correctness
+checks. Bootstrap resamples quantify uncertainty in paired comparisons.
+
+## CORE constraint GAT
+
+The study uses one node per original CORE constraint observation. Signed PTDFs
+connect constraints to priced zones and RAM, Fmax and RAM/Fmax describe each
+constraint. The archived domain comes from exactly 48 elapsed hours before
+delivery. Fit spans June 2022–March 2024. Results below use the full April
+2024–March 2025 validation year, with 428,427 valid priced zone-hours overall
+and 105,120 on the CORE-covered subset.
+
+<!-- generated:core_graph -->
+
+| Variant | All-market MAE ± seed SD | CORE MAE |
+| --- | --- | --- |
+| Interconnector GAT | 21.637 ± 0.121 | 24.573 |
+| Interconnector GAT + flat JAO | 21.659 ± 0.144 | 25.077 |
+| Bipartite GAT + flat JAO | 22.284 ± 0.200 | 24.622 |
+| Bipartite GAT + flat JAO, shuffled links | 22.312 ± 0.192 | 24.648 |
+
+<!-- end:core_graph -->
+
+The interconnector GAT with price and calendar inputs had the lowest overall
+and CORE MAE. Correct PTDF assignments improved CORE MAE by **0.026 EUR/MWh**
+over shuffled links, with a paired-week 95% interval of −0.087 to +0.135.
+The archive does not verify which domain revision was available before noon.
+[Protocol](relational_forecast.md) · [Verified results and contrasts](core_constraint_validation.md)
+
+## Relational and adaptive zone graphs
+
+The relational study compared GraphSAGE with pooled XGBoost using SQL
+aggregates. The full SQL and relational models drew from the same as-of
+windows for prices, weather, archived load, physical flows and JAO summaries.
+Local GraphSAGE kept incident border observations and blocked cross-zone
+messages. The adaptive study compared physical links, uniform pooling and
+learned links, then added real or shuffled directional CORE margin features.
+Both studies calibrated stopping on January–March 2024, refit through March,
+and evaluated the same full-validation targets as the CORE constraint GAT.
+
+<!-- generated:combined_graph -->
+
+| Variant | Fit starts | All-market MAE | CORE MAE | Spread MAE |
+| --- | --- | --- | --- | --- |
+| Price-only SQL XGBoost | 2016-01-01 | 20.717 | 23.650 | 16.513 |
+| Full SQL XGBoost | 2016-01-01 | 20.681 | 23.674 | 16.585 |
+| Local relational GraphSAGE | 2016-01-01 | 22.252 | 25.101 | 17.457 |
+| Cross-zone relational GraphSAGE | 2016-01-01 | 22.235 | 25.081 | 17.446 |
+| Physical links | 2022-06-09 | 21.662 | 24.769 | 16.879 |
+| Uniform all-zone links | 2022-06-09 | 22.045 | 25.353 | 17.107 |
+| Learned links | 2022-06-09 | 22.041 | 25.191 | 17.290 |
+| Learned links + CORE margins | 2022-06-09 | 22.040 | 25.190 | 17.288 |
+| Learned links + shuffled margins | 2022-06-09 | 22.041 | 25.193 | 17.290 |
+
+<!-- end:combined_graph -->
+
+Full SQL XGBoost had the lowest overall MAE in this suite, **20.681 EUR/MWh**,
+and reduced error by **31.5%** versus weekly persistence on matched rows.
+GraphSAGE with cross-zone messages improved CORE MAE by 0.020 versus the local
+control (95% interval +0.008 to +0.030). Its overall gain was 0.017, with an
+interval spanning zero. In the adaptive family, physical links beat learned
+links by 0.378 overall (95% interval +0.297 to +0.465). Margins added less than
+0.001 of overall improvement over price-only learned links. The two families
+used different fit windows. [Run guide](combined_graph_study.md) · [Verified results and contrasts](combined_graph_validation.md)
+
+## Foundation-model pilots
+
+### Full validation
+
+TimesFM 3.0 uses a pretrained checkpoint and 336 hours of price history. The
+independent variant forecasts each market separately. The joint variant attends
+across markets. All rows in this table share **428,213** finite weekly-history
+targets across the full validation year. Reference XGBoost and GAT use recent
+price/calendar inputs and five-seed saved results.
+
+<!-- generated:timesfm -->
+
+| Model | Validation MAE | Validation RMSE | Relative MAE |
+| --- | --- | --- | --- |
+| Weekly persistence | 30.18 | 54.64 | 1.000 |
+| Pooled recent-price XGBoost | 20.84 | 38.00 | 0.691 |
+| Recent-price real GAT | 21.15 | 69.18 | 0.701 |
+| TimesFM independent | 18.43 | 35.91 | 0.611 |
+| TimesFM joint | 17.74 | 35.10 | 0.588 |
+| TimesFM joint + flat JAO | 18.00 | 35.49 | 0.596 |
+
+<!-- end:timesfm -->
+
+Adding flat lag-48 JAO features raised the joint model's MAE from 17.74 to
+18.00 overall and from 20.62 to 21.13 on the 105,120 hours with a lagged local
+JAO domain. Historical price revisions and checkpoint training-corpus overlap
+are unverified. The score is retrospective evidence with an unresolved
+pretraining contamination risk. The validation study does not establish whether
+overlap occurred. [Price-only result and provenance](../results/archived_experiments/timesfm_full_validation.json) · [JAO ablation](../results/archived_experiments/timesfm_jao_validation.json)
+
+### Shared July week
+
+Both pilots used July 8–14, 2024 and **8,232** matched targets. GraphPFN 1.3
+used 585 labelled fit-context nodes and one ensemble member. Physical edges
+lowered its MAE by 1.26 EUR/MWh relative to self-loops. The saved XGBoost and
+GAT references were fitted on the full training period. [TimesFM week](../results/archived_experiments/timesfm_validation_week.json) · [GraphPFN week](../results/archived_experiments/graphpfn_validation_week.json)
+
+<!-- generated:foundation_week -->
+
+| Model | Week MAE | Week RMSE |
+| --- | --- | --- |
+| Weekly persistence | 31.88 | 61.26 |
+| Pooled recent-price XGBoost | 20.86 | 39.33 |
+| Recent-price real GAT | 22.29 | 42.52 |
+| TimesFM independent | 21.41 | 41.77 |
+| TimesFM joint | 20.10 | 41.78 |
+| GraphPFN self-loops | 37.15 | 67.96 |
+| GraphPFN physical links | 35.89 | 67.01 |
+
+<!-- end:foundation_week -->
 
 ## Controlled study: all 20 variants
 
@@ -300,11 +421,11 @@ from 30.9590 to 30.9371, a 0.07% test improvement and a slight validation declin
 
 <!-- end:jao -->
 
-JAO inputs are n_presolved, minimum RAM/Fmax ratio and publication-domain
-presence at lag 48. Missing publications differ from published zeros; CWE and
-CORE retain dated membership. No experiment treated MaxBex as jointly feasible
-import capacity, and no detailed constraint-node model was trained. The CNEC
-and heterogeneous-graph YAML configurations remain scaffolds.
+These early JAO inputs use n_presolved, minimum RAM/Fmax ratio and
+publication-domain presence at lag 48. Missing publications differ from
+published zeros, and CWE and CORE retain dated membership. The later CORE
+constraint GAT and adaptive graph experiments use separate audited loaders for
+individual CNECs. [CORE graph protocol](relational_forecast.md) · [Adaptive graph protocol](combined_graph_study.md)
 
 ## France temperature and pipeline investigations
 
@@ -327,15 +448,24 @@ and is labelled an **oracle**, excluded from forecasting rankings.
 Neither temperature addition beats France persistence's 32.4425 test MAE.
 This does not imply that operational regional weather forecasts are unhelpful.
 
-The partner XGBoost reproduction scored 21.2539 test MAE across 43 legacy zones,
-close to its published 21.2433. It scored 22.0893 on France. It uses a richer
-feature set, legacy geography/fills and different tree parameters. It cannot be
-ranked against a 49-market or ten-market aggregate as if the populations match.
-The partner's published GRU+MLP score of 20.4014 belongs to that separate
-protocol; we adapted its method rather than reproducing that numerical result.
-The separate legacy persistence artifact scores 30.1463 validation and 29.0087
-test MAE over 376,680/565,320 zone-hours. It is historical context on that legacy
-cohort, not a replacement for the canonical persistence comparator of 29.1334.
+### Original partner pipeline
+
+The original partner runs use 43 legacy zones, with 376,680 validation and
+565,320 test zone-hours. The legacy persistence reference scores 30.1463 on
+validation and 29.0087 on test. The local reproduction of partner per-zone
+XGBoost scored 21.2539 test MAE overall and 22.0893 in France. The partner's
+original GRU uses that same legacy cohort and a separate protocol from our
+native-GPU adaptation. [Reproduction](partner_pipeline_reproduction.md) · [Original saved partner runs](../results/archived_experiments/README.md)
+
+<!-- generated:partner_legacy -->
+
+| Original partner run | Validation MAE | Test MAE | Test spread MAE |
+| --- | --- | --- | --- |
+| Partner per-zone XGBoost | 20.6918 | 21.2433 | 17.7777 |
+| Partner XGBoost + neighbors | 20.3551 | 21.0322 | 17.4855 |
+| Partner GRU + MLP | 20.0290 | 20.4014 | 15.0603 |
+
+<!-- end:partner_legacy -->
 
 The fixed-learner France sequence below tests the richer pipeline, including
 explicitly retrospective weather controls. Rows are cumulative through flows;
@@ -374,7 +504,9 @@ mixed; those source vintages still need independent publication checks.
 | First partner-style fused GRU | Rejected; preserved for backend diagnosis |
 | Corrected partner-inspired GRU | Accepted numerical checks; one seed, conditional ERA5/vintages, no isolated weather effect |
 | Perfect target-hour temperature | Explicit oracle diagnostic, not forecasting evidence |
-| CNEC/heterogeneous constraint-node configurations | Planned scaffold, no completed fit |
+| Bipartite CORE GAT, relational and adaptive graphs | Completed validation-only experiments. Historical JAO, weather and load availability remains conditional |
+| TimesFM | Full-validation and shared-week scores. Checkpoint pretraining overlap and archived price revisions are unresolved |
+| GraphPFN | One-week, fixed-context pilot. Use the within-pilot topology contrast |
 | France/synthetic smoke runs | Correctness gates, not scientific performance estimates |
 
 The next controlled temporal test should rerun our original GRU+MLP and
@@ -404,7 +536,8 @@ forecast archive; retrospective ERA5 is not such an archive.
 ```
 
 The browser version is [reports/experiments/experiments.html](../reports/experiments/experiments.html).
-Its source manifest records the result and code hashes used for this compilation.
+Its source manifest records result and code hashes plus the commit origins for
+the archived foundation-model and legacy partner summaries.
 The [documentation index](README.md) separates current guidance from historical
 protocols; [results/README.md](../results/README.md) indexes raw scores and source
 evidence. Original Parquets, tensor caches, models and training code are unchanged.

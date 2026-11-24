@@ -48,3 +48,5 @@ ignore_missing_imports = true
 [tool.setuptools.packages.find]
 include = ["epgnn", "epgnn.*"]
 
+[tool.setuptools.package-data]
+"epgnn.forecast_service" = ["zones.json"]

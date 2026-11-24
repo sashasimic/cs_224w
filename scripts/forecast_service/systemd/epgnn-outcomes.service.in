@@ -1,0 +1,13 @@
+[Unit]
+Description=EPGNN ENTSO-E outcomes and scoring
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO@
+Environment=ENTSOE_TOKEN_FILE=%h/.config/epgnn-forecast/entsoe.token
+ExecStart=@REPO@/.venv/bin/python -m epgnn.forecast_service outcome-tick
+Nice=10
+CPUWeight=25
+UMask=0077
+TimeoutStartSec=360
