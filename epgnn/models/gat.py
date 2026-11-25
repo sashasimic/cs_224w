@@ -1,15 +1,14 @@
-"""Checkpoints 3, 3', 4a: GRU + GATv2 on the zone graph.
+"""Checkpoints 3 and 3': GRU + GATv2 on the zone graph, without constraint nodes.
 
-One graph per delivery day: zone nodes with HistoryGRU summaries + day-D inputs, interconnector edges
-(epgnn.data.graph.zone_graph; `graph: shuffled` for the control) with EDGE_FEATURES, GATv2Conv layers,
-MLP head -> H hourly residual targets per zone (epgnn.data.scaling.residual_target), masked loss +
-spread term (epgnn.train).
-
-Config keys: feature_set ("own" | "own+jao" for 4a), graph ("interconnects" | "shuffled"), history_window,
-hidden, layers, heads, epochs, lr, pretrain ({splits: [pretrain]} then fine-tune on train), seed.
+The same model as epgnn.models.hetero with `constraints: none`; kept as a model name so the configs read
+naturally. `graph: interconnects` is checkpoint 3, `graph: shuffled` the rewired control.
 """
 import numpy as np
 
+from epgnn.models import hetero
+
 
 def run(cfg: dict, fit_splits: list[str], eval_splits: list[str]) -> dict[str, np.ndarray]:
-    raise NotImplementedError("checkpoint 3: see module docstring; owner B")
+    out = hetero.run({**cfg, "constraints": "none"}, fit_splits, eval_splits)
+    run.info = hetero.run.info  # type: ignore[attr-defined]
+    return out

@@ -1,16 +1,20 @@
-# Checkpoint 3: GRU + GATv2 on the interconnector graph.
+# Checkpoint 3: GRU + GATv2 on the interconnector graph. Same encoder, head, target and loss as
+# checkpoint 2.5 (c25_gru_mlp), so (3 - 2.5) isolates the zone-to-zone messages.
 model: gat
 feature_set: own
 graph: interconnects
 history_window: 168
 hidden: 64
-layers: 2
+mlp_hidden: 128
 heads: 4
-pretrain: {splits: [pretrain]}
-fit_splits: [train]
+layers: 2
+dropout: 0.1
+fit_splits: [pretrain, train]
 eval_splits: [val, test]
 epochs: 50
 lr: 0.001
 patience: 8
+batch_days: 16
 spread_weight: 0.5
 seed: 0
+device: cpu          # sparse graph ops are faster on CPU than on MPS for this size

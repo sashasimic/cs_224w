@@ -42,7 +42,7 @@ class GRUMLP(nn.Module):
         b, z, w, f = hist.shape
         return self.enc(hist.reshape(b * z, w, f)).reshape(b, z, -1)
 
-    def forward(self, hist: torch.Tensor, xday: torch.Tensor, extra: dict) -> torch.Tensor:
+    def forward(self, hist: torch.Tensor, xday: torch.Tensor, extra: dict, batch: dict | None = None) -> torch.Tensor:
         h = self.encode(hist)                                                   # (B, Z, hidden)
         hh = h.unsqueeze(2).expand(-1, -1, xday.shape[2], -1)                   # (B, Z, H, hidden)
         return self.head(torch.cat([hh, xday], dim=-1)).squeeze(-1)             # (B, Z, H)

@@ -33,5 +33,5 @@ ignore_missing_imports = true
 
 # pandas / pyarrow / numpy stubs are not installed in the dev environment.
 [[tool.mypy.overrides]]
-module = ["pandas.*", "pyarrow.*", "numpy.*"]
+module = ["pandas.*", "pyarrow.*", "numpy.*", "torch_geometric.*"]
 ignore_missing_imports = true
