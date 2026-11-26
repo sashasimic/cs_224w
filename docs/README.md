@@ -15,6 +15,9 @@ relational and adaptive graphs, and the earlier controls and backend audits.
 | [Metrics and daily deployment](metrics_and_live_forecasting.md) | Relative errors and a prospective forecasting service |
 | [Setup](setup.md) | Virtual environment, ROCm and source locations |
 | [Code walkthrough](code_structure.md) | Package responsibilities and reproducibility |
+| [Architecture overview](code_structure.md#architecture-overview) | Research pipeline and the four graph architectures |
+| [Architecture diagrams](architecture.html) | Standalone HTML guide to the pipeline, models and forecast timing |
+| [Data transformation walkthrough](code_structure.md#data-transformation-walkthrough) | Source keys, timing, masks and a worked France forecast hour |
 | [Dataset construction](forecast_dataset.md) | Immutable build contract, provenance and audit/build/validate commands |
 | [Investigation notebook](../reports/investigation/README.md) | Executed visual report and editable country/week diagnostics |
 

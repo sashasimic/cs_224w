@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day-ahead electricity price forecasting architecture</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --paper: #141618;
+      --panel: #191c1f;
+      --node: #202429;
+      --ink: #f0f1f3;
+      --muted: #afb7c1;
+      --line: #3c444d;
+      --wire: #97a6b6;
+      --accent: #afcfff;
+      --soft: #222d3a;
+      --warm: #30251f;
+      --warm-ink: #ffaf79;
+      font-family: system-ui, sans-serif;
+      line-height: 1.55;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: var(--accent); text-underline-offset: .2em; }
+    a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+    code { font-size: .92em; overflow-wrap: anywhere; }
+    h1, h2, h3, h4, p, figure, dl, dd { margin: 0; }
+    h1, h2, h3 { line-height: 1.1; letter-spacing: -.035em; }
+    h1 { max-width: 16ch; font-size: clamp(2.35rem, 5vw, 4.3rem); }
+    h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); }
+    h3 { font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
+    .wrap { width: min(100% - 2.5rem, 74rem); margin-inline: auto; }
+    .masthead { border-bottom: 1px solid var(--line); }
+    .masthead nav { display: flex; flex-wrap: wrap; gap: .55rem 1.5rem; padding-block: 1.25rem; font-size: .92rem; }
+    .hero { display: grid; grid-template-columns: 3fr 2fr; align-items: center; gap: 2rem; padding-block: clamp(1.25rem, 4vw, 3.4rem); }
+    .hero p { max-width: 58ch; margin-top: .9rem; color: var(--muted); }
+    .metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem 1.3rem; }
+    .metrics > div { border-top: 1px solid var(--line); padding-top: .4rem; }
+    .metrics dt { color: var(--muted); font-size: .83rem; }
+    .metrics dd { font: 700 1.45rem/1.4 system-ui, sans-serif; }
+    main { padding-block: clamp(2rem, 5vw, 4rem); }
+    section + section { margin-top: clamp(2.75rem, 6vw, 5rem); }
+    section > p { max-width: 75ch; margin-top: .75rem; color: var(--muted); }
+    section > figure, .models { margin-top: 1.4rem; }
+
+    .diagram, .model, .example article {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: .6rem;
+      padding: clamp(1rem, 2.4vw, 1.5rem);
+    }
+
+    .flow {
+      display: grid;
+      grid-auto-columns: minmax(0, 1fr);
+      grid-auto-flow: column;
+      gap: 1.65rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .flow > li {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: .55rem;
+      padding: .72rem .78rem;
+      background: var(--soft);
+      overflow-wrap: break-word;
+    }
+
+    .flow > li + li::before {
+      content: "→";
+      position: absolute;
+      inset-inline-start: -1.48rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .flow strong, .flow span { display: block; }
+    .flow span { margin-top: .22rem; color: var(--muted); font-size: .9rem; }
+    .flow .output { border-color: var(--accent); }
+    figcaption { margin-top: 1rem; color: var(--muted); font-size: .92rem; }
+    .feed {
+      margin: .75rem 0 0;
+      padding: .5rem .75rem;
+      border-inline-start: 3px solid var(--accent);
+      background: var(--soft);
+      color: var(--ink);
+      font-size: .92rem;
+    }
+    .model-nav { display: flex; flex-wrap: wrap; gap: .55rem 1.2rem; margin-top: .8rem; }
+    .models { display: grid; gap: 1.5rem; }
+    .model { scroll-margin-top: 1rem; }
+    .model-header { display: flex; justify-content: space-between; align-items: baseline; gap: .55rem 1.3rem; flex-wrap: wrap; }
+    .model > p { margin-top: .55rem; color: var(--muted); }
+    .model figure { margin-top: 1.25rem; }
+    .model figcaption { border-top: 1px solid var(--line); padding-top: .85rem; }
+    .shape, .count { color: var(--accent); font: .84rem/1.5 ui-monospace, monospace; }
+    .columns { display: grid; grid-template-columns: repeat(var(--lanes, 2), minmax(0, 1fr)); }
+    .triple { --lanes: 3; }
+    .lane { display: flex; flex-direction: column; margin-inline: .38rem; }
+    .lane > .node { flex: 1; }
+    .node {
+      border: 1px solid var(--wire);
+      border-radius: .5rem;
+      background: var(--node);
+      padding: .7rem .85rem;
+      overflow-wrap: anywhere;
+    }
+    .node-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .15rem .65rem; }
+    .node h4 { line-height: 1.35; }
+    .node p { margin-top: .3rem; color: var(--muted); font-size: .9rem; }
+    .node .fields { margin-top: .45rem; font-size: .88rem; }
+    .fields > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .3rem; align-items: baseline; border-top: 1px solid var(--line); padding-block: .18rem; }
+    .fields dd { color: var(--muted); text-align: end; }
+    .node.evidence { color: var(--warm-ink); border-color: currentColor; background: var(--warm); }
+    .node.evidence p, .node.evidence .shape { color: var(--warm-ink); }
+    .node.result { background: var(--soft); border-color: var(--accent); }
+    .node.result p { color: var(--ink); }
+    .stack { max-width: 39rem; margin-inline: auto; }
+    .junction { --half-lane: calc(50% / var(--lanes, 2)); position: relative; height: 2.75rem; }
+    .junction::before {
+      content: "";
+      position: absolute;
+      top: 1.25rem;
+      inset-inline: var(--half-lane);
+      border-top: 1px solid var(--wire);
+    }
+    .junction > span { position: relative; height: 1.3rem; }
+    .junction > span::before, .junction::after, .down::before {
+      content: "";
+      position: absolute;
+      inset-inline-start: 50%;
+      border-inline-start: 1px solid var(--wire);
+    }
+    .junction > span::before, .down::before { inset-block: 0; }
+    .junction > span.evidence::before { border-color: var(--warm-ink); }
+    .junction::after { top: 1.25rem; bottom: .3rem; }
+    .down { position: relative; height: 1.6rem; }
+    .down::after, .junction > i, .turn > i {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      inset-inline-start: 50%;
+      transform: translateX(-46%);
+      width: 0;
+      height: 0;
+      border-inline: .25rem solid transparent;
+      border-top: .36rem solid var(--wire);
+    }
+    .turn { position: relative; height: 2.75rem; }
+    .turn::before, .turn::after { content: ""; position: absolute; }
+    .turn::before { inset-inline-start: 50%; top: 0; height: 1.25rem; border-inline-start: 1px solid var(--wire); }
+    .turn::after { inset-inline: 25% 50%; top: 1.25rem; bottom: .25rem; border-top: 1px solid var(--wire); border-inline-start: 1px solid var(--wire); }
+    .turn > i { inset-inline-start: 25%; }
+
+    .timeline {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin: 0;
+      padding: 0;
+    }
+    .timeline li { position: relative; border-top: 2px solid var(--accent); padding: 1rem .75rem .25rem 0; }
+    .timeline li::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: -.38rem;
+      width: .65rem;
+      height: .65rem;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .timeline li.origin::before { background: var(--warm-ink); }
+    .timeline time { display: block; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .timeline span { display: block; color: var(--muted); font-size: .92rem; }
+    .timeline .origin span { color: var(--warm-ink); }
+    .example { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .example p { margin-top: .6rem; color: var(--muted); }
+    footer { padding: 1.5rem 0 2.25rem; border-top: 1px solid var(--line); }
+
+    @media (max-width: 53rem) {
+      .hero { grid-template-columns: 1fr; }
+      .diagram .flow { grid-template-columns: 1fr; grid-auto-flow: row; }
+      .diagram .flow > li + li::before {
+        content: "↓";
+        inset-inline-start: 1.1rem;
+        top: -1.7rem;
+        transform: none;
+      }
+    }
+    @media (max-width: 40rem) {
+      .example, .timeline, .columns { grid-template-columns: 1fr; }
+      .columns:not(.junction) { gap: .6rem; }
+      .lane { margin-inline: 0; }
+      .junction { height: 1.8rem; }
+      .junction::before, .junction > span { display: none; }
+      .junction::after { top: 0; }
+      .turn { height: 1.8rem; }
+      .turn::before { height: 100%; }
+      .turn::after { display: none; }
+      .turn > i { inset-inline-start: 50%; }
+      .columns.triple { grid-template-columns: 1fr; }
+      .timeline li { border-top: 0; border-inline-start: 2px solid var(--accent); padding: 0 0 1rem 1rem; }
+      .timeline li:last-child { padding-bottom: 0; }
+      .timeline li::before { inset-inline-start: -.38rem; top: .45rem; }
+    }
+    @media print {
+      :root {
+        color-scheme: light;
+        --paper: #fff;
+        --panel: #fff;
+        --node: #fff;
+        --ink: #15202b;
+        --muted: #3f4852;
+        --accent: #254d7a;
+        --soft: #edf4fb;
+        --warm: #fff5e8;
+        --warm-ink: #8a4018;
+      }
+      .diagram, .node, .timeline { break-inside: avoid; }
+      .model-header { break-after: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap">
+      <nav aria-label="Document sections">
+        <a href="#pipeline">Research pipeline</a>
+        <a href="#models">Graph models</a>
+        <a href="#france">France example</a>
+        <a href="README.md">Documentation index</a>
+      </nav>
+      <div class="hero">
+        <div>
+          <h1>Day-ahead price forecasting, layer by layer</h1>
+          <p>Four graph models turn ENTSO-E, weather and JAO histories into hourly bidding-zone forecasts at noon Brussels time on the previous local calendar day.</p>
+        </div>
+        <dl class="metrics">
+          <div><dt>Historical price identities</dt><dd>62</dd></div>
+          <div><dt>Evaluation zones</dt><dd>49</dd></div>
+          <div><dt>Directed training links, full grid</dt><dd>250</dd></div>
+          <div><dt>Links within the 49-zone roster</dt><dd>184</dd></div>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section aria-labelledby="pipeline">
+      <h2 id="pipeline">Research pipeline</h2>
+      <figure class="diagram" aria-label="Source-to-score pipeline">
+        <ol class="flow" role="list">
+          <li><strong>Source archives</strong><span>ENTSO-E prices, load and flows, zonal weather, and CWE/CORE JAO exports</span></li>
+          <li><strong>Audit and normalize</strong><span>Checksums, keys, UTC hours and dated zone mapping</span></li>
+          <li><strong>Store the facts</strong><span>Audited Parquet and a DuckDB catalog with raw source views and checked joins</span></li>
+          <li><strong>Build model inputs</strong><span>Ordered zone panel, training links, historical observations and feature masks</span></li>
+          <li class="output"><strong>Predict and score</strong><span>Zone-hour predictions matched to valid price labels for MAE and RMSE</span></li>
+        </ol>
+        <div class="feed"><strong>Labels from Parquet → scoring.</strong> Weekly persistence uses the subset with a valid target and a finite weekly lag.</div>
+        <figcaption>The benchmark orders every UTC hour and historical zone identity before selecting evaluation zones. <a href="code_structure.md#data-transformation-walkthrough">Data transformation walkthrough</a></figcaption>
+      </figure>
+    </section>
+
+    <section aria-labelledby="models">
+      <h2 id="models">Graph models</h2>
+      <p>Dimensions describe one zone, observation or directed pair unless the diagram shows a whole graph. Neural preprocessing uses training statistics and appends a missingness bit for each input field. The runners convert each head’s output <code>s</code> to a price in EUR/MWh with <code>50 × sinh(s)</code>.</p>
+      <nav class="model-nav" aria-label="Jump to a graph model">
+        <a href="#static">Static GAT</a>
+        <a href="#bipartite">Bipartite CORE GAT</a>
+        <a href="#relational">Relational GraphSAGE</a>
+        <a href="#adaptive">Adaptive graph</a>
+      </nav>
+      <div class="models">
+        <article class="model" aria-labelledby="static">
+          <header class="model-header"><h3 id="static">Static GAT</h3><span class="count">12,097 parameters · richer inputs</span></header>
+          <p>Two rounds of attention over a fixed list of directed physical links.</p>
+          <figure aria-labelledby="static">
+            <div class="columns">
+              <div class="lane">
+                <section class="node">
+                  <div class="node-header"><h4>Hourly features per zone</h4><span class="shape">13 raw</span></div>
+                  <dl class="fields">
+                    <div><dt>Local hour, weekday and month</dt><dd>3</dd></div>
+                    <div><dt>Guarded daily price and exact weekly price</dt><dd>2</dd></div>
+                    <div><dt>Delivery-hour load forecast</dt><dd>1</dd></div>
+                    <div><dt>Lag-48 temperature, anomaly, wind and solar</dt><dd>4</dd></div>
+                    <div><dt>Lag-48 JAO count, minimum RAM/Fmax and domain flag</dt><dd>3</dd></div>
+                  </dl>
+                </section>
+                <div class="down" aria-hidden="true"></div>
+                <section class="node">
+                  <div class="node-header"><h4>Impute, scale and append missingness</h4><span class="shape">13 → 26</span></div>
+                </section>
+              </div>
+              <div class="lane">
+                <section class="node">
+                  <div class="node-header"><h4>Training topology</h4><span class="shape">2 × 250</span></div>
+                  <p>Each column indexes a source zone and a destination zone in the 62-zone panel.</p>
+                </section>
+                <div class="down" aria-hidden="true"></div>
+                <section class="node">
+                  <div class="node-header"><h4>Filter by activity at the delivery hour</h4><span class="shape">2 × E</span></div>
+                  <p>Keep links with two active endpoints. GATv2 adds self-loops within the hourly graph.</p>
+                </section>
+              </div>
+            </div>
+            <div class="junction columns" aria-hidden="true"><span></span><span></span><i></i></div>
+            <div class="stack">
+              <section class="node">
+                <div class="node-header"><h4>GATv2 layer 1</h4><span class="shape">26 → 4 × 16 → 64</span></div>
+                <p>Concatenate four attention heads. Apply ELU and dropout.</p>
+              </section>
+              <div class="down" aria-hidden="true"></div>
+              <section class="node">
+                <div class="node-header"><h4>GATv2 layer 2</h4><span class="shape">64 → 64</span></div>
+                <p>Apply attention over the same graph, then ELU and dropout.</p>
+              </section>
+              <div class="down" aria-hidden="true"></div>
+              <section class="node result"><div class="node-header"><h4>Linear price head</h4><span class="shape">64 → 1 per zone</span></div></section>
+            </div>
+            <figcaption>The CORE study also uses this architecture with 5 raw calendar and price fields or 8 fields after adding flat CORE summaries. <a href="../epgnn/experiment_suite/data.py#L18">Feature lists</a> · <a href="../epgnn/experiment_suite/neural.py#L64">PriceGAT</a></figcaption>
+          </figure>
+        </article>
+
+        <article class="model" aria-labelledby="bipartite">
+          <header class="model-header"><h3 id="bipartite">Bipartite CORE GAT</h3><span class="count">18,241 parameters</span></header>
+          <p>Signed PTDFs link hourly zone states to the presolved constraints in a historical CORE snapshot.</p>
+          <figure aria-labelledby="bipartite">
+            <div class="columns">
+              <div class="lane">
+                <section class="node">
+                  <div class="node-header"><h4>Hourly zone features</h4><span class="shape">8 raw</span></div>
+                  <dl class="fields">
+                    <div><dt>Local calendar</dt><dd>3</dd></div>
+                    <div><dt>Guarded daily price and exact weekly price</dt><dd>2</dd></div>
+                    <div><dt>CORE count, minimum RAM/Fmax and domain flag</dt><dd>3</dd></div>
+                  </dl>
+                </section>
+                <div class="down" aria-hidden="true"></div>
+                <section class="node"><div class="node-header"><h4>Local zone state</h4><span class="shape">8 → 16 → 64</span></div><p>Normalize, append missingness and project with ELU.</p></section>
+              </div>
+              <div class="lane">
+                <section class="node evidence">
+                  <div class="node-header"><h4>Historical CORE snapshot</h4><span class="shape">delivery − 48 h</span></div>
+                  <p>RAM, Fmax and RAM/Fmax per constraint. Finite nonzero PTDFs give one signed edge feature per connected zone and constraint.</p>
+                </section>
+                <div class="down" aria-hidden="true"></div>
+                <section class="node"><div class="node-header"><h4>Constraint state</h4><span class="shape">3 → 6 → 64</span></div><p>Normalize, append missingness and project. Keep the signed PTDFs on the edges.</p></section>
+              </div>
+            </div>
+            <div class="junction columns" aria-hidden="true"><span></span><span></span><i></i></div>
+            <div class="stack">
+              <section class="node"><div class="node-header"><h4>Zone → constraint GATv2</h4><span class="shape">4 × 16 → 64</span></div><p>Add the messages to the constraint state, then apply ELU and dropout.</p></section>
+            </div>
+            <div class="turn" aria-hidden="true"><i></i></div>
+            <div class="columns">
+              <div class="lane">
+                <section class="node"><div class="node-header"><h4>Constraint → zone GATv2</h4><span class="shape">64 per zone</span></div><p>Reverse the edges and reuse the signed PTDFs to send messages back.</p></section>
+              </div>
+              <div class="lane"><section class="node"><div class="node-header"><h4>Local zone state continues directly</h4><span class="shape">64 per zone</span></div><p>Carry the zone projection into the sum. This path can still produce a price when no constraint edges are available.</p></section></div>
+            </div>
+            <div class="junction columns" aria-hidden="true"><span></span><span></span><i></i></div>
+            <div class="stack">
+              <section class="node"><div class="node-header"><h4>Add local state and returned messages</h4><span class="shape">64 + 64 → 64</span></div><p>Apply ELU and dropout to the sum.</p></section>
+              <div class="down" aria-hidden="true"></div>
+              <section class="node result"><div class="node-header"><h4>Linear price head</h4><span class="shape">64 → 1 per zone</span></div></section>
+            </div>
+            <figcaption>The snapshot contains the 12 priced CORE zones’ coefficients and every available presolved row for the source hour. <a href="../epgnn/relational_forecast/graph.py#L58">Snapshots and ConstraintGAT</a></figcaption>
+          </figure>
+        </article>
+
+        <article class="model" aria-labelledby="relational">
+          <header class="model-header"><h3 id="relational">Relational GraphSAGE</h3><span class="count">35,329 parameters</span></header>
+          <p>Typed histories build a daily context. Physical border observations carry messages between zones.</p>
+          <figure aria-labelledby="relational">
+            <div class="columns">
+              <div class="lane">
+                <section class="node">
+                  <div class="node-header"><h4>Histories per zone</h4><span class="shape">hours × raw fields</span></div>
+                  <dl class="fields">
+                    <div><dt>Day-ahead price</dt><dd>168 × 1</dd></div>
+                    <div><dt>Temperature, anomaly, wind and solar</dt><dd>48 × 4</dd></div>
+                    <div><dt>Archived load forecast</dt><dd>48 × 1</dd></div>
+                    <div><dt>JAO count, minimum RAM/Fmax and domain flag</dt><dd>48 × 3</dd></div>
+                  </dl>
+                  <p>The last price interval ends at the forecast origin.</p>
+                </section>
+                <div class="down" aria-hidden="true"></div>
+                <section class="node"><div class="node-header"><h4>Four typed encoders → zone state</h4><span class="shape">4 × 48 → 48</span></div><p>Each history yields a 48-wide state. Concatenate the four states and project with ELU.</p></section>
+              </div>
+              <div class="lane">
+                <section class="node">
+                  <div class="node-header"><h4>History per directed border</h4><span class="shape">48 × 1</span></div>
+                  <p>Physical flow for each observed directed pair. The 48-hour explanatory windows end 24 hours before the origin.</p>
+                </section>
+                <div class="down" aria-hidden="true"></div>
+                <section class="node"><div class="node-header"><h4>Flow encoder → border state</h4><span class="shape">48 per pair</span></div><p>Project each row with age features, average over three time buckets using a presence mask, then project the joined bucket vectors.</p></section>
+              </div>
+            </div>
+            <div class="junction columns" aria-hidden="true"><span></span><span></span><i></i></div>
+            <div class="stack">
+              <section class="node"><div class="node-header"><h4>Zone → border → zone</h4><span class="shape">48 incoming + 48 outgoing</span></div><p>Project both endpoint states, add the encoded flow and take separate mean aggregates into each zone.</p></section>
+            </div>
+            <div class="turn" aria-hidden="true"><i></i></div>
+            <div class="columns">
+              <div class="lane"><section class="node"><div class="node-header"><h4>Shared daily context</h4><span class="shape">3 × 48 → 144</span></div><p>Concatenate local state and the two border aggregates. Reuse the result for every delivery hour of the Brussels day.</p></section></div>
+              <div class="lane"><section class="node"><div class="node-header"><h4>Features for the delivery hour</h4><span class="shape">5 → 10</span></div><p>Calendar and recent prices with missingness bits.</p></section></div>
+            </div>
+            <div class="junction columns" aria-hidden="true"><span></span><span></span><i></i></div>
+            <div class="stack">
+              <section class="node result"><div class="node-header"><h4>Hourly price head</h4><span class="shape">144 + 10 → 48 → 1</span></div><p>Concatenate daily context with hourly features. Apply linear, ELU, dropout and a final linear layer.</p></section>
+            </div>
+            <figcaption>Each typed encoder projects observations to width 12, mean-pools three masked time buckets and maps the resulting 36 values to width 48. <a href="../epgnn/combined_graph_study/inputs.py#L54">History windows</a> · <a href="../epgnn/combined_graph_study/models.py#L133">RelationEncoder and RelationalGNN</a></figcaption>
+          </figure>
+        </article>
+
+        <article class="model" aria-labelledby="adaptive">
+          <header class="model-header"><h3 id="adaptive">Adaptive graph</h3><span class="count">8,345 parameters · includes margin projection</span></header>
+          <p>Directed attention learns how much each source zone contributes to each destination at a delivery hour.</p>
+          <figure aria-labelledby="adaptive">
+            <div class="columns triple">
+              <div class="lane">
+                <section class="node"><div class="node-header"><h4>Features per zone and hour</h4><span class="shape">5 → 10</span></div><p>Calendar and recent prices with missingness bits.</p></section>
+                <div class="down" aria-hidden="true"></div>
+                <section class="node"><div class="node-header"><h4>Local state and projections</h4><span class="shape">10 → 48 → 16 + 16</span></div><p>Keep the 48-wide local state for pooling and pricing. Project keys and queries separately.</p></section>
+              </div>
+              <div class="lane">
+                <section class="node"><div class="node-header"><h4>Learned zone embeddings</h4><span class="shape">two 49 × 16 tables</span></div><p>Each zone has one sender vector and one receiver vector shared across hours.</p></section>
+                <div class="down" aria-hidden="true"></div>
+                <section class="node"><div class="node-header"><h4>Add zone identity</h4><span class="shape">16 per role</span></div><p>Sender vectors enter the keys. Receiver vectors enter the queries.</p></section>
+              </div>
+              <div class="lane">
+                <section class="node evidence"><div class="node-header"><h4>Optional CORE evidence</h4><span class="shape">4 per pair at t − 48 h</span></div><p>For source-minus-destination PTDF differences above 0.005, use the count, largest difference, and lower deciles of RAM and RAM/Fmax.</p></section>
+                <div class="down" aria-hidden="true"></div>
+                <section class="node evidence"><div class="node-header"><h4>Margin correction</h4><span class="shape">4 → 8 → 1</span></div><p>Append missingness, project to one scalar and add it to the directed score for usable CORE pairs.</p></section>
+              </div>
+            </div>
+            <div class="junction columns triple" aria-hidden="true"><span></span><span></span><span class="evidence"></span><i></i></div>
+            <div class="stack">
+              <section class="node"><div class="node-header"><h4>Directed score matrix</h4><span class="shape">49 sources × 49 destinations</span></div><p>Take the source key and destination query dot product, divide by 4, then add the optional correction for the available CORE pairs.</p></section>
+              <div class="down" aria-hidden="true"></div>
+              <section class="node"><div class="node-header"><h4>Mask → incoming softmax → neighbor sum</h4><span class="shape">48 per destination</span></div><p>Mask inactive endpoints and disallowed links. Normalize across sources, then pool their 48-wide local states.</p></section>
+              <div class="down" aria-hidden="true"></div>
+              <section class="node result"><div class="node-header"><h4>Price head</h4><span class="shape">48 + 48 → 48 → 1</span></div><p>Concatenate the local state with the incoming neighbor sum.</p></section>
+            </div>
+            <figcaption>The learned graph considers directed pairs of different active zones. The physical variant restricts candidates to training links. <a href="../epgnn/combined_graph_study/inputs.py#L117">Margin features</a> · <a href="../epgnn/combined_graph_study/models.py#L221">AdaptiveGNN</a></figcaption>
+          </figure>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="france">
+      <h2 id="france">France on July 8, 2024</h2>
+      <p>The saved validation row for France delivers at 18:00 UTC, or 20:00 in Brussels. The diagram orders its lookups and forecast origin by UTC time.</p>
+      <figure class="diagram" aria-label="France delivery and lookups in UTC order">
+        <ol class="timeline" role="list">
+          <li><time datetime="2024-07-01T18:00:00Z">Jul 1 · 18:00</time><strong>Weekly price lag</strong><span>71.18 EUR/MWh</span></li>
+          <li><time datetime="2024-07-06T18:00:00Z">Jul 6 · 18:00</time><strong>CORE source hour</strong><span>Ends at 19:00. Verified publication time is missing.</span></li>
+          <li class="origin"><time datetime="2024-07-07T10:00:00Z">Jul 7 · 10:00</time><strong>Forecast origin</strong><span>12:00 Brussels time</span></li>
+          <li><time datetime="2024-07-07T18:00:00Z">Jul 7 · 18:00</time><strong>Daily price lag</strong><span>48.94 EUR/MWh under the prior-day auction convention</span></li>
+          <li><time datetime="2024-07-08T18:00:00Z">Jul 8 · 18:00</time><strong>Target delivery</strong><span>103.21 EUR/MWh with a valid label</span></li>
+        </ol>
+        <figcaption>The daily lag describes an interval after origin and passes the benchmark's previous-delivery-date guard. The CORE interval ended before origin, and its archive has no verified publication timestamp. Both are conditional inputs. <a href="code_structure.md#france-at-2024-07-08-1800-utc">Saved France example</a></figcaption>
+      </figure>
+      <div class="example">
+        <article class="model">
+          <h3>France in the static graph</h3>
+          <p>Calendar and both price lags enter the zone state. <code>BE</code>, <code>CH</code>, <code>DE_LU</code>, <code>ES</code> and <code>IT_NORD</code> send incoming physical-link messages. The flat-CORE variant also gets 107 presolved constraints, minimum RAM/Fmax 0.199769 and a domain-present flag.</p>
+        </article>
+        <article class="model">
+          <h3>France in the bipartite graph</h3>
+          <p>The same flat-CORE features enter the zone state. The historical domain contributes 113 constraint nodes. France exchanges messages with 107 of them through finite nonzero PTDFs. The other six published French PTDFs are zero.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap"><a href="code_structure.md">Code walkthrough</a> · <a href="experiments.md">Experiment record</a> · <a href="leakage_audit.md">Forecast leakage audit</a></div>
+  </footer>
+</body>
+</html>
