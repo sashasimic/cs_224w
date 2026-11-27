@@ -90,8 +90,12 @@ The structure is in place; only the non-trainable persistence reference runs tod
 | `c3_nograph` | 3 control | same network, messages off (size control for 3 vs 2.5) | to do |
 | `c3_gat_pe_time` | 3 + PE | + zone positional encoding (Laplacian, k = 8) and cyclic time features | done: test MAE 20.3, rel 0.70, spread 15.0 |
 | `c3_gat_hourmix` | 3 + hours | + cross-hour layer: bidirectional GRU over the 25 delivery hours, columns known at the cutoff only | done: test MAE 19.0, rel 0.66, spread 14.4 |
-| `c3_gat_hist336` | 3 + history | 14-day history window (336 h) for the GRU | to do |
-| `c3_gat_hourmix_hist336` | 3 + hours + history | cross-hour layer and 14-day history together | to do |
+| `c3_gat_hist336` | 3 + history | 14-day history window (336 h) for the GRU | stopped after 5 epochs: validation loss tracked checkpoint 3 (0.3079 vs 0.3082 at epoch 4) |
+| `c3_gat_hourmix_hist336` | 3 + hours + history | cross-hour layer and 14-day history together | stopped after 14 epochs: validation loss tracked `c3_gat_hourmix` (0.2705 vs 0.2709 by epoch 13) |
+| `c3_gat_hourmix_shuffled` | control | `c3_gat_hourmix` with the links rewired at random (every zone keeps its number of links) | done: test MAE 18.7, rel 0.64, spread 14.3 (val MAE 17.9 vs 17.4 with real links) |
+| `c3_gat_hourmix_self` | control | `c3_gat_hourmix` with every zone attending only to itself (same weights, no links) | done: test MAE 18.7, rel 0.64, spread 14.2 (val MAE 17.9) |
+| `c3_gat_hourmix_edgefeat` (+ `_shuffled`) | 3 + hours + link features | lagged flows on every link, used inside the GATv2 attention; shuffled control gets random links with a random real link's flows | done: test MAE 18.5, rel 0.64, spread 14.3 (val 17.6); shuffled 18.3, 0.63, 14.5 (val 17.6) |
+| `c3_gat_hourmix_pair` (+ `_shuffled`) | 3 + hours + pairwise messages | message computed from both zones and the link's lagged flows, summed over links; same shuffled control | done: test MAE 18.5, rel 0.64, spread 14.0 (val 17.6); shuffled 18.7, 0.64, 14.0 (val 17.9) |
 | `c4a_gat_jao_summaries` | 4a | 3 + per-zone JAO summaries | to do |
 | `c4b_hetero_constraints` | 4b | + constraint nodes and PTDF relations | tried 2026-11-25 with hourly constraint nodes: test MAE 20.6, worse than 3 (`results/c4b_hetero_constraints.json`); code removed, stub remains |
 | `c4b_hetero_heat` | 4b + H3 | + heat-stress features | to do |
