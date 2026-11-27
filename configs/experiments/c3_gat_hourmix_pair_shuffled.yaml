@@ -1,0 +1,22 @@
+# Control for c3_gat_hourmix_pair: links rewired at random, each given the flow series of a random real link.
+model: gat
+feature_set: own
+graph: shuffled
+history_window: 168
+hidden: 64
+mlp_hidden: 128
+heads: 4
+layers: 2
+hour_mixer: bigru
+edge_feats: flows
+message: pair
+dropout: 0.1
+fit_splits: [pretrain, train]
+eval_splits: [val, test]
+epochs: 50
+lr: 0.001
+patience: 8
+batch_days: 16
+spread_weight: 0.5
+seed: 0
+device: cpu          # sparse graph ops are faster on CPU than on MPS for this size

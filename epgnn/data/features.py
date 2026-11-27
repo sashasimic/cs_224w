@@ -38,6 +38,10 @@ FEATURE_SETS: dict[str, list[str]] = {
 # ---- edge columns of zone_edges_hourly --------------------------------------------------------------
 EDGE_FEATURES = ["flow_phys_lag48", "flow_phys_lag168", "flow_sched_lag24", "maxbex"]
 EDGE_OUTCOMES = ["flow_phys", "flow_sched"]
+# Link columns known at the cutoff for every hour of day D: flows observed two and seven days back, and the
+# exchange scheduled for the same hour of D-1 (a result of the D-2 auction). maxbex is left out: the dataset
+# doc could not verify that it is published before gate closure, and it exists for Core borders only.
+EDGE_KNOWN_AT_CUTOFF = ["flow_phys_lag48", "flow_phys_lag168", "flow_sched_lag24"]
 
 
 def day_d_columns(feature_set: str) -> list[str]:

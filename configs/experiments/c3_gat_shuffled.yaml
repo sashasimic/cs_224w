@@ -1,4 +1,5 @@
-# Checkpoint 3 control: the same model on a shuffled zone graph (random rewiring, out-degrees kept).
+# Checkpoint 3 control: the same model on a shuffled zone graph (links rewired at random, every zone keeps its
+# number of links, links stay two-way).
 model: gat
 feature_set: own
 graph: shuffled

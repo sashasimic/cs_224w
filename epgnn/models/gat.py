@@ -9,8 +9,10 @@ One graph per delivery hour:
 + spread loss (epgnn.train). Same data pipeline as gru_mlp, so the variants differ only in the graph:
 
   graph: interconnects   checkpoint 3   GRU + GATv2 on the zone graph
-  graph: shuffled        checkpoint 3'  rewired zone graph, out-degrees kept
-  graph: none            no-message control: same blocks and size, feed-forward only
+  graph: shuffled        control: links rewired at random, every zone keeps its number of links
+  graph: self            control: every zone attends only to itself. Same layers and weights as the real
+                         graph, so (interconnects - self) is the value of the connections alone
+  graph: none            the GATv2 layers removed: feed-forward blocks only (fewer parameters)
 
 Node inputs: the GRU summary, the hour's day-D inputs (time_encoding "cyclic" turns hour/weekday/month into
 sin/cos pairs), and with zone_pe = k the zone's k Laplacian eigenvectors of the interconnector graph
@@ -23,14 +25,25 @@ hour also knows yesterday's whole price curve and tomorrow's whole load-forecast
 summary and only the columns in epgnn.data.features.KNOWN_AT_CUTOFF, never the lag-24 weather, so nothing
 that is observed after the cutoff can travel from one hour to another (tests/test_no_peek.py).
 
-Config keys: as gru_mlp plus graph, heads (4), layers (2), ffn_mult (2), zone_pe (0), hour_mixer ("none").
+Link features (edge_feats: flows, off by default): every link carries the lagged flows in both directions
+(epgnn.data.graph.edge_inputs; columns in features.EDGE_KNOWN_AT_CUTOFF). How they are used depends on `message`:
+  message: gat    GATv2 with the link features inside the attention score: they change how much weight a
+                  neighbour gets, the message itself is still a transform of the neighbour's state
+  message: pair   pairwise messages (PairConv): a small network reads both ends and the link and writes a
+                  message for that pair; a zone sums the messages of its links
+On the shuffled graph each link gets the feature series of a random real link.
+
+Config keys: as gru_mlp plus graph, graph_seed (seed of the shuffled graph; the model seed by default),
+heads (4), layers (2), ffn_mult (2), zone_pe (0), hour_mixer ("none"), edge_feats ("none"), message ("gat").
 A longer history is just history_window (168 by default): the window still ends at the cutoff and only
 reaches further back.
 """
+from typing import Optional
+
 import numpy as np
 import torch
 from torch import nn
-from torch_geometric.nn import GATv2Conv
+from torch_geometric.nn import GATv2Conv, MessagePassing
 
 from epgnn import train as T
 from epgnn.data import features as F
@@ -42,38 +55,68 @@ from epgnn.models import gru_mlp as M
 from epgnn.models.encoders import HistoryGRU
 
 
+class PairConv(MessagePassing):
+    """Pairwise messages. For the link j -> i a small network reads the receiver, the sender and the link,
+    m_ij = MLP([x_i, x_j, e_ij]), and zone i sums the messages of its links. Unlike GATv2 the message depends
+    on both ends (so it can use differences across a link) and the sum is not normalised (several links add up)."""
+
+    def __init__(self, hidden: int, edge_dim: int, dropout: float) -> None:
+        super().__init__(aggr="add")
+        self.mlp = nn.Sequential(nn.Linear(2 * hidden + edge_dim, hidden), nn.ELU(), nn.Dropout(dropout),
+                                 nn.Linear(hidden, hidden))
+
+    # Optional[...] and not `X | None` in this class: torch_geometric inspects these signatures and cannot read the latter
+    def forward(self, x: torch.Tensor, edge_index: torch.Tensor, edge_attr: Optional[torch.Tensor] = None) -> torch.Tensor:
+        return self.propagate(edge_index, x=x, edge_attr=edge_attr)
+
+    def message(self, x_i: torch.Tensor, x_j: torch.Tensor, edge_attr: Optional[torch.Tensor]) -> torch.Tensor:
+        return self.mlp(torch.cat([x_i, x_j] if edge_attr is None else [x_i, x_j, edge_attr], dim=-1))
+
+
 class Block(nn.Module):
     """One message-passing block, pre-norm residual (the lecture-7 layer recipe of normalisation, dropout,
     activation and skip connections, in the Transformer / GraphGPS order so the residual stream itself is
     never normalised and gradients reach the GRU unchanged):
 
-      u <- u + Drop(GATv2(LN(u)))      messages from interconnected zones (and the zone itself, self-loop)
+      u <- u + Drop(MSG(LN(u)))        messages from interconnected zones: GATv2 (with the zone's own
+                                       self-loop; link features in the attention if given) or PairConv
       u <- u + Drop(FFN(LN(u)))        per-node feed-forward, 64 -> 128 -> 64 with ELU
 
     LayerNorm, not BatchNorm: batches mix eras and zones, and LayerNorm keeps no running statistics that
     could differ between training and evaluation. With use_zz=False the message step is skipped.
     """
 
-    def __init__(self, hidden: int, heads: int, dropout: float, use_zz: bool, ffn_mult: int = 2) -> None:
+    def __init__(self, hidden: int, heads: int, dropout: float, use_zz: bool, ffn_mult: int = 2,
+                 edge_dim: int = 0, message: str = "gat") -> None:
         super().__init__()
         self.ln_u = nn.LayerNorm(hidden)
-        self.zz = GATv2Conv(hidden, hidden // heads, heads=heads, dropout=dropout, add_self_loops=True) if use_zz else None
+        self.zz: nn.Module | None = None
+        if use_zz and message == "pair":
+            self.zz = PairConv(hidden, edge_dim, dropout)
+        elif use_zz and edge_dim:
+            self.zz = GATv2Conv(hidden, hidden // heads, heads=heads, dropout=dropout, add_self_loops=True,
+                                edge_dim=edge_dim, fill_value=0.0)
+        elif use_zz:
+            self.zz = GATv2Conv(hidden, hidden // heads, heads=heads, dropout=dropout, add_self_loops=True)
         self.ln_ffn = nn.LayerNorm(hidden)
         self.ffn = nn.Sequential(nn.Linear(hidden, ffn_mult * hidden), nn.ELU(), nn.Dropout(dropout),
                                  nn.Linear(ffn_mult * hidden, hidden))
         self.drop = nn.Dropout(dropout)
 
-    def forward(self, u: torch.Tensor, edge_index: torch.Tensor | None) -> torch.Tensor:
+    def forward(self, u: torch.Tensor, edge_index: torch.Tensor | None, edge_attr: torch.Tensor | None = None) -> torch.Tensor:
         if self.zz is not None:
-            u = u + self.drop(self.zz(self.ln_u(u), edge_index))
+            un = self.ln_u(u)
+            u = u + self.drop(self.zz(un, edge_index) if edge_attr is None else self.zz(un, edge_index, edge_attr))
         return u + self.drop(self.ffn(self.ln_ffn(u)))
 
 
 class ZoneGAT(nn.Module):
     def __init__(self, n_hist: int, n_day: int, hidden: int = 64, heads: int = 4, layers: int = 2,
                  mlp_hidden: int = 128, dropout: float = 0.1, use_zz: bool = True, ffn_mult: int = 2,
-                 n_pe: int = 0, mix_cols: list[int] | None = None) -> None:
+                 n_pe: int = 0, mix_cols: list[int] | None = None, edge_dim: int = 0, message: str = "gat") -> None:
         super().__init__()
+        self.edge_dim = edge_dim
+        self.needs_batch = bool(edge_dim)        # link features are looked up by the batch's hour index
         self.enc = HistoryGRU(n_hist, hidden)
         self.n_pe = n_pe
         self.inp = nn.Linear(hidden + n_day + n_pe, hidden)          # embedding into the residual stream
@@ -82,12 +125,12 @@ class ZoneGAT(nn.Module):
             self.mix_in = nn.Linear(hidden + len(self.mix_cols), hidden)
             self.mix = nn.GRU(hidden, hidden // 2, batch_first=True, bidirectional=True)
         self.drop = nn.Dropout(dropout)
-        self.layers = nn.ModuleList(Block(hidden, heads, dropout, use_zz, ffn_mult) for _ in range(layers))
+        self.layers = nn.ModuleList(Block(hidden, heads, dropout, use_zz, ffn_mult, edge_dim, message) for _ in range(layers))
         self.ln_out = nn.LayerNorm(hidden)                           # pre-norm stacks end with a norm
         self.head = nn.Sequential(nn.Linear(hidden, mlp_hidden), nn.ReLU(), nn.Dropout(dropout),
                                   nn.Linear(mlp_hidden, mlp_hidden), nn.ReLU(), nn.Linear(mlp_hidden, 1))
 
-    def forward(self, hist: torch.Tensor, xday: torch.Tensor, extra: dict) -> torch.Tensor:
+    def forward(self, hist: torch.Tensor, xday: torch.Tensor, extra: dict, batch: dict | None = None) -> torch.Tensor:
         B, Z, H, _ = xday.shape
         dev = xday.device
         h = self.enc(hist.reshape(B * Z, *hist.shape[2:])).reshape(B, Z, 1, -1).expand(-1, -1, H, -1)
@@ -110,10 +153,23 @@ class ZoneGAT(nn.Module):
         zz = extra.get("zz")
         if zz is not None:              # the zone graph copied once per (day, hour) snapshot, as one disjoint union
             offs = torch.arange(B * H, device=dev) * Z
-            edge_index = (zz[:, None, :] + offs[None, :, None]).reshape(2, -1)
+            edge_index = (zz[:, None, :] + offs[None, :, None]).reshape(2, zz.shape[1] * B * H)
+        edge_attr = None
+        if self.edge_dim:
+            assert batch is not None and zz is not None
+            hidx = batch["hidx"]                                                       # (B, H), -1 = no such slot
+            ea = extra["edge_x"][hidx.clamp(min=0)] * (hidx >= 0)[..., None, None]     # (B, H, E, F)
+            edge_attr = ea.reshape(B * H * zz.shape[1], -1)                            # same order as edge_index
         for layer in self.layers:
-            u = layer(u, edge_index)
+            u = layer(u, edge_index, edge_attr)
         return self.head(self.ln_out(u)).reshape(B, H, Z).permute(0, 2, 1)
+
+
+def _hour_index(raws: dict[str, dict], zones: list[str]) -> tuple[np.ndarray, dict[str, np.ndarray]]:
+    """Unique sorted delivery hours over all splits and, per split, the (days, H) index into them (-1 = no slot)."""
+    per = {sp: M._day_major(r["s"], r["s"].hours, zones).max(axis=1) for sp, r in raws.items()}    # slots are shared by zones
+    hours = np.unique(np.concatenate([v[v >= 0] for v in per.values()]))
+    return hours, {sp: np.where(v >= 0, np.searchsorted(hours, np.where(v >= 0, v, hours[0])), -1) for sp, v in per.items()}
 
 
 def run(cfg: dict, fit_splits: list[str], eval_splits: list[str]) -> dict[str, np.ndarray]:
@@ -125,13 +181,37 @@ def run(cfg: dict, fit_splits: list[str], eval_splits: list[str]) -> dict[str, n
     ev_raw = {sp: M.raw(sp, cfg, zones) for sp in eval_splits}
     scalers = M.fit_scalers(list(fit_raw.values()))
     tens = {sp: M.to_tensors(r, scalers, zones) for sp, r in {**fit_raw, **ev_raw}.items()}
-    train_t = {k: torch.cat([tens[sp][k] for sp in fit_splits]) for k in tens[fit_splits[0]]}
 
     extra: dict = {"spread_pairs": M.spread_pairs(zones)}
-    if graph != "none":
-        extra["zz"] = torch.as_tensor(G.zone_graph(zones, shuffled=graph == "shuffled", seed=cfg.get("seed", 0)))
+    if graph not in ("interconnects", "shuffled", "self", "none"):
+        raise ValueError(f"unknown graph {graph!r}")
+    graph_info: dict = {}
+    graph_seed = cfg.get("graph_seed", cfg.get("seed", 0))
+    if graph == "self":
+        extra["zz"] = torch.zeros((2, 0), dtype=torch.long)       # no links; GATv2 adds each zone's self-loop
+    elif graph != "none":
+        real = G.zone_graph(zones)
+        ei = G.zone_graph(zones, shuffled=True, seed=graph_seed) if graph == "shuffled" else real
+        extra["zz"] = torch.as_tensor(ei)
+        kept = len(set(map(tuple, ei.T.tolist())) & set(map(tuple, real.T.tolist())))
+        graph_info = {"links": int(ei.shape[1]), "links_shared_with_real_graph": kept}
     if cfg.get("zone_pe", 0):
         extra["zone_pe"] = torch.as_tensor(G.laplacian_pe(zones, cfg["zone_pe"]))
+
+    edge_feats, message, edge_dim = cfg.get("edge_feats", "none"), cfg.get("message", "gat"), 0
+    if edge_feats not in ("none", "flows") or message not in ("gat", "pair"):
+        raise ValueError(f"unknown edge_feats {edge_feats!r} or message {message!r}")
+    if edge_feats == "flows":
+        if graph not in ("interconnects", "shuffled"):
+            raise ValueError("edge_feats: flows needs graph: interconnects or shuffled")
+        hours, hidx = _hour_index({**fit_raw, **ev_raw}, zones)
+        ex = G.edge_inputs(zones, hours, shuffled=graph == "shuffled", seed=graph_seed)
+        fit_rows = np.unique(np.concatenate([hidx[sp][hidx[sp] >= 0] for sp in fit_splits]))
+        ex = SC.ZScaler().fit(ex[fit_rows]).transform(ex)             # statistics from the fit hours only; missing -> 0
+        extra["edge_x"], edge_dim = torch.as_tensor(ex), ex.shape[-1]
+        for sp in tens:
+            tens[sp]["hidx"] = torch.as_tensor(hidx[sp])
+    train_t = {k: torch.cat([tens[sp][k] for sp in fit_splits]) for k in tens[fit_splits[0]]}
 
     mix_cols: list[int] = []
     if cfg.get("hour_mixer", "none") == "bigru":
@@ -142,14 +222,16 @@ def run(cfg: dict, fit_splits: list[str], eval_splits: list[str]) -> dict[str, n
     model = ZoneGAT(n_hist=train_t["hist"].shape[-1], n_day=train_t["xday"].shape[-1], hidden=cfg.get("hidden", 64),
                     heads=cfg.get("heads", 4), layers=cfg.get("layers", 2), mlp_hidden=cfg.get("mlp_hidden", 128),
                     dropout=cfg.get("dropout", 0.1), use_zz=graph != "none", ffn_mult=cfg.get("ffn_mult", 2),
-                    n_pe=extra["zone_pe"].shape[1] if "zone_pe" in extra else 0, mix_cols=mix_cols)
+                    n_pe=extra["zone_pe"].shape[1] if "zone_pe" in extra else 0, mix_cols=mix_cols,
+                    edge_dim=edge_dim, message=message)
     bd = cfg.get("batch_days", 16)
     train_b = T.DayBatches(train_t, bd, shuffle=True, seed=cfg.get("seed", 0))
     val_b = T.DayBatches(tens["val"], bd, shuffle=False) if "val" in tens else None
     info = T.fit(model, train_b, val_b, cfg, extra, T.run_dir(cfg.get("name", "gat")))
-    info.update(n_params=sum(p.numel() for p in model.parameters()), graph=graph,
+    info.update(n_params=sum(p.numel() for p in model.parameters()), graph=graph, **graph_info,
                 zone_pe=cfg.get("zone_pe", 0), time_encoding=cfg.get("time_encoding", "raw"),
-                hour_mixer=cfg.get("hour_mixer", "none"), history_window=cfg.get("history_window", 168))
+                hour_mixer=cfg.get("hour_mixer", "none"), history_window=cfg.get("history_window", 168),
+                edge_feats=edge_feats, message=message)
     run.info = info  # type: ignore[attr-defined]
 
     out = {}

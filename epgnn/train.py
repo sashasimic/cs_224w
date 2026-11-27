@@ -8,7 +8,8 @@ term and the per-day graph (for the GNNs) can be formed inside the batch:
     mask   (B, Z, H)           True where the hour exists, has a price and a finite target
 
 A model is any nn.Module with forward(hist, xday, extra) -> (B, Z, H). `extra` is a dict the model may
-ignore (the GNNs put edge_index / edge features there).
+ignore (the GNNs put edge_index / edge features there). A model with `needs_batch = True` is called as
+forward(hist, xday, extra, batch) and can read other per-day tensors, such as the hour index `hidx` (B, H).
 """
 import copy
 import time
@@ -74,7 +75,7 @@ def _epoch(model: nn.Module, batches: DayBatches, dev: torch.device, extra: dict
     with torch.set_grad_enabled(train):
         for b in batches:
             b = {k: v.to(dev) for k, v in b.items()}
-            pred = model(b["hist"], b["xday"], extra)
+            pred = model(b["hist"], b["xday"], extra, b) if getattr(model, "needs_batch", False) else model(b["hist"], b["xday"], extra)
             loss = masked_loss(pred, b["target"], b["mask"], pairs, cfg.get("spread_weight", 0.0))
             if opt is not None:
                 opt.zero_grad()
@@ -123,7 +124,9 @@ def predict(model: nn.Module, batches: DayBatches, extra: dict, dev_name: str | 
     out = []
     with torch.no_grad():
         for b in batches:
-            out.append(model(b["hist"].to(dev), b["xday"].to(dev), extra).cpu().numpy())
+            b = {k: v.to(dev) for k, v in b.items()}
+            pred = model(b["hist"], b["xday"], extra, b) if getattr(model, "needs_batch", False) else model(b["hist"], b["xday"], extra)
+            out.append(pred.cpu().numpy())
     return np.concatenate(out)
 
 

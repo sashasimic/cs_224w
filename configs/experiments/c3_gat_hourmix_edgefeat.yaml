@@ -1,0 +1,22 @@
+# c3_gat_hourmix + link features in the attention: every interconnector carries its lagged flows in both
+# directions (features.EDGE_KNOWN_AT_CUTOFF), and GATv2 uses them when weighting neighbours.
+model: gat
+feature_set: own
+graph: interconnects
+history_window: 168
+hidden: 64
+mlp_hidden: 128
+heads: 4
+layers: 2
+hour_mixer: bigru
+edge_feats: flows
+dropout: 0.1
+fit_splits: [pretrain, train]
+eval_splits: [val, test]
+epochs: 50
+lr: 0.001
+patience: 8
+batch_days: 16
+spread_weight: 0.5
+seed: 0
+device: cpu          # sparse graph ops are faster on CPU than on MPS for this size
