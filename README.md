@@ -89,6 +89,9 @@ The structure is in place; only the non-trainable persistence reference runs tod
 | `c3_gat_shuffled` | 3' | same, shuffled graph (control) | to do |
 | `c3_nograph` | 3 control | same network, messages off (size control for 3 vs 2.5) | to do |
 | `c3_gat_pe_time` | 3 + PE | + zone positional encoding (Laplacian, k = 8) and cyclic time features | done: test MAE 20.3, rel 0.70, spread 15.0 |
+| `c3_gat_hourmix` | 3 + hours | + cross-hour layer: bidirectional GRU over the 25 delivery hours, columns known at the cutoff only | done: test MAE 19.0, rel 0.66, spread 14.4 |
+| `c3_gat_hist336` | 3 + history | 14-day history window (336 h) for the GRU | to do |
+| `c3_gat_hourmix_hist336` | 3 + hours + history | cross-hour layer and 14-day history together | to do |
 | `c4a_gat_jao_summaries` | 4a | 3 + per-zone JAO summaries | to do |
 | `c4b_hetero_constraints` | 4b | + constraint nodes and PTDF relations | tried 2026-11-25 with hourly constraint nodes: test MAE 20.6, worse than 3 (`results/c4b_hetero_constraints.json`); code removed, stub remains |
 | `c4b_hetero_heat` | 4b + H3 | + heat-stress features | to do |
