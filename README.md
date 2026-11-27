@@ -85,10 +85,12 @@ The structure is in place; only the non-trainable persistence reference runs tod
 | `c1_xgb_zone` | 1b | per-zone XGBoost, own features | done: test MAE 21.2, rel 0.73 |
 | `c2_xgb_neighbours` | 2 | + neighbours' features | done: test MAE 21.0, rel 0.73 |
 | `c25_gru_mlp` | 2.5 | GRU + MLP per zone, no graph (the no-edge case of 3) | done: test MAE 20.4, rel 0.70, spread 15.1 |
-| `c3_gat_interconnects` | 3 | GRU + GATv2 on the interconnector graph | to do |
+| `c3_gat_interconnects` | 3 | GRU + GATv2 on the interconnector graph | done: test MAE 19.9, rel 0.69, spread 15.2 |
 | `c3_gat_shuffled` | 3' | same, shuffled graph (control) | to do |
+| `c3_nograph` | 3 control | same network, messages off (size control for 3 vs 2.5) | to do |
+| `c3_gat_pe_time` | 3 + PE | + zone positional encoding (Laplacian, k = 8) and cyclic time features | done: test MAE 20.3, rel 0.70, spread 15.0 |
 | `c4a_gat_jao_summaries` | 4a | 3 + per-zone JAO summaries | to do |
-| `c4b_hetero_constraints` | 4b | + constraint nodes and PTDF relations | to do (needs `jao_cnec_hourly` with `cnec_id`) |
+| `c4b_hetero_constraints` | 4b | + constraint nodes and PTDF relations | tried 2026-11-25 with hourly constraint nodes: test MAE 20.6, worse than 3 (`results/c4b_hetero_constraints.json`); code removed, stub remains |
 | `c4b_hetero_heat` | 4b + H3 | + heat-stress features | to do |
 
 ```bash
