@@ -16,7 +16,16 @@ Node inputs: the GRU summary, the hour's day-D inputs (time_encoding "cyclic" tu
 sin/cos pairs), and with zone_pe = k the zone's k Laplacian eigenvectors of the interconnector graph
 (epgnn.data.graph.laplacian_pe; signs flipped at random in training). Both are off by default.
 
-Config keys: as gru_mlp plus graph, heads (4), layers (2), ffn_mult (2), zone_pe (0).
+Cross-hour layer (hour_mixer: bigru, off by default). Without it the 25 hours of day D never exchange
+information: each hour sees the week summary and its own inputs. With it, a bidirectional GRU runs over each
+zone's 25 delivery hours before the graph blocks and its output is added to every hour's state (skip), so an
+hour also knows yesterday's whole price curve and tomorrow's whole load-forecast curve. It reads the week
+summary and only the columns in epgnn.data.features.KNOWN_AT_CUTOFF, never the lag-24 weather, so nothing
+that is observed after the cutoff can travel from one hour to another (tests/test_no_peek.py).
+
+Config keys: as gru_mlp plus graph, heads (4), layers (2), ffn_mult (2), zone_pe (0), hour_mixer ("none").
+A longer history is just history_window (168 by default): the window still ends at the cutoff and only
+reaches further back.
 """
 import numpy as np
 import torch
@@ -24,6 +33,7 @@ from torch import nn
 from torch_geometric.nn import GATv2Conv
 
 from epgnn import train as T
+from epgnn.data import features as F
 from epgnn.data import graph as G
 from epgnn.data import samples as S
 from epgnn.data import scaling as SC
@@ -62,11 +72,16 @@ class Block(nn.Module):
 class ZoneGAT(nn.Module):
     def __init__(self, n_hist: int, n_day: int, hidden: int = 64, heads: int = 4, layers: int = 2,
                  mlp_hidden: int = 128, dropout: float = 0.1, use_zz: bool = True, ffn_mult: int = 2,
-                 n_pe: int = 0) -> None:
+                 n_pe: int = 0, mix_cols: list[int] | None = None) -> None:
         super().__init__()
         self.enc = HistoryGRU(n_hist, hidden)
         self.n_pe = n_pe
         self.inp = nn.Linear(hidden + n_day + n_pe, hidden)          # embedding into the residual stream
+        self.mix_cols = list(mix_cols or [])                         # day-D columns the cross-hour layer may read
+        if self.mix_cols:
+            self.mix_in = nn.Linear(hidden + len(self.mix_cols), hidden)
+            self.mix = nn.GRU(hidden, hidden // 2, batch_first=True, bidirectional=True)
+        self.drop = nn.Dropout(dropout)
         self.layers = nn.ModuleList(Block(hidden, heads, dropout, use_zz, ffn_mult) for _ in range(layers))
         self.ln_out = nn.LayerNorm(hidden)                           # pre-norm stacks end with a norm
         self.head = nn.Sequential(nn.Linear(hidden, mlp_hidden), nn.ReLU(), nn.Dropout(dropout),
@@ -83,6 +98,13 @@ class ZoneGAT(nn.Module):
                 pe = pe * (torch.randint(0, 2, (1, pe.shape[1]), device=dev) * 2 - 1)
             parts.append(pe[None, :, None, :].expand(B, -1, H, -1))
         u = self.inp(torch.cat(parts, dim=-1))                                        # (B, Z, H, hidden)
+        if self.mix_cols:
+            # Cross-hour layer: per zone, a GRU walks forwards and backwards over the H delivery hours. Slots
+            # that do not exist (23/24-hour days) sit at the end with all-zero inputs; they only change the
+            # backward start state, which then depends on the day's length (calendar, not future data).
+            seq = torch.cat([h, xday[..., self.mix_cols]], dim=-1).reshape(B * Z, H, -1)
+            mixed, _ = self.mix(self.mix_in(seq))                                     # (B*Z, H, hidden)
+            u = u + self.drop(mixed.reshape(B, Z, H, -1))
         u = u.permute(0, 2, 1, 3).reshape(B * H * Z, -1)                               # snapshot-major nodes
         edge_index = None
         zz = extra.get("zz")
@@ -111,16 +133,23 @@ def run(cfg: dict, fit_splits: list[str], eval_splits: list[str]) -> dict[str, n
     if cfg.get("zone_pe", 0):
         extra["zone_pe"] = torch.as_tensor(G.laplacian_pe(zones, cfg["zone_pe"]))
 
+    mix_cols: list[int] = []
+    if cfg.get("hour_mixer", "none") == "bigru":
+        mix_cols = [i for i, c in enumerate(fit_raw[fit_splits[0]]["xday_cols"]) if c in F.KNOWN_AT_CUTOFF]
+    elif cfg.get("hour_mixer", "none") != "none":
+        raise ValueError(f"unknown hour_mixer {cfg['hour_mixer']!r}")
+
     model = ZoneGAT(n_hist=train_t["hist"].shape[-1], n_day=train_t["xday"].shape[-1], hidden=cfg.get("hidden", 64),
                     heads=cfg.get("heads", 4), layers=cfg.get("layers", 2), mlp_hidden=cfg.get("mlp_hidden", 128),
                     dropout=cfg.get("dropout", 0.1), use_zz=graph != "none", ffn_mult=cfg.get("ffn_mult", 2),
-                    n_pe=extra["zone_pe"].shape[1] if "zone_pe" in extra else 0)
+                    n_pe=extra["zone_pe"].shape[1] if "zone_pe" in extra else 0, mix_cols=mix_cols)
     bd = cfg.get("batch_days", 16)
     train_b = T.DayBatches(train_t, bd, shuffle=True, seed=cfg.get("seed", 0))
     val_b = T.DayBatches(tens["val"], bd, shuffle=False) if "val" in tens else None
     info = T.fit(model, train_b, val_b, cfg, extra, T.run_dir(cfg.get("name", "gat")))
     info.update(n_params=sum(p.numel() for p in model.parameters()), graph=graph,
-                zone_pe=cfg.get("zone_pe", 0), time_encoding=cfg.get("time_encoding", "raw"))
+                zone_pe=cfg.get("zone_pe", 0), time_encoding=cfg.get("time_encoding", "raw"),
+                hour_mixer=cfg.get("hour_mixer", "none"), history_window=cfg.get("history_window", 168))
     run.info = info  # type: ignore[attr-defined]
 
     out = {}

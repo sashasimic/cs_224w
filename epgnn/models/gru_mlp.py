@@ -68,20 +68,22 @@ def _base(s: S.Samples) -> np.ndarray:
 CYCLE = {"hour_local": 24, "dow": 7, "month": 12}
 
 
-def cyclic_calendar(xday: np.ndarray, cols: list[str]) -> np.ndarray:
+def cyclic_calendar(xday: np.ndarray, cols: list[str]) -> tuple[np.ndarray, list[str]]:
     """Replace hour_local, dow and month by sin/cos pairs (periods 24, 7, 12), so hour 23 sits next to hour 0
-    and December next to January (lecture 13: give time its own encoding). NaN slots stay NaN."""
+    and December next to January (lecture 13: give time its own encoding). NaN slots stay NaN.
+    Returns the new array and its column names; both halves of a pair keep the source column's name."""
     keep = [i for i, c in enumerate(cols) if c not in CYCLE]
-    parts = [xday[..., keep]]
+    parts, names = [xday[..., keep]], [cols[i] for i in keep]
     for c, period in CYCLE.items():
         if c in cols:
             a = 2 * np.pi * xday[..., cols.index(c)] / period
             parts += [np.sin(a)[..., None], np.cos(a)[..., None]]
-    return np.concatenate(parts, axis=-1).astype("float32")
+            names += [c, c]
+    return np.concatenate(parts, axis=-1).astype("float32"), names
 
 
 def raw(split: str, cfg: dict, zones: list[str]) -> dict:
-    """Unscaled arrays of a split: samples, history, day inputs, base price, target, mask."""
+    """Unscaled arrays of a split: samples, history, day inputs (and their column names), base price, target, mask."""
     s = S.build(split, zones)
     base = _base(s)
     target = SC.residual_target(s.y, base)
@@ -89,9 +91,9 @@ def raw(split: str, cfg: dict, zones: list[str]) -> dict:
     cols = F.day_d_columns(cfg.get("feature_set", "own"))
     xday = S.day_inputs(s, cols)
     if cfg.get("time_encoding", "raw") == "cyclic":
-        xday = cyclic_calendar(xday, cols)
+        xday, cols = cyclic_calendar(xday, cols)
     return {"s": s, "base": base, "mask": mask, "target": np.where(mask, target, 0.0).astype("float32"),
-            "hist": S.history(s, F.HISTORY, cfg.get("history_window", 168)), "xday": xday}
+            "hist": S.history(s, F.HISTORY, cfg.get("history_window", 168)), "xday": xday, "xday_cols": list(cols)}
 
 
 def fit_scalers(raws: list[dict]) -> dict:

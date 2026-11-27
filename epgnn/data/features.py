@@ -13,6 +13,12 @@ CALENDAR = ["hour_local", "dow", "month"]
 OWN = ["price_lag24", "price_lag168", "load_fc",
        "temp_pw_lag24", "temp_anom_lag24", "wind_cf_lag24", "solar_cf_lag24",
        "net_import_lag48"] + CALENDAR
+# Strictly known at the cutoff for EVERY hour of day D: the prices of D-1 and D-7 (auction results, published
+# the day before they deliver), the day-ahead load forecast, flows two days back and the calendar. The lag-24
+# weather columns are deliberately not here: for the afternoon hours of D they are observed after the cutoff
+# (the dataset doc treats them as a stand-in for a weather forecast). Anything that passes information
+# between the hours of day D (the cross-hour layer in models/gat.py) may read only these columns.
+KNOWN_AT_CUTOFF = ["price_lag24", "price_lag168", "load_fc", "net_import_lag48"] + CALENDAR
 # JAO Core summaries (zone-level); null outside Core, see the zone_nodes_hourly doc.
 JAO_SUMMARIES = ["n_presolved", "min_ram_ratio", "in_core"]
 # Same-hour weather: observed, so only allowed as the "perfect forecast" ablation.

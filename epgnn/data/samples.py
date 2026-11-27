@@ -16,6 +16,7 @@ from epgnn.splits import splits
 
 H = 25                       # slots per delivery day (DST days have 23 or 25 hours)
 CUTOFF_UTC = 10              # D-1 10:00 UTC = noon CEST / 11:00 CET, the day-ahead gate closure
+HOUR_NS = 3_600_000_000_000  # one hour in the units of Samples.hours
 
 
 @dataclass
@@ -71,7 +72,14 @@ def day_inputs(s: Samples, cols: list[str]) -> np.ndarray:
     vals = F.as_float(n.reindex(keys), cols)
     flat = out.reshape(-1, len(cols))
     flat[valid] = vals
-    return flat.reshape(len(s), H, len(cols))
+    if "price_lag24" in cols:
+        # On the 25-hour day of the autumn clock change the last slot is 24 elapsed hours after the first, so
+        # its price_lag24 is the day's own first price: a target. Use the last price of D-1 instead, which is
+        # what the slot before it holds.
+        j = cols.index("price_lag24")
+        rows, slots = np.nonzero((s.hours >= 0) & (s.hours - 24 * HOUR_NS >= s.hours[:, :1]))
+        out[rows, slots, j] = out[rows, slots - 1, j]
+    return out
 
 
 def history(s: Samples, cols: list[str], window: int = 168) -> np.ndarray:
