@@ -1,5 +1,6 @@
-# Checkpoint 3: GRU + GATv2 on the interconnector graph. Same encoder, head, target and loss as
-# checkpoint 2.5 (c25_gru_mlp), so (3 - 2.5) isolates the zone-to-zone messages.
+# Checkpoint 3: GRU + 2 pre-norm GATv2 blocks on the interconnector graph. Same encoder, target and loss as
+# checkpoint 2.5; c3_nograph is this network with the messages switched off, so (3 - c3_nograph) isolates
+# the zone-to-zone messages and (c3_nograph - 2.5) the extra depth.
 model: gat
 feature_set: own
 graph: interconnects

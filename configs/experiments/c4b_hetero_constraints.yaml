@@ -1,25 +1,18 @@
-# Checkpoint 4b: the full heterogeneous model. Checkpoint 3 plus constraint nodes (the 64 tightest physical
-# constraints of each hour) linked to the zones in their domain by signed-PTDF edges; constraint -> zone
-# messages use sum aggregation. (4b - 3) isolates the constraint nodes.
+# Checkpoint 4b: the full heterogeneous model with constraint nodes and PTDF relations.
 model: hetero
 feature_set: own
 graph: interconnects
-constraints: real
-constraint_lag_hours: 0      # day-D domain (published on D-1 before the auction); 24 = the safe fallback
-max_constraints: 64
 history_window: 168
 hidden: 64
-c_hidden: 32
-mlp_hidden: 128
-heads: 4
+constraint_hidden: 32
 layers: 2
-dropout: 0.1
-fit_splits: [pretrain, train]
+heads: 4
+ptdf_min: 0.005
+pretrain: {splits: [pretrain]}       # zone-only network, no constraint nodes exist before 2022-06-09
+fit_splits: [train]
 eval_splits: [val, test]
 epochs: 50
 lr: 0.001
 patience: 8
-batch_days: 16
 spread_weight: 0.5
 seed: 0
-device: cpu

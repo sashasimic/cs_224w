@@ -1,0 +1,22 @@
+# Checkpoint 3 + position and time encodings (lectures 7, 8, 13): identical to c3_gat_interconnects plus
+# 8 Laplacian eigenvectors per zone and cyclic calendar features. (this - c3) is the value of the encodings.
+model: gat
+feature_set: own
+graph: interconnects
+history_window: 168
+hidden: 64
+mlp_hidden: 128
+heads: 4
+layers: 2
+zone_pe: 8              # Laplacian eigenvectors of the interconnector graph, random sign flips
+time_encoding: cyclic   # hour / weekday / month as sin-cos pairs
+dropout: 0.1
+fit_splits: [pretrain, train]
+eval_splits: [val, test]
+epochs: 50
+lr: 0.001
+patience: 8
+batch_days: 16
+spread_weight: 0.5
+seed: 0
+device: cpu          # sparse graph ops are faster on CPU than on MPS for this size

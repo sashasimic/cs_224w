@@ -27,19 +27,6 @@
           "size": 144723224
         }
       }
-    },
-    "jao_cnec_hourly": {
-      "version": "v1.0",
-      "files": {
-        "jao_cnec_hourly.md": {
-          "md5": "y3WoUXvIxXrsNbD4ehPt3g==",
-          "size": 8844
-        },
-        "jao_cnec_hourly.parquet": {
-          "md5": "pY5bTNGHSQWoeTHkG77RTA==",
-          "size": 246271875
-        }
-      }
     }
   }
 }

@@ -15,7 +15,8 @@ Data is prepared as day batches (B days x all zones), see epgnn.train. Inputs ar
 statistics from the fit splits; NaN (missing value or non-existent slot) becomes 0 after scaling.
 
 Config keys: feature_set, history_window (168), hidden (64), mlp_hidden (128), dropout (0.1),
-fit_splits, eval_splits, epochs, lr, patience, batch_days (16), spread_weight, seed, zones.
+fit_splits, eval_splits, epochs, lr, patience, batch_days (16), spread_weight, seed, zones,
+time_encoding ("raw" = hour/dow/month as numbers; "cyclic" = sin/cos pairs, see cyclic_calendar).
 """
 import numpy as np
 import pandas as pd
@@ -42,7 +43,7 @@ class GRUMLP(nn.Module):
         b, z, w, f = hist.shape
         return self.enc(hist.reshape(b * z, w, f)).reshape(b, z, -1)
 
-    def forward(self, hist: torch.Tensor, xday: torch.Tensor, extra: dict, batch: dict | None = None) -> torch.Tensor:
+    def forward(self, hist: torch.Tensor, xday: torch.Tensor, extra: dict) -> torch.Tensor:
         h = self.encode(hist)                                                   # (B, Z, hidden)
         hh = h.unsqueeze(2).expand(-1, -1, xday.shape[2], -1)                   # (B, Z, H, hidden)
         return self.head(torch.cat([hh, xday], dim=-1)).squeeze(-1)             # (B, Z, H)
@@ -64,15 +65,33 @@ def _base(s: S.Samples) -> np.ndarray:
     return np.where(np.isnan(base), 0.0, base).astype("float32")
 
 
+CYCLE = {"hour_local": 24, "dow": 7, "month": 12}
+
+
+def cyclic_calendar(xday: np.ndarray, cols: list[str]) -> np.ndarray:
+    """Replace hour_local, dow and month by sin/cos pairs (periods 24, 7, 12), so hour 23 sits next to hour 0
+    and December next to January (lecture 13: give time its own encoding). NaN slots stay NaN."""
+    keep = [i for i, c in enumerate(cols) if c not in CYCLE]
+    parts = [xday[..., keep]]
+    for c, period in CYCLE.items():
+        if c in cols:
+            a = 2 * np.pi * xday[..., cols.index(c)] / period
+            parts += [np.sin(a)[..., None], np.cos(a)[..., None]]
+    return np.concatenate(parts, axis=-1).astype("float32")
+
+
 def raw(split: str, cfg: dict, zones: list[str]) -> dict:
     """Unscaled arrays of a split: samples, history, day inputs, base price, target, mask."""
     s = S.build(split, zones)
     base = _base(s)
     target = SC.residual_target(s.y, base)
     mask = s.mask & np.isfinite(target)
+    cols = F.day_d_columns(cfg.get("feature_set", "own"))
+    xday = S.day_inputs(s, cols)
+    if cfg.get("time_encoding", "raw") == "cyclic":
+        xday = cyclic_calendar(xday, cols)
     return {"s": s, "base": base, "mask": mask, "target": np.where(mask, target, 0.0).astype("float32"),
-            "hist": S.history(s, F.HISTORY, cfg.get("history_window", 168)),
-            "xday": S.day_inputs(s, F.day_d_columns(cfg.get("feature_set", "own")))}
+            "hist": S.history(s, F.HISTORY, cfg.get("history_window", 168)), "xday": xday}
 
 
 def fit_scalers(raws: list[dict]) -> dict:

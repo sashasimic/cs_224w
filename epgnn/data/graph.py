@@ -1,7 +1,8 @@
 """Per-day graphs.
 
 zone_graph            the static zone-zone graph (interconnects) with its per-day edge features; checkpoint 3
-constraint_snapshots  constraint nodes per delivery hour with their PTDF coefficients; checkpoint 4b
+laplacian_pe          Laplacian-eigenvector positional encoding of the zones (config zone_pe)
+constraint_graph      constraint nodes of day D + affects / rev_affects PTDF relations; owner: checkpoint 4b (stub)
 
 Both return plain numpy so the model files decide how to build the torch_geometric batch.
 """
@@ -29,6 +30,20 @@ def zone_graph(zones: list[str], shuffled: bool = False, seed: int = 0) -> np.nd
     return ei
 
 
+def laplacian_pe(zones: list[str], k: int = 8) -> np.ndarray:
+    """Zone positional encoding (lectures 7, 8, 13), (len(zones), k): the eigenvectors of L = D - A of the
+    undirected interconnector graph with the k smallest non-zero eigenvalues (the constant one is dropped).
+    Row i says where zone i sits: centre vs periphery, and which region. Signs are arbitrary, so the model
+    flips them at random in training. Always built from the real graph, also for the shuffled and no-graph
+    controls, so those controls still differ from checkpoint 3 only in the messages."""
+    ei = zone_graph(zones)
+    a = np.zeros((len(zones), len(zones)))
+    a[ei[0], ei[1]] = 1.0
+    a = np.maximum(a, a.T)
+    _, vec = np.linalg.eigh(np.diag(a.sum(1)) - a)
+    return vec[:, 1:k + 1].astype("float32")
+
+
 def zone_edge_features(zones: list[str], ts: pd.Series, cols: list[str] | None = None) -> np.ndarray:
     """Edge features for the hours `ts`, aligned with zone_graph(zones): (len(ts), E, len(cols))."""
     cols = cols or F.EDGE_FEATURES
@@ -42,39 +57,12 @@ def zone_edge_features(zones: list[str], ts: pd.Series, cols: list[str] | None =
     return wide.reindex(idx).to_numpy(dtype="float32").reshape(len(ts), len(pairs), len(cols))
 
 
-HOUR_NS = 3_600_000_000_000
-CONSTRAINT_FEATURES = ["log_ram", "log_fmax", "ram_fmax", "is_core"]
+def constraint_graph(day: str, zones: list[str], ptdf_min: float = 0.005) -> dict:
+    """Constraint nodes of delivery day `day` and their PTDF edges to zones.
 
-
-def constraint_snapshots(hours: np.ndarray, zones: list[str], max_constraints: int = 64,
-                         lag_hours: int = 0) -> dict:
-    """Constraint nodes for each delivery hour in `hours` (sorted unique int64 ns).
-
-    One node per physical constraint (row of jao_cnec_hourly) of the hour; with `lag_hours` > 0 the rows of
-    the hour that long before delivery are used instead (the safe choice if the day-D domain turned out
-    to be published after the cutoff). Only the `max_constraints` tightest rows (lowest ram/fmax) of an
-    hour are kept: the proposal's attention should look at the constraints near their limit, and the
-    tail of slack lines only adds cost.
-
-    Returns CSR-style arrays, rows grouped by hour in the order of `hours`:
-      offsets  (n_hours + 1,)  rows of hour i are offsets[i]:offsets[i+1]
-      x        (C, 4) float32  CONSTRAINT_FEATURES: log1p(ram), log1p(fmax), ram/fmax clipped to [0, 2], Core flag
-      coef     (C, 12) float32 signed PTDF per epgnn.jao.ZONES; NaN where the zone is outside the domain
-      core_idx (12,) int64     index of each PTDF zone in `zones`, -1 if that zone is not modelled
+    Returns {"node_key": (C,) ids, "x": (C, 25, 3) hourly [ram, fmax, ram_fmax] (NaN-padded),
+             "affects": (2, E) [zone_idx, constraint_idx], "ptdf": (E,) signed weights}.
+    A constraint node is one (line, contingency, direction) for the whole day; jao_cnec_hourly needs a
+    stable within-day id for that (`cnec_id`, planned for v1.1). Until then this raises.
     """
-    from epgnn import jao
-    df = tables.cnec()
-    key = pd.DatetimeIndex(df.ts_utc).tz_convert("UTC").as_unit("ns").asi8     # the table stores microseconds
-    need = hours - lag_hours * HOUR_NS
-    cols = [f"ptdf_{z}" for z in jao.ZONES]
-    sub = df.loc[np.isin(key, need), ["ram", "fmax", "ram_fmax", "regime"] + cols].copy()
-    sub["t"] = key[np.isin(key, need)]
-    sub = sub.sort_values(["t", "ram_fmax"]).groupby("t").head(max_constraints)
-    t = sub.t.to_numpy()
-    counts = np.searchsorted(t, need, side="right") - np.searchsorted(t, need, side="left")
-    offsets = np.concatenate([[0], np.cumsum(counts)]).astype("int64")
-    x = np.stack([np.log1p(sub.ram.clip(lower=0)), np.log1p(sub.fmax.clip(lower=0)),
-                  sub.ram_fmax.clip(0, 2), sub.regime.eq("Core").astype(float)], axis=1).astype("float32")
-    coef = sub[cols].to_numpy(dtype="float32")
-    core_idx = np.array([zones.index(z) if z in zones else -1 for z in jao.ZONES], dtype="int64")
-    return {"offsets": offsets, "x": x, "coef": coef, "core_idx": core_idx}
+    raise NotImplementedError("needs jao_cnec_hourly v1.1 with cnec_id; see the dataset doc")
