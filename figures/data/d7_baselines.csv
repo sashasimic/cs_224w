@@ -1,0 +1,23 @@
+method,family,val_mae,test_mae
+D-1 daily mean (flat),naive,30.53,33.18
+D-7 same hour (weekly persistence),naive,30.16,29.03
+Median of last 4 same weekdays,naive,26.32,26.28
+Similar day (Mon/Sat/Sun D-7; else D-1),naive,24.28,24.0
+D-1 same hour,naive,23.92,23.79
+Mean of D-1 and D-7,naive,22.98,22.41
+XGBoost per zone,trained,20.691822052001953,21.243274688720703
+XGBoost + neighbours,trained,20.355052947998047,21.03218650817871
+GATv2 self (safe inputs),trained,20.483835220336914,20.860065460205078
+LEAR (static fit on train),linear,19.18,20.67
+GATv2 full (safe inputs),trained,19.95011329650879,20.654232025146484
+GRU + MLP (no graph),trained,20.02897071838379,20.40139389038086
+GATv2 interconnects (safe inputs),trained,20.06684112548828,20.269794464111328
+LEAR + perfect same-day weather,linear,18.38,20.23
+GATv2 self + D-1 curves (lag24 weather),trained,18.359540939331055,19.21967887878418
+"GATv2 self + curves, fit once",trained,18.352886199951172,19.21477699279785
+"GATv2 full + curves, fit once",trained,18.016664505004883,18.786312103271484
+"GATv2 interconnects + curves, fit once",trained,17.848237991333008,18.463594436645508
+LEAR (refit monthly; trailing 730 days),linear,18.25,18.43
+"GATv2 self + curves, fine-tuned monthly",trained,18.071985244750977,17.880273818969727
+"GATv2 full + curves, fine-tuned monthly",trained,17.713726043701172,17.566099166870117
+"GATv2 interconnects + curves, fine-tuned monthly",trained,17.621227264404297,17.351890563964844

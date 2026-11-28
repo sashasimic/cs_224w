@@ -1,0 +1,156 @@
+{
+  "name": "c3s_gat_interconnects",
+  "config": {
+    "model": "gat_scope",
+    "graph": "interconnects",
+    "positional": true,
+    "history": "base",
+    "day_inputs": "own_cyclic",
+    "history_window": 168,
+    "hidden": 64,
+    "heads": 4,
+    "layers": 2,
+    "ffn": 128,
+    "mlp_hidden": 128,
+    "dropout": 0.1,
+    "fit_splits": [
+      "pretrain",
+      "train"
+    ],
+    "eval_splits": [
+      "val",
+      "test"
+    ],
+    "epochs": 50,
+    "lr": 0.001,
+    "patience": 8,
+    "batch_days": 16,
+    "spread_weight": 0.5,
+    "seed": 0,
+    "name": "c3s_gat_interconnects"
+  },
+  "metrics": {
+    "val": {
+      "all": {
+        "n_hours": 376680,
+        "mae": 19.797454833984375,
+        "rmse": 34.27124786376953,
+        "rel_mae": 0.6567132298678016,
+        "spread_mae": 15.675455093383789,
+        "spread_f1": 0.7076829898849912
+      },
+      "pre_2025-10": {
+        "n_hours": 376680,
+        "mae": 19.797454833984375,
+        "rmse": 34.27124786376953,
+        "rel_mae": 0.6567132298678016,
+        "spread_mae": 15.675455093383789,
+        "spread_f1": 0.7076829898849912
+      },
+      "summer": {
+        "n_hours": 94944,
+        "mae": 17.747318267822266,
+        "rmse": 31.141197204589844,
+        "rel_mae": 0.7338413363605935,
+        "spread_mae": 15.783455848693848,
+        "spread_f1": 0.7390845704582294
+      },
+      "core_zones": {
+        "n_hours": 105120,
+        "mae": 22.215015411376953,
+        "rmse": 37.358177185058594,
+        "rel_mae": 0.6552494766528963,
+        "spread_mae": 15.057734489440918,
+        "spread_f1": 0.6443913313755332
+      }
+    },
+    "test": {
+      "all": {
+        "n_hours": 565320,
+        "mae": 20.53702163696289,
+        "rmse": 32.617530822753906,
+        "rel_mae": 0.7079598549089539,
+        "spread_mae": 15.329755783081055,
+        "spread_f1": 0.7213268766102872
+      },
+      "pre_2025-10": {
+        "n_hours": 188856,
+        "mae": 17.287694931030273,
+        "rmse": 27.390806198120117,
+        "rel_mae": 0.7304569956469467,
+        "spread_mae": 13.605161666870117,
+        "spread_f1": 0.7147398465526722
+      },
+      "post_2025-10": {
+        "n_hours": 376464,
+        "mae": 22.167064666748047,
+        "rmse": 34.94633483886719,
+        "rel_mae": 0.6995309886316161,
+        "spread_mae": 16.194822311401367,
+        "spread_f1": 0.7244071540701448
+      },
+      "summer": {
+        "n_hours": 189720,
+        "mae": 19.39628791809082,
+        "rmse": 31.001209259033203,
+        "rel_mae": 0.7553503519957667,
+        "spread_mae": 14.708014488220215,
+        "spread_f1": 0.7242064598553097
+      },
+      "core_zones": {
+        "n_hours": 157824,
+        "mae": 22.078269958496094,
+        "rmse": 34.780433654785156,
+        "rel_mae": 0.7211354936716242,
+        "spread_mae": 12.937643051147461,
+        "spread_f1": 0.6308972757932205
+      }
+    }
+  },
+  "info": {
+    "epochs": 50,
+    "best_val": 0.2865938960689388,
+    "history": [
+      "price_lag24",
+      "price_lag168",
+      "load_fc",
+      "net_import",
+      "temp_pw",
+      "temp_anom",
+      "wind_cf",
+      "solar_cf"
+    ],
+    "n_params": 95425,
+    "graph": "interconnects",
+    "edges": 180,
+    "positional": true,
+    "day_inputs": [
+      "price_lag24",
+      "price_lag168",
+      "load_fc",
+      "temp_pw_lag24",
+      "temp_anom_lag24",
+      "wind_cf_lag24",
+      "solar_cf_lag24",
+      "net_import_lag48",
+      "hour_sin",
+      "hour_cos",
+      "dow_sin",
+      "dow_cos",
+      "month_sin",
+      "month_cos"
+    ],
+    "attention": {
+      "graphs": 4800,
+      "mean_neighbour_share": 1.0,
+      "mean_uniform_share": 0.09090909090909091,
+      "lift": 11.0
+    }
+  },
+  "datasets": {
+    "zone_nodes_hourly": "v1.0",
+    "zone_edges_hourly": "v1.0"
+  },
+  "git": "",
+  "ran_at": "2026-11-26T00:15:25+00:00"
+}

@@ -1,0 +1,97 @@
+arm,fit,hour,mae
+interconnects,fine-tuned,0,9.884058952331543
+interconnects,fine-tuned,1,9.335912704467773
+interconnects,fine-tuned,2,9.440431594848633
+interconnects,fine-tuned,3,9.7764310836792
+interconnects,fine-tuned,4,10.261630058288574
+interconnects,fine-tuned,5,11.42542839050293
+interconnects,fine-tuned,6,14.32150936126709
+interconnects,fine-tuned,7,18.043514251708984
+interconnects,fine-tuned,8,19.235851287841797
+interconnects,fine-tuned,9,19.914932250976562
+interconnects,fine-tuned,10,20.458189010620117
+interconnects,fine-tuned,11,20.512479782104492
+interconnects,fine-tuned,12,20.60439682006836
+interconnects,fine-tuned,13,20.774370193481445
+interconnects,fine-tuned,14,20.633031845092773
+interconnects,fine-tuned,15,20.468372344970703
+interconnects,fine-tuned,16,20.658233642578125
+interconnects,fine-tuned,17,20.814050674438477
+interconnects,fine-tuned,18,21.593385696411133
+interconnects,fine-tuned,19,24.72797203063965
+interconnects,fine-tuned,20,24.24791717529297
+interconnects,fine-tuned,21,19.385114669799805
+interconnects,fine-tuned,22,15.74032974243164
+interconnects,fine-tuned,23,14.18778133392334
+self,fine-tuned,0,9.911328315734863
+self,fine-tuned,1,9.397245407104492
+self,fine-tuned,2,9.546716690063477
+self,fine-tuned,3,9.883185386657715
+self,fine-tuned,4,10.361574172973633
+self,fine-tuned,5,11.581655502319336
+self,fine-tuned,6,14.836590766906738
+self,fine-tuned,7,18.759990692138672
+self,fine-tuned,8,19.882728576660156
+self,fine-tuned,9,20.521371841430664
+self,fine-tuned,10,21.20378303527832
+self,fine-tuned,11,21.402326583862305
+self,fine-tuned,12,21.568588256835938
+self,fine-tuned,13,21.71436309814453
+self,fine-tuned,14,21.581960678100586
+self,fine-tuned,15,21.426300048828125
+self,fine-tuned,16,21.581724166870117
+self,fine-tuned,17,21.44233512878418
+self,fine-tuned,18,22.180532455444336
+self,fine-tuned,19,25.329214096069336
+self,fine-tuned,20,24.88405418395996
+self,fine-tuned,21,19.750019073486328
+self,fine-tuned,22,16.010438919067383
+self,fine-tuned,23,14.368490219116211
+interconnects,fit once,0,10.091572761535645
+interconnects,fit once,1,9.677569389343262
+interconnects,fit once,2,9.821776390075684
+interconnects,fit once,3,10.19402027130127
+interconnects,fit once,4,10.643993377685547
+interconnects,fit once,5,11.84715461730957
+interconnects,fit once,6,14.85684871673584
+interconnects,fit once,7,18.78525161743164
+interconnects,fit once,8,20.14876365661621
+interconnects,fit once,9,21.37392234802246
+interconnects,fit once,10,22.595882415771484
+interconnects,fit once,11,23.139379501342773
+interconnects,fit once,12,23.321279525756836
+interconnects,fit once,13,23.52113914489746
+interconnects,fit once,14,23.145427703857422
+interconnects,fit once,15,22.56928825378418
+interconnects,fit once,16,22.22850799560547
+interconnects,fit once,17,21.739200592041016
+interconnects,fit once,18,22.237648010253906
+interconnects,fit once,19,25.462099075317383
+interconnects,fit once,20,24.924863815307617
+interconnects,fit once,21,19.93085289001465
+interconnects,fit once,22,16.230703353881836
+interconnects,fit once,23,14.639065742492676
+self,fit once,0,10.444611549377441
+self,fit once,1,10.043009757995605
+self,fit once,2,10.24044132232666
+self,fit once,3,10.56570816040039
+self,fit once,4,10.909265518188477
+self,fit once,5,12.094975471496582
+self,fit once,6,15.260454177856445
+self,fit once,7,19.20455551147461
+self,fit once,8,20.54572105407715
+self,fit once,9,21.920516967773438
+self,fit once,10,23.74178695678711
+self,fit once,11,24.831741333007812
+self,fit once,12,25.562406539916992
+self,fit once,13,25.966787338256836
+self,fit once,14,25.495264053344727
+self,fit once,15,24.42163848876953
+self,fit once,16,23.418161392211914
+self,fit once,17,22.108612060546875
+self,fit once,18,22.47974395751953
+self,fit once,19,25.713430404663086
+self,fit once,20,25.221126556396484
+self,fit once,21,20.02734375
+self,fit once,22,16.284326553344727
+self,fit once,23,14.652969360351562

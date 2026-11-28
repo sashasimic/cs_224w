@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="936pt" height="547.2pt" viewBox="0 0 936 547.2" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-27T20:32:48.032373</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.8, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 547.2 
+L 936 547.2 
+L 936 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 23.76 385.2 
+L 120.24 385.2 
+Q 126 385.2 126 379.44 
+L 126 340.56 
+Q 126 334.8 120.24 334.8 
+L 23.76 334.8 
+Q 18 334.8 18 340.56 
+L 18 379.44 
+Q 18 385.2 23.76 385.2 
+z
+" clip-path="url(#pa5a242b6d5)" style="fill: #ffffff; stroke: #111111; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 182.16 385.2 
+L 278.64 385.2 
+Q 284.4 385.2 284.4 379.44 
+L 284.4 340.56 
+Q 284.4 334.8 278.64 334.8 
+L 182.16 334.8 
+Q 176.4 334.8 176.4 340.56 
+L 176.4 379.44 
+Q 176.4 385.2 182.16 385.2 
+z
+" clip-path="url(#pa5a242b6d5)" style="fill: #ffffff; stroke: #111111; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 340.56 385.2 
+L 437.04 385.2 
+Q 442.8 385.2 442.8 379.44 
+L 442.8 340.56 
+Q 442.8 334.8 437.04 334.8 
+L 340.56 334.8 
+Q 334.8 334.8 334.8 340.56 
+L 334.8 379.44 
+Q 334.8 385.2 340.56 385.2 
+z
+" clip-path="url(#pa5a242b6d5)" style="fill: #ffffff; stroke: #111111; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 502.56 169.2 
+L 901.44 169.2 
+Q 907.2 169.2 907.2 163.44 
+L 907.2 88.56 
+Q 907.2 82.8 901.44 82.8 
+L 502.56 82.8 
+Q 496.8 82.8 496.8 88.56 
+L 496.8 163.44 
+Q 496.8 169.2 502.56 169.2 
+z
+" clip-path="url(#pa5a242b6d5)" style="fill: #ffffff; stroke: #111111; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 502.56 306 
+L 901.44 306 
+Q 907.2 306 907.2 300.24 
+L 907.2 218.16 
+Q 907.2 212.4 901.44 212.4 
+L 502.56 212.4 
+Q 496.8 212.4 496.8 218.16 
+L 496.8 300.24 
+Q 496.8 306 502.56 306 
+z
+" clip-path="url(#pa5a242b6d5)" style="fill: #ffffff; stroke: #111111; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 502.56 414 
+L 901.44 414 
+Q 907.2 414 907.2 408.24 
+L 907.2 351.36 
+Q 907.2 345.6 901.44 345.6 
+L 502.56 345.6 
+Q 496.8 345.6 496.8 351.36 
+L 496.8 408.24 
+Q 496.8 414 502.56 414 
+z
+" clip-path="url(#pa5a242b6d5)" style="fill: #ffffff; stroke: #111111; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 702 170.199316 
+Q 702 190.79868 702 210.168205 
+" clip-path="url(#pa5a242b6d5)" style="fill: none; stroke: #111111; stroke-width: 1.1; stroke-linecap: round"/>
+    <path d="M 704 206.168205 
+L 702 210.168205 
+L 700 206.168205 
+z
+" clip-path="url(#pa5a242b6d5)" style="fill: #111111; stroke: #111111; stroke-width: 1.1; stroke-linecap: round"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 702 307.000635 
+Q 702 325.798507 702 343.366541 
+" clip-path="url(#pa5a242b6d5)" style="fill: none; stroke: #111111; stroke-width: 1.1; stroke-linecap: round"/>
+    <path d="M 704 339.366541 
+L 702 343.366541 
+L 700 339.366541 
+z
+" clip-path="url(#pa5a242b6d5)" style="fill: #111111; stroke: #111111; stroke-width: 1.1; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_1">
+    <path d="M 86.4 165.6 
+L 230.4 122.4 
+" clip-path="url(#pa5a242b6d5)" style="fill: none; stroke: #111111; stroke-width: 2.2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 230.4 122.4 
+L 374.4 165.6 
+" clip-path="url(#pa5a242b6d5)" style="fill: none; stroke: #111111; stroke-width: 2.2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 86.4 187.2 
+L 72 334.8 
+" clip-path="url(#pa5a242b6d5)" style="fill: none; stroke: #111111; stroke-width: 1.2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_4">
+    <path d="M 230.4 144 
+L 72 334.8 
+" clip-path="url(#pa5a242b6d5)" style="fill: none; stroke-dasharray: 3.108,1.344; stroke-dashoffset: 0; stroke: #111111; stroke-width: 0.84"/>
+   </g>
+   <g id="line2d_5">
+    <path d="M 230.4 144 
+L 230.4 334.8 
+" clip-path="url(#pa5a242b6d5)" style="fill: none; stroke: #111111; stroke-width: 1.88; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_6">
+    <path d="M 374.4 187.2 
+L 230.4 334.8 
+" clip-path="url(#pa5a242b6d5)" style="fill: none; stroke-dasharray: 5.328,2.304; stroke-dashoffset: 0; stroke: #111111; stroke-width: 1.44"/>
+   </g>
+   <g id="line2d_7">
+    <path d="M 230.4 144 
+L 388.8 334.8 
+" clip-path="url(#pa5a242b6d5)" style="fill: none; stroke: #111111; stroke-width: 1.04; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_8">
+    <path d="M 374.4 187.2 
+L 388.8 334.8 
+" clip-path="url(#pa5a242b6d5)" style="fill: none; stroke: #111111; stroke-width: 1.32; stroke-linecap: round"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 15px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: start; fill: #111111" x="25.2" y="36.164063" transform="rotate(-0 25.2 36.164063)">L5  H2 constraint arm  (gat_constraints.py, 111,201 parameters = L4 + 11,168)</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 9.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: start; fill: #6b6b6b" x="25.2" y="58.783906" transform="rotate(-0 25.2 58.783906)">Constraint nodes from the D-1 flow-based domain (same UTC hour, published on D-2): about 110 per hour, at most 182</text>
+   </g>
+   <g id="text_3">
+    <g id="patch_10">
+     <path d="M 82.995 255.622734 
+L 103.138359 255.622734 
+L 103.138359 247.739531 
+L 82.995 247.739531 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 7.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: start; fill: #111111" x="83.52" y="253.62" transform="rotate(-0 83.52 253.62)">+0.15</text>
+   </g>
+   <g id="text_4">
+    <g id="patch_11">
+     <path d="M 162.195 231.862734 
+L 180.756328 231.862734 
+L 180.756328 223.979531 
+L 162.195 223.979531 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 7.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: start; fill: #111111" x="162.72" y="229.86" transform="rotate(-0 162.72 229.86)">-0.06</text>
+   </g>
+   <g id="text_5">
+    <g id="patch_12">
+     <path d="M 233.475 231.862734 
+L 253.618359 231.862734 
+L 253.618359 223.979531 
+L 233.475 223.979531 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 7.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: start; fill: #111111" x="234" y="229.86" transform="rotate(-0 234 229.86)">+0.32</text>
+   </g>
+   <g id="text_6">
+    <g id="patch_13">
+     <path d="M 312.675 255.622734 
+L 331.236328 255.622734 
+L 331.236328 247.739531 
+L 312.675 247.739531 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 7.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: start; fill: #111111" x="313.2" y="253.62" transform="rotate(-0 313.2 253.62)">-0.21</text>
+   </g>
+   <g id="text_7">
+    <g id="patch_14">
+     <path d="M 304.755 231.862734 
+L 324.898359 231.862734 
+L 324.898359 223.979531 
+L 304.755 223.979531 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 7.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: start; fill: #111111" x="305.28" y="229.86" transform="rotate(-0 305.28 229.86)">+0.11</text>
+   </g>
+   <g id="text_8">
+    <g id="patch_15">
+     <path d="M 383.955 255.622734 
+L 404.098359 255.622734 
+L 404.098359 247.739531 
+L 383.955 247.739531 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 7.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: start; fill: #111111" x="384.48" y="253.62" transform="rotate(-0 384.48 253.62)">+0.18</text>
+   </g>
+   <g id="patch_16">
+    <path d="M 86.4 191.52 
+C 93.274064 191.52 99.86751 188.788905 104.728208 183.928208 
+C 109.588905 179.06751 112.32 172.474064 112.32 165.6 
+C 112.32 158.725936 109.588905 152.13249 104.728208 147.271792 
+C 99.86751 142.411095 93.274064 139.68 86.4 139.68 
+C 79.525936 139.68 72.93249 142.411095 68.071792 147.271792 
+C 63.211095 152.13249 60.48 158.725936 60.48 165.6 
+C 60.48 172.474064 63.211095 179.06751 68.071792 183.928208 
+C 72.93249 188.788905 79.525936 191.52 86.4 191.52 
+z
+" clip-path="url(#pa5a242b6d5)" style="fill: #ffffff; stroke: #111111; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 230.4 148.32 
+C 237.274064 148.32 243.86751 145.588905 248.728208 140.728208 
+C 253.588905 135.86751 256.32 129.274064 256.32 122.4 
+C 256.32 115.525936 253.588905 108.93249 248.728208 104.071792 
+C 243.86751 99.211095 237.274064 96.48 230.4 96.48 
+C 223.525936 96.48 216.93249 99.211095 212.071792 104.071792 
+C 207.211095 108.93249 204.48 115.525936 204.48 122.4 
+C 204.48 129.274064 207.211095 135.86751 212.071792 140.728208 
+C 216.93249 145.588905 223.525936 148.32 230.4 148.32 
+z
+" clip-path="url(#pa5a242b6d5)" style="fill: #ffffff; stroke: #111111; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 374.4 191.52 
+C 381.274064 191.52 387.86751 188.788905 392.728208 183.928208 
+C 397.588905 179.06751 400.32 172.474064 400.32 165.6 
+C 400.32 158.725936 397.588905 152.13249 392.728208 147.271792 
+C 387.86751 142.411095 381.274064 139.68 374.4 139.68 
+C 367.525936 139.68 360.93249 142.411095 356.071792 147.271792 
+C 351.211095 152.13249 348.48 158.725936 348.48 165.6 
+C 348.48 172.474064 351.211095 179.06751 356.071792 183.928208 
+C 360.93249 188.788905 367.525936 191.52 374.4 191.52 
+z
+" clip-path="url(#pa5a242b6d5)" style="fill: #ffffff; stroke: #111111; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: middle; fill: #111111" x="72" y="350.229531" transform="rotate(-0 72 350.229531)">line A</text>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 7.3px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: middle; fill: #111111" x="72" y="368.812656" transform="rotate(-0 72 368.812656)">RAM/Fmax .13</text>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: middle; fill: #111111" x="230.4" y="350.229531" transform="rotate(-0 230.4 350.229531)">line B</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 7.3px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: middle; fill: #111111" x="230.4" y="368.812656" transform="rotate(-0 230.4 368.812656)">RAM/Fmax .05</text>
+   </g>
+   <g id="text_13">
+    <text style="font-weight: 700; font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: middle; fill: #111111" x="388.8" y="350.229531" transform="rotate(-0 388.8 350.229531)">line C</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 7.3px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: middle; fill: #111111" x="388.8" y="368.812656" transform="rotate(-0 388.8 368.812656)">RAM/Fmax .60</text>
+   </g>
+   <g id="text_15">
+    <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #6b6b6b" transform="translate(28.8 431.0875)">thick line: interconnector (zone GAT)     thin line: exposure edge, |zone-to-rest PTDF| &gt;= 0.05</text>
+    <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #6b6b6b" transform="translate(28.8 440.685375)">solid: PTDF &gt; 0 (exporting from the zone loads the line)     dashed: PTDF &lt; 0 (relieves it)</text>
+    <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #6b6b6b" transform="translate(28.8 450.846)">line width ~ |PTDF|; values illustrative</text>
+   </g>
+   <g id="text_16">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: middle; fill: #111111" x="702" y="99.300625" transform="rotate(-0 702 99.300625)">constraint encoder</text>
+   </g>
+   <g id="text_17">
+    <text style="font-size: 7.8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #111111" transform="translate(599.185641 117.301312)">x_c = 8 scale-free features: RAM/Fmax, (RAM-AMR)/Fmax,</text>
+    <text style="font-size: 7.8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #111111" transform="translate(582.666094 126.249863)">AMR/Fmax, min-RAM factor, FRM, F0core, F_LTN (/Fmax), log Fmax</text>
+    <text style="font-size: 7.8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #111111" transform="translate(666.720844 135.292256)">k_c = MLP(x_c)  (16)</text>
+   </g>
+   <g id="text_18">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: middle; fill: #111111" x="702" y="229.069375" transform="rotate(-0 702 229.069375)">zone &lt;- constraint attention  (4 heads)</text>
+   </g>
+   <g id="text_19">
+    <text style="font-size: 7.8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #111111" transform="translate(588.288797 247.330312)">s_zc = a . LeakyReLU(Wq u_z + Wk k_c + w_p p_zc + w_a |p_zc|)</text>
+    <text style="font-size: 7.8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #111111" transform="translate(604.902187 256.312866)">alpha_zc = softmax over the constraints z is exposed to</text>
+    <text style="font-size: 7.8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #111111" transform="translate(626.465531 265.261416)">m_z = sum_c alpha_zc (Wv k_c + v_p p_zc)</text>
+   </g>
+   <g id="text_20">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: middle; fill: #111111" x="702" y="362.100625" transform="rotate(-0 702 362.100625)">update, then the L4 zone blocks</text>
+   </g>
+   <g id="text_21">
+    <text style="font-size: 7.8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #111111" transform="translate(594.806672 380.101312)">u_z &lt;- u_z + Drop(Linear(m_z)) * g_z      (g_z = 0: no message)</text>
+    <text style="font-size: 7.8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #111111" transform="translate(594.934031 389.143706)">inserted at the node_update hook, before the 2 GATv2 blocks</text>
+   </g>
+   <g id="text_22">
+    <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #6b6b6b" transform="translate(28.8 499.0475)">Only the 12 Core zones receive messages; non-Core zones, pretrain days (before 2022-06-09) and days without a published domain get none.</text>
+    <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; fill: #6b6b6b" transform="translate(28.8 508.614125)">The interconnector blocks then pass the information on to non-Core neighbours. Control: L4 interconnects + curves, fine-tuned monthly.</text>
+   </g>
+   <g id="text_23">
+    <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: middle; fill: #111111" x="86.4" y="167.668125" transform="rotate(-0 86.4 167.668125)">FR</text>
+   </g>
+   <g id="text_24">
+    <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: middle; fill: #111111" x="230.4" y="124.468125" transform="rotate(-0 230.4 124.468125)">DE_LU</text>
+   </g>
+   <g id="text_25">
+    <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; text-anchor: middle; fill: #111111" x="374.4" y="167.668125" transform="rotate(-0 374.4 167.668125)">PL</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pa5a242b6d5">
+   <rect x="0" y="0" width="936" height="547.2"/>
+  </clipPath>
+ </defs>
+</svg>

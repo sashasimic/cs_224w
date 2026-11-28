@@ -1,0 +1,23 @@
+# Attention scope ablation: full attention with NO positional encoding, so the model gets no topology at all.
+# Only the edge set differs between c3s_gat_interconnects and c3s_gat_full; same params (95,425), data, loss, seed.
+model: gat_scope
+graph: full
+
+positional: false
+history: base
+day_inputs: own_cyclic
+history_window: 168
+hidden: 64
+heads: 4
+layers: 2
+ffn: 128
+mlp_hidden: 128
+dropout: 0.1
+fit_splits: [pretrain, train]
+eval_splits: [val, test]
+epochs: 50
+lr: 0.001
+patience: 8
+batch_days: 16
+spread_weight: 0.5
+seed: 0

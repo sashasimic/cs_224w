@@ -1,0 +1,11 @@
+comparison,slice,delta,lo,hi,file,n_seeds
+"interconnectors (3 seeds)  −  self (3 seeds), fine-tuned",all,-0.46284598759816037,-0.5688350581356897,-0.3617912752566552,bootstrap_ic_vs_self_rolling_3seeds.json,3
+"interconnectors (3 seeds)  −  self (3 seeds), fine-tuned",pre_2025-10,-0.4794151805107377,-0.6562914352779917,-0.30731050066790994,bootstrap_ic_vs_self_rolling_3seeds.json,3
+"interconnectors (3 seeds)  −  self (3 seeds), fine-tuned",post_2025-10,-0.4545339272240005,-0.5812989671316191,-0.32722373307189545,bootstrap_ic_vs_self_rolling_3seeds.json,3
+"interconnectors (3 seeds)  −  self (3 seeds), fine-tuned",summer,-0.39336601020966605,-0.5690442071849244,-0.2394021274179983,bootstrap_ic_vs_self_rolling_3seeds.json,3
+"interconnectors (3 seeds)  −  self (3 seeds), fine-tuned",core_zones,-0.628189092497466,-0.8158761227639578,-0.4541398448532006,bootstrap_ic_vs_self_rolling_3seeds.json,3
+"interconnectors (3 seeds)  −  self (3 seeds), fit once",all,-0.4735370171278439,-0.5846146655400642,-0.3478042094921447,bootstrap_ic_vs_self_static_3seeds.json,3
+"interconnectors (3 seeds)  −  self (3 seeds), fit once",pre_2025-10,-0.5013149135746101,-0.6808532075931294,-0.30618544450776075,bootstrap_ic_vs_self_static_3seeds.json,3
+"interconnectors (3 seeds)  −  self (3 seeds), fit once",post_2025-10,-0.45960202623535357,-0.6100894657138068,-0.29494078552884756,bootstrap_ic_vs_self_static_3seeds.json,3
+"interconnectors (3 seeds)  −  self (3 seeds), fit once",summer,-0.30385135741216734,-0.5188115304156549,-0.14886824813658986,bootstrap_ic_vs_self_static_3seeds.json,3
+"interconnectors (3 seeds)  −  self (3 seeds), fit once",core_zones,-0.6018350459846751,-0.7959981321624502,-0.39018725099912893,bootstrap_ic_vs_self_static_3seeds.json,3

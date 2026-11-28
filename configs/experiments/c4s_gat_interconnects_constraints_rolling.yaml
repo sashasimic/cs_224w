@@ -1,0 +1,35 @@
+# H2, constraint nodes: c3s_gat_interconnects_curves_rolling + attention from each Core zone over the D-1
+# flow-based constraints of the same UTC hour it is exposed to (epgnn.models.gat_constraints).
+# Control: c3s_gat_interconnects_curves_rolling (seeds 0-2).
+model: gat_constraints
+graph: interconnects
+positional: true
+history: base
+day_inputs: own_cyclic_asof
+price_curves: true
+strict_inputs: true
+history_window: 168
+hidden: 64
+heads: 4
+layers: 2
+ffn: 128
+mlp_hidden: 128
+dropout: 0.1
+fit_splits: [pretrain, train]
+eval_splits: [val, test]
+epochs: 50
+lr: 0.001
+patience: 8
+batch_days: 16
+spread_weight: 0.5
+seed: 0
+rolling:
+  window_days: 730
+  epochs: 2
+  lr: 0.0001
+  start: continue
+constraints:
+  ptdf_min: 0.05
+  c_hidden: 16
+  c_heads: 4
+  lag_hours: 24

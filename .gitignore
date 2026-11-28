@@ -29,3 +29,10 @@ checkpoints/
 
 # Editor, machine-specific
 /.vscode/
+
+# Feature pipeline output (python -m epgnn.pipeline.build)
+/features/**/*.parquet
+
+# Local data next to the figures/ scripts (data/model/*.parquet, weather shapes)
+/data/
+/weather/

@@ -1,0 +1,181 @@
+month,split,arm,fit,mae
+2024-04,val,self,fine-tuned,14.783204078674316
+2024-05,val,self,fine-tuned,15.028615951538086
+2024-06,val,self,fine-tuned,15.926871299743652
+2024-07,val,self,fine-tuned,19.436864852905273
+2024-08,val,self,fine-tuned,16.861858367919922
+2024-09,val,self,fine-tuned,18.09294891357422
+2024-10,val,self,fine-tuned,17.75604820251465
+2024-11,val,self,fine-tuned,19.474023818969727
+2024-12,val,self,fine-tuned,22.13396644592285
+2025-01,val,self,fine-tuned,20.77519989013672
+2025-02,val,self,fine-tuned,17.635520935058594
+2025-03,val,self,fine-tuned,18.788455963134766
+2024-04,val,self,fit once,14.783204078674316
+2024-05,val,self,fit once,15.247272491455078
+2024-06,val,self,fit once,16.462055206298828
+2024-07,val,self,fit once,19.597177505493164
+2024-08,val,self,fit once,16.979528427124023
+2024-09,val,self,fit once,18.424407958984375
+2024-10,val,self,fit once,18.09079933166504
+2024-11,val,self,fit once,19.621362686157227
+2024-12,val,self,fit once,22.27415657043457
+2025-01,val,self,fit once,21.06155776977539
+2025-02,val,self,fit once,17.864309310913086
+2025-03,val,self,fit once,19.650714874267578
+2024-04,val,interconnects,fine-tuned,14.231575965881348
+2024-05,val,interconnects,fine-tuned,14.49532413482666
+2024-06,val,interconnects,fine-tuned,15.59384822845459
+2024-07,val,interconnects,fine-tuned,19.295618057250977
+2024-08,val,interconnects,fine-tuned,16.375070571899414
+2024-09,val,interconnects,fine-tuned,17.875659942626953
+2024-10,val,interconnects,fine-tuned,17.56608772277832
+2024-11,val,interconnects,fine-tuned,18.973175048828125
+2024-12,val,interconnects,fine-tuned,21.39820098876953
+2025-01,val,interconnects,fine-tuned,19.867727279663086
+2025-02,val,interconnects,fine-tuned,17.403318405151367
+2025-03,val,interconnects,fine-tuned,18.236011505126953
+2024-04,val,interconnects,fit once,14.231575965881348
+2024-05,val,interconnects,fit once,14.48795223236084
+2024-06,val,interconnects,fit once,15.84765911102295
+2024-07,val,interconnects,fit once,19.391965866088867
+2024-08,val,interconnects,fit once,16.348222732543945
+2024-09,val,interconnects,fit once,17.884119033813477
+2024-10,val,interconnects,fit once,17.989032745361328
+2024-11,val,interconnects,fit once,19.19072723388672
+2024-12,val,interconnects,fit once,21.746549606323242
+2025-01,val,interconnects,fit once,20.414627075195312
+2025-02,val,interconnects,fit once,17.50347137451172
+2025-03,val,interconnects,fit once,18.97418212890625
+2024-04,val,full,fine-tuned,14.358525276184082
+2024-05,val,full,fine-tuned,14.725617408752441
+2024-06,val,full,fine-tuned,15.799797058105469
+2024-07,val,full,fine-tuned,19.428213119506836
+2024-08,val,full,fine-tuned,16.338605880737305
+2024-09,val,full,fine-tuned,18.050302505493164
+2024-10,val,full,fine-tuned,17.85076904296875
+2024-11,val,full,fine-tuned,19.076801300048828
+2024-12,val,full,fine-tuned,21.108793258666992
+2025-01,val,full,fine-tuned,19.64971160888672
+2025-02,val,full,fine-tuned,17.222822189331055
+2025-03,val,full,fine-tuned,18.793371200561523
+2024-04,val,full,fit once,14.358525276184082
+2024-05,val,full,fit once,14.899526596069336
+2024-06,val,full,fit once,15.835820198059082
+2024-07,val,full,fit once,19.57144546508789
+2024-08,val,full,fit once,16.73935890197754
+2024-09,val,full,fit once,18.33888816833496
+2024-10,val,full,fit once,18.365381240844727
+2024-11,val,full,fit once,19.30268096923828
+2024-12,val,full,fit once,21.58669090270996
+2025-01,val,full,fit once,20.129112243652344
+2025-02,val,full,fit once,17.53333282470703
+2025-03,val,full,fit once,19.3572940826416
+2025-04,test,self,fine-tuned,17.297754287719727
+2025-05,test,self,fine-tuned,17.109359741210938
+2025-06,test,self,fine-tuned,15.439719200134277
+2025-07,test,self,fine-tuned,12.572859764099121
+2025-08,test,self,fine-tuned,13.392258644104004
+2025-09,test,self,fine-tuned,17.008878707885742
+2025-10,test,self,fine-tuned,18.2927303314209
+2025-11,test,self,fine-tuned,16.964008331298828
+2025-12,test,self,fine-tuned,12.913186073303223
+2026-01,test,self,fine-tuned,19.61937713623047
+2026-02,test,self,fine-tuned,16.372360229492188
+2026-03,test,self,fine-tuned,20.119983673095703
+2026-04,test,self,fine-tuned,20.0001220703125
+2026-05,test,self,fine-tuned,18.683801651000977
+2026-06,test,self,fine-tuned,20.901161193847656
+2026-07,test,self,fine-tuned,18.086456298828125
+2026-08,test,self,fine-tuned,19.255722045898438
+2026-09,test,self,fine-tuned,28.02469825744629
+2025-04,test,self,fit once,18.28399658203125
+2025-05,test,self,fit once,18.677169799804688
+2025-06,test,self,fit once,17.23635482788086
+2025-07,test,self,fit once,13.162105560302734
+2025-08,test,self,fit once,14.71120548248291
+2025-09,test,self,fit once,17.68413734436035
+2025-10,test,self,fit once,18.957664489746094
+2025-11,test,self,fit once,17.582042694091797
+2025-12,test,self,fit once,13.271971702575684
+2026-01,test,self,fit once,20.16433334350586
+2026-02,test,self,fit once,16.939863204956055
+2026-03,test,self,fit once,21.358652114868164
+2026-04,test,self,fit once,22.905542373657227
+2026-05,test,self,fit once,21.44046401977539
+2026-06,test,self,fit once,22.674026489257812
+2026-07,test,self,fit once,20.43182945251465
+2026-08,test,self,fit once,20.812971115112305
+2026-09,test,self,fit once,29.74524688720703
+2025-04,test,interconnects,fine-tuned,16.436471939086914
+2025-05,test,interconnects,fine-tuned,16.413528442382812
+2025-06,test,interconnects,fine-tuned,14.72144889831543
+2025-07,test,interconnects,fine-tuned,12.431255340576172
+2025-08,test,interconnects,fine-tuned,13.05087947845459
+2025-09,test,interconnects,fine-tuned,16.51639175415039
+2025-10,test,interconnects,fine-tuned,17.674882888793945
+2025-11,test,interconnects,fine-tuned,16.58196449279785
+2025-12,test,interconnects,fine-tuned,12.786876678466797
+2026-01,test,interconnects,fine-tuned,18.666078567504883
+2026-02,test,interconnects,fine-tuned,16.378217697143555
+2026-03,test,interconnects,fine-tuned,19.348356246948242
+2026-04,test,interconnects,fine-tuned,19.621841430664062
+2026-05,test,interconnects,fine-tuned,17.49118995666504
+2026-06,test,interconnects,fine-tuned,20.68592071533203
+2026-07,test,interconnects,fine-tuned,17.17331314086914
+2026-08,test,interconnects,fine-tuned,18.97393226623535
+2026-09,test,interconnects,fine-tuned,27.652843475341797
+2025-04,test,interconnects,fit once,17.255863189697266
+2025-05,test,interconnects,fit once,17.473548889160156
+2025-06,test,interconnects,fit once,16.095949172973633
+2025-07,test,interconnects,fit once,13.071556091308594
+2025-08,test,interconnects,fit once,13.888276100158691
+2025-09,test,interconnects,fit once,16.93950080871582
+2025-10,test,interconnects,fit once,18.294090270996094
+2025-11,test,interconnects,fit once,17.1340274810791
+2025-12,test,interconnects,fit once,13.272687911987305
+2026-01,test,interconnects,fit once,19.390785217285156
+2026-02,test,interconnects,fit once,16.934356689453125
+2026-03,test,interconnects,fit once,20.554636001586914
+2026-04,test,interconnects,fit once,21.762548446655273
+2026-05,test,interconnects,fit once,19.9830265045166
+2026-06,test,interconnects,fit once,22.32628059387207
+2026-07,test,interconnects,fit once,19.349349975585938
+2026-08,test,interconnects,fit once,20.39000129699707
+2026-09,test,interconnects,fit once,28.446361541748047
+2025-04,test,full,fine-tuned,16.38025665283203
+2025-05,test,full,fine-tuned,16.701107025146484
+2025-06,test,full,fine-tuned,15.141557693481445
+2025-07,test,full,fine-tuned,12.921852111816406
+2025-08,test,full,fine-tuned,12.987688064575195
+2025-09,test,full,fine-tuned,16.606712341308594
+2025-10,test,full,fine-tuned,17.959877014160156
+2025-11,test,full,fine-tuned,16.993192672729492
+2025-12,test,full,fine-tuned,12.646968841552734
+2026-01,test,full,fine-tuned,19.0554141998291
+2026-02,test,full,fine-tuned,16.710773468017578
+2026-03,test,full,fine-tuned,19.770980834960938
+2026-04,test,full,fine-tuned,19.629058837890625
+2026-05,test,full,fine-tuned,17.888099670410156
+2026-06,test,full,fine-tuned,20.7091064453125
+2026-07,test,full,fine-tuned,17.464200973510742
+2026-08,test,full,fine-tuned,19.151687622070312
+2026-09,test,full,fine-tuned,27.737337112426758
+2025-04,test,full,fit once,17.294042587280273
+2025-05,test,full,fit once,18.175918579101562
+2025-06,test,full,fit once,16.764373779296875
+2025-07,test,full,fit once,13.422510147094727
+2025-08,test,full,fit once,14.023308753967285
+2025-09,test,full,fit once,17.51830291748047
+2025-10,test,full,fit once,18.555246353149414
+2025-11,test,full,fit once,17.5283260345459
+2025-12,test,full,fit once,13.09080982208252
+2026-01,test,full,fit once,19.475786209106445
+2026-02,test,full,fit once,18.001928329467773
+2026-03,test,full,fit once,21.36716651916504
+2026-04,test,full,fit once,22.445531845092773
+2026-05,test,full,fit once,20.13376808166504
+2026-06,test,full,fit once,22.659889221191406
+2026-07,test,full,fit once,19.1290283203125
+2026-08,test,full,fit once,20.440021514892578
+2026-09,test,full,fit once,28.430503845214844

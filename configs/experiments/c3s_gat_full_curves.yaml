@@ -1,0 +1,25 @@
+# c3s_gat_full + the D-1, D-2, D-7 price curves (24 local hours each) as day inputs for every slot.
+# Weather inputs are the cutoff-safe _asof columns (own_cyclic_asof), so compare with LEAR, not with c3s_gat_full directly.
+# All three *_curves arms share params (100,033), data, loss and seed; only the edge set differs.
+model: gat_scope
+graph: full
+positional: true
+history: base
+day_inputs: own_cyclic_asof
+price_curves: true
+strict_inputs: true
+history_window: 168
+hidden: 64
+heads: 4
+layers: 2
+ffn: 128
+mlp_hidden: 128
+dropout: 0.1
+fit_splits: [pretrain, train]
+eval_splits: [val, test]
+epochs: 50
+lr: 0.001
+patience: 8
+batch_days: 16
+spread_weight: 0.5
+seed: 0

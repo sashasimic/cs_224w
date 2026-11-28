@@ -1,0 +1,17 @@
+# Rerun on cutoff-safe inputs: _asof weather (features/v1) and the 174 active interconnector edges.
+# Same model and hyperparameters as the original config; compare with LEAR and the *_curves runs.
+model: asof
+base_model: gru_mlp
+feature_set: own_asof
+history_window: 168
+hidden: 64
+mlp_hidden: 128
+dropout: 0.1
+fit_splits: [pretrain, train]
+eval_splits: [val, test]
+epochs: 50
+lr: 0.001
+patience: 8
+batch_days: 16
+spread_weight: 0.5
+seed: 0

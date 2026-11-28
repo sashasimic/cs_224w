@@ -1,0 +1,87 @@
+name,group,timing,source,meaning
+price,target,outcome,zone_nodes_hourly,"day-ahead price, EUR/MWh; the target"
+has_price,target,outcome,zone_nodes_hourly,price exists and is valid: the loss mask
+price_filled,target,past,zone_nodes_hourly,the lag inputs of this hour came from a short gap fill
+hour_local,calendar,gate,zone_nodes_hourly,Brussels local hour 0-23
+dow,calendar,gate,zone_nodes_hourly,"day of week, 0 = Monday"
+month,calendar,gate,zone_nodes_hourly,month 1-12
+hour_sin,calendar,gate,pipeline,sin(2 pi hour/24)
+hour_cos,calendar,gate,pipeline,cos(2 pi hour/24)
+dow_sin,calendar,gate,pipeline,sin(2 pi dow/7)
+dow_cos,calendar,gate,pipeline,cos(2 pi dow/7)
+month_sin,calendar,gate,pipeline,sin(2 pi (month-1)/12)
+month_cos,calendar,gate,pipeline,cos(2 pi (month-1)/12)
+is_weekend,calendar,gate,pipeline,Saturday or Sunday
+price_lag24,price,gate,zone_nodes_hourly,price of the same hour on D-1 (D-1 prices are published on D-2)
+price_lag168,price,gate,zone_nodes_hourly,price of the same hour one week earlier; the persistence forecast
+price_wk_change,price,gate,pipeline,price_lag24 - price_lag168
+price_d1_mean,price,gate,pipeline,mean of the zone's D-1 prices (mean of price_lag24 over D)
+price_d1_min,price,gate,pipeline,min of the zone's D-1 prices
+price_d1_max,price,gate,pipeline,max of the zone's D-1 prices
+price_d1_std,price,gate,pipeline,std of the zone's D-1 prices (intra-day shape / volatility)
+europe_price_lag24,price,gate,pipeline,mean price_lag24 over all priced zones that hour
+price_lag24_vs_europe,price,gate,pipeline,price_lag24 - europe_price_lag24
+nb_price_lag24,price,gate,pipeline,mean price_lag24 over interconnected neighbours (non-graph baselines)
+load_fc,load,gate,zone_nodes_hourly,"ENTSO-E day-ahead load forecast, MW (vintage caveat in the dataset doc)"
+load_fc_lag168,load,gate,pipeline,load forecast of the same hour one week earlier
+load_fc_wk_change,load,gate,pipeline,load_fc / load_fc_lag168 - 1
+load_fc_ramp,load,gate,pipeline,load_fc minus the previous hour's load_fc
+load_fc_day_rel,load,gate,pipeline,load_fc / mean load_fc of delivery day D (daily shape)
+temp_pw,weather,outcome,zone_nodes_hourly,"population-weighted temperature, same hour (perfect-forecast ablation only)"
+temp_anom,weather,outcome,zone_nodes_hourly,"temperature anomaly vs climatology, same hour (ablation only)"
+wind_cf,weather,outcome,zone_nodes_hourly,"wind capacity factor, same hour (ablation only)"
+low_wind,weather,outcome,zone_nodes_hourly,"low-wind flag, same hour (ablation only)"
+solar_cf,weather,outcome,zone_nodes_hourly,"solar capacity factor, same hour (ablation only)"
+temp_pw_lag24,weather,past,zone_nodes_hourly,temperature same hour D-1; NOT a legal day-D input: hours after 10:00 UTC are D-1 after the cutoff (use temp_pw_asof)
+temp_anom_lag24,weather,past,zone_nodes_hourly,temperature anomaly same hour D-1; not a legal day-D input (use temp_anom_asof)
+wind_cf_lag24,weather,past,zone_nodes_hourly,wind capacity factor same hour D-1; not a legal day-D input (use wind_cf_asof)
+solar_cf_lag24,weather,past,zone_nodes_hourly,solar capacity factor same hour D-1; not a legal day-D input (use solar_cf_asof)
+temp_pw_lag48,weather,gate,pipeline,temperature same hour D-2: strictly observed at gate closure
+temp_anom_lag48,weather,gate,pipeline,temperature anomaly same hour D-2
+wind_cf_lag48,weather,gate,pipeline,wind capacity factor same hour D-2
+solar_cf_lag48,weather,gate,pipeline,solar capacity factor same hour D-2
+temp_pw_asof,weather,gate,pipeline,"temperature of the same clock hour, latest observed at the cutoff: lag 24 up to 10:00 UTC, lag 48 after"
+temp_anom_asof,weather,gate,pipeline,"temperature anomaly, as temp_pw_asof"
+wind_cf_asof,weather,gate,pipeline,"wind capacity factor, as temp_pw_asof"
+solar_cf_asof,weather,gate,pipeline,"solar capacity factor, as temp_pw_asof"
+heat_stress,weather,gate,pipeline,"max(temp_anom_asof, 0): positive anomaly only (H3)"
+net_import,flows,past,zone_nodes_hourly,"physical imports - exports with modelled zones, MW (outcome for D; fine in history)"
+net_import_lag48,flows,gate,zone_nodes_hourly,net_import two days earlier
+in_core,jao,static,zone_nodes_hourly,zone belongs to the Core flow-based region
+n_presolved,jao,unverified,zone_nodes_hourly,Core-wide count of presolved constraints (same for every Core zone)
+min_ram_ratio,jao,unverified,zone_nodes_hourly,Core-wide minimum RAM/Fmax (same for every Core zone)
+jao_n_exposed,jao,unverified,jao_cnec_hourly + cnec_provenance,number of presolved constraints with |zone-to-rest PTDF| >= 0.05 (PTDF_z - mean of the other Core hubs; slack-invariant)
+jao_min_ram_exposed,jao,unverified,jao_cnec_hourly + cnec_provenance,smallest RAM/Fmax among those constraints: how tight the zone's binding lines are
+jao_tightness,jao,unverified,jao_cnec_hourly + cnec_provenance,"PTDF-weighted mean scarcity: sum |zone-to-rest PTDF| (1 - min(RAM/Fmax, 1)) / sum |zone-to-rest PTDF|, in [0, 1]; not a count"
+jao_amr_share_exposed,jao,unverified,jao_cnec_hourly + cnec_provenance,share of those constraints whose RAM was lifted by AMR (minimum-RAM policy)
+jao_min_ram_grid_exposed,jao,unverified,jao_cnec_hourly + cnec_provenance,smallest (RAM - AMR)/Fmax among them: the tightest margin before the policy uplift
+jao_tightness_grid,jao,unverified,jao_cnec_hourly + cnec_provenance,"jao_tightness computed on (RAM - AMR)/Fmax: weighted mean scarcity without the uplift, in [0, 1]"
+jao_n_exposed_lag24,jao,gate,jao_cnec_hourly + cnec_provenance,jao_n_exposed of the same hour on D-1 (day D-1's domain: safe)
+jao_min_ram_exposed_lag24,jao,gate,jao_cnec_hourly + cnec_provenance,jao_min_ram_exposed on D-1
+jao_tightness_lag24,jao,gate,jao_cnec_hourly + cnec_provenance,jao_tightness on D-1
+jao_amr_share_exposed_lag24,jao,gate,jao_cnec_hourly + cnec_provenance,jao_amr_share_exposed on D-1
+jao_min_ram_grid_exposed_lag24,jao,gate,jao_cnec_hourly + cnec_provenance,jao_min_ram_grid_exposed on D-1
+jao_tightness_grid_lag24,jao,gate,jao_cnec_hourly + cnec_provenance,jao_tightness_grid on D-1
+flow_phys,flows,outcome,zone_edges_hourly,"ENTSO-E physical flow from_zone -> to_zone, MW"
+flow_phys_lag48,flows,gate,zone_edges_hourly,physical flow two days earlier
+flow_phys_lag168,flows,gate,zone_edges_hourly,physical flow one week earlier
+flow_sched,flows,outcome,zone_edges_hourly,JAO day-ahead scheduled exchange (Core borders)
+flow_sched_lag24,flows,gate,zone_edges_hourly,scheduled exchange on D-1
+maxbex,capacity,unverified,zone_edges_hourly,"JAO maximum bilateral exchange, MW (Core borders from 9 Jun 2022)"
+maxbex_lag24,capacity,gate,pipeline,maxbex on D-1 (safe)
+net_flow_lag48,flows,gate,pipeline,flow_phys_lag48(a->b) - flow_phys_lag48(b->a): net direction
+util_lag48,flows,gate,pipeline,flow_phys_lag48 / maxbex_lag24 where both exist: how congested the border was
+is_core_border,capacity,static,pipeline,both ends are Core zones
+constraint_id,id,static,jao_cnec_hourly + cnec_provenance,stable id: sha1(CneEic | Direction | ContName)[:12]; one line under one contingency
+ram,domain,unverified,jao_cnec_hourly + cnec_provenance,"remaining available margin, MW"
+fmax,domain,unverified,jao_cnec_hourly + cnec_provenance,"maximum admissible flow, MW"
+ram_fmax,domain,unverified,jao_cnec_hourly + cnec_provenance,"RAM / Fmax: 0 = no headroom, 1 = full line available; > 1 from counter-flows (fltn < 0), not policy"
+frm,domain,unverified,jao_cnec_hourly + cnec_provenance,"flow reliability margin, MW"
+f0core,domain,unverified,jao_cnec_hourly + cnec_provenance,"flow with zero Core net positions, MW (loop / transit flow)"
+fltn,domain,unverified,jao_cnec_hourly + cnec_provenance,"flow including long-term nominations (FtotalLtn = f0core + LTN flow), MW; RAM = fmax - frm - fltn + amr - iva"
+amr,domain,unverified,jao_cnec_hourly + cnec_provenance,"adjustment for minimum RAM, MW: margin added by the 70 % (or derogation) policy"
+iva,domain,unverified,jao_cnec_hourly + cnec_provenance,"individual validation adjustment by the TSO, MW (reduces RAM)"
+min_ram_factor,domain,unverified,jao_cnec_hourly + cnec_provenance,minimum-RAM target as a fraction of Fmax (0.7 under the CEP; lower with derogations)
+ram_grid_fmax,domain,unverified,pipeline,(ram - amr) / fmax: margin the grid model leaves before the policy uplift (can be < 0)
+amr_fmax,domain,unverified,pipeline,amr / fmax: size of the policy uplift
+ptdf_<zone>,domain,unverified,jao_cnec_hourly + cnec_provenance,published zone-to-slack PTDF of the 12 Core zones (DE -> DE_LU); only differences are physical: use constraints.rest_ptdf / zone_ptdf

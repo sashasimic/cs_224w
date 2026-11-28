@@ -1,0 +1,10 @@
+# Rerun on cutoff-safe inputs: _asof weather (features/v1) and the 174 active interconnector edges.
+# Same model and hyperparameters as the original config; compare with LEAR and the *_curves runs.
+model: asof
+base_model: xgb
+feature_set: own_asof
+neighbours: true
+per_zone: true
+fit_splits: [pretrain, train]
+eval_splits: [val, test]
+params: {max_depth: 6, n_estimators: 600, learning_rate: 0.05, subsample: 0.8, colsample_bytree: 0.8}

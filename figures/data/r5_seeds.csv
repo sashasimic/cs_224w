@@ -1,0 +1,15 @@
+arm,seed,fit,test_mae
+self,0,fine-tuned,17.880273818969727
+self,0,fit once,19.21477699279785
+self,1,fine-tuned,17.876007080078125
+self,1,fit once,18.768356323242188
+self,2,fine-tuned,17.755271911621094
+self,2,fit once,19.092947006225586
+interconnects,0,fine-tuned,17.351890563964844
+interconnects,0,fit once,18.463594436645508
+interconnects,1,fine-tuned,17.372514724731445
+interconnects,1,fit once,18.586925506591797
+interconnects,2,fine-tuned,17.398601531982422
+interconnects,2,fit once,18.60494613647461
+full,0,fine-tuned,17.566099166870117
+full,0,fit once,18.786312103271484

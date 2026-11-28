@@ -1,0 +1,25 @@
+{
+  "inputs": {
+    "zone_nodes_hourly": "v1.0",
+    "zone_edges_hourly": "v1.0",
+    "jao_dir": "../data/jao_core_hourly_views"
+  },
+  "seconds": {
+    "constraints": 23.4,
+    "zones": 21.0,
+    "total": 46.9
+  },
+  "constraints": {
+    "rows": 4233177,
+    "constraints": 6322,
+    "ptdf_reference": "rest",
+    "synthetic_dropped": 372684,
+    "duplicates_dropped": 25064,
+    "per_hour_median": 109.0
+  },
+  "zones": {
+    "rows": 4240035,
+    "columns": 67,
+    "zones": 45
+  }
+}
